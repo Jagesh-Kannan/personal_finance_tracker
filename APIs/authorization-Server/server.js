@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import users_router from './routes/users.route.js';
 import { handle_error } from "./controller/error.controller.js";
 import { connection_error } from "./errorHandler/dbError.js";
+import verifyEmail_router from "./routes/verifyEmail.router.js";
 
 
 dotenv.config({ path: "./config.env" });
@@ -26,6 +27,7 @@ app.listen(port, () => {
 });
 
 app.use("/api/v1/users", users_router);
+app.use("/api/v1/verify-email", verifyEmail_router);
 
 // Error handling middleware (must be last)
 app.use(handle_error);

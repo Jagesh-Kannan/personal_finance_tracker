@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -42,7 +43,22 @@ const userSchema = new mongoose.Schema({
             message: "Password doesn't match"
         },
         select: false
-    }
+    },
+    emailVerified:{
+        required: true,
+        type: Boolean,
+        default: false
+    },
+    verificationToken: {
+        type: String,
+        select: false
+    },
+    verificationTokenExpires: {
+        type: Date,
+        select: false,
+        default: Date.now() + 24 * 60 * 60 * 1000, // Token expires in 24 hours
+        expires: 7 * 24 * 60 * 60 // Automatically remove expired tokens
+    },
 });
 
 // Hash password before saving to database
@@ -69,5 +85,6 @@ userSchema.pre('save', async function() {
 userSchema.methods.comparePassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
+
 
 export default mongoose.model('User', userSchema);

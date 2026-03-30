@@ -1,9 +1,12 @@
 import { catchAsync } from "../utils/catchAsync.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { generateAccessToken, generateRefreshToken } from "../utils/token.handler.js";
+import { generateAccessToken, generateRefreshToken } from "../helper/token.handler.js";
 import { auth_error } from "../errorHandler/authError.handler.js";
 import { get_user } from "./users.controller.js";
+import { sendVerificationEmail, generateEmailVerificationToken, verifyEmail_login } from "../utils/emailVerification.util.js";
+import { verifyPassword } from "../utils/verifyPassword.js";
+import { set_token_cookie } from "../helper/auth.helper.js";
 
 export const login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
@@ -19,44 +22,16 @@ export const login = catchAsync(async (req, res, next) => {
     // Find user by email and explicitly select password field
     const user = await get_user({ email });
 
-    // Check if user exists
-    if (!user) {
-        throw auth_error({
-            statusCode: 404,
-            message: 'User is not registered'
-        });
-    }
+    // verify email before allowing login
+    await verifyEmail_login(user);
 
     // Password received from client is raw password
     // Compare with stored hashed password using bcrypt.compare()
-    const isPasswordCorrect = await bcrypt.compare(
-        password, 
-        user.password
-    );
+    const verifcationResult = await verifyPassword(password, user.password);
 
-    if (!isPasswordCorrect) {
-        throw auth_error({
-            statusCode: 401,
-            message: 'Incorrect password'
-        });
-    }
 
-    const accessToken = generateAccessToken({ id: user._id });
-    const refreshToken = generateRefreshToken({ id: user._id });
-
-    res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 3600000 // 1 hour
-    });
-
-    res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 604800000 // 7 days
-    });
+    //generate and set tokens in cookies
+    const { accessToken, refreshToken } = set_token_cookie(res, user, undefined, undefined);
     
     // Success response - tokens are in cookies, not in body
     res.status(200).json({
