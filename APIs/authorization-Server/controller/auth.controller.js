@@ -1,12 +1,10 @@
 import { catchAsync } from "../utils/catchAsync.js";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { generateAccessToken, generateRefreshToken } from "../helper/token.handler.js";
+import { verify_getTokenPayload } from "../helper/token.handler.js";
 import { auth_error } from "../errorHandler/authError.handler.js";
 import { get_user } from "./users.controller.js";
-import { sendVerificationEmail, generateEmailVerificationToken, verifyEmail_login } from "../utils/emailVerification.util.js";
-import { verifyPassword } from "../utils/verifyPassword.js";
-import { set_token_cookie } from "../helper/auth.helper.js";
+import { sendPasswordResetEmail, generateEmailVerificationToken, verifyEmail_login } from "../utils/emailVerification.util.js";
+import { set_token_cookie, verifyPassword } from "../helper/auth.helper.js";
+import { clearCookie, getCookie } from "../utils/cookieHandler.util.js";
 
 export const login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
@@ -42,7 +40,7 @@ export const login = catchAsync(async (req, res, next) => {
 
 export const refreshTokenHandler = catchAsync(async (req, res, next) => {
     // Get refresh token from cookies
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = getCookie(req, 'refreshToken');
 
     // Check if refresh token exists
     if (!refreshToken) {
@@ -54,38 +52,14 @@ export const refreshTokenHandler = catchAsync(async (req, res, next) => {
 
     try {
         // Verify refresh token
-        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+        const decoded =  verify_getTokenPayload(refreshToken);
 
         // Find user by ID to ensure user still exists
         const user = await get_user({ id: decoded.id });
 
-        if (!user) {
-            throw auth_error({
-                statusCode: 404,
-                message: 'User not found'
-            });
-        }
-
         // Generate new access token
-        const newAccessToken = generateAccessToken({ id: user._id });
-
-        // Optional: Generate new refresh token (token rotation for better security)
-        const newRefreshToken = generateRefreshToken({ id: user._id });
-
         // Set new tokens in cookies
-        res.cookie('accessToken', newAccessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 3600000 // 1 hour
-        });
-
-        res.cookie('refreshToken', newRefreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 604800000 // 7 days
-        });
+        set_token_cookie(res, user, undefined, undefined);
 
         // Return success response
         res.status(200).json({
@@ -100,4 +74,61 @@ export const refreshTokenHandler = catchAsync(async (req, res, next) => {
             message: 'Invalid or expired refresh token. Please login again'
         });
     }
+});
+
+ export const forgotPassword = catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+    if (!email) {
+        throw auth_error({
+            statusCode: 400,
+            message: 'Please provide email'
+        });
+    }
+
+    const user = await get_user({ email });
+
+    if(user.emailVerified == false) {
+        throw auth_error({
+            statusCode: 403,
+            message: 'Email not verified. Please verify your email before resetting password.'
+        });
+    }
+
+    // Generate password reset token
+    const resetToken = generateEmailVerificationToken(user);
+
+    user.passwordResetToken = resetToken;
+    user.passwordResetTokenExpires = Date.now() + 3600000; // 1 hour
+    await user.save({ validateBeforeSave: false });
+
+    try {
+        await sendPasswordResetEmail(user.email, resetToken);
+    } catch (error) {
+        // If email fails, clear the reset token
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        
+        throw auth_error({
+            statusCode: 500,
+            message: 'Failed to send password reset email. Please try again later.'
+        });
+    }
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Password reset instructions sent to email'
+    });
+});
+
+export const logout = catchAsync(async (req, res, next) => {
+    // Clear the access token and refresh token cookies
+
+    clearCookie(res, 'accessToken');
+    clearCookie(res, 'refreshToken');
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Logged out successfully'
+    });
 });

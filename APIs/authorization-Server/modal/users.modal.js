@@ -59,6 +59,14 @@ const userSchema = new mongoose.Schema({
         default: Date.now() + 24 * 60 * 60 * 1000, // Token expires in 24 hours
         expires: 7 * 24 * 60 * 60 // Automatically remove expired tokens
     },
+    passwordResetToken: {
+        type: String,
+        select: false
+    },
+    passwordResetTokenExpires: {
+        type: Date,
+        select: false
+    },
 });
 
 // Hash password before saving to database

@@ -24,6 +24,8 @@ export const clearCookie = (res, key) => {
     } catch (err) {
         throw err;
     }
+
+    return true;
 }
 
 export const getCookie = (req, key) => {

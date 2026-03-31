@@ -16,9 +16,14 @@ export const verifyEmail_register = catchAsync(async (req, res, next) => {
 
     // Verify JWT token and extract payload
     let decoded;
-
+    try {
         decoded = verify_getTokenPayload(token);
- 
+    } catch (err) {
+        throw auth_error({
+            statusCode: 401,
+            message: 'Invalid or expired verification token'
+        });
+    }
 
     const userId = decoded.id;
 

@@ -1,57 +1,41 @@
-import nodemailer from 'nodemailer';
-import {config} from 'dotenv';
-import crypto from 'crypto';
 import { generateJWTVerificationToken } from "../helper/token.handler.js";
-
 import { auth_error } from "../errorHandler/authError.handler.js";
-config();
+import { sendEmail } from './sendEmail.util.js';
+import { verifyEmail_template, resetPassword_template } from "./email.template.js";
 
-export const sendVerificationEmail = async (userEmail, userId, verificationToken) => {
+
+export const sendVerificationEmail = async (userEmail, verificationToken) => {
+
+    const verificationLink = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
+    const subject = 'Email Verification';
+    
+    const text = `Please click on the following link to verify your email: ${verificationLink}`;
+    const html = verifyEmail_template(verificationLink);
+
     try {
-        // Create a transporter using your email service credentials
-        // const transporter = nodemailer.createTransport({
-        //     host: process.env.EMAIL_HOST,
-        //     port: process.env.EMAIL_PORT,
-        //     service: process.env.EMAIL_SERVICE,
-        //     secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
-        //     auth: {
-        //         user: process.env.EMAIL_USER,
-        //         pass: process.env.EMAIL_PASS
-        //     }
-        // });
-
-
-        // tester
-         // Create a test account
-  let testAccount = await nodemailer.createTestAccount();
-
-  // Create a transporter using the test SMTP
-  let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
-
-
-        // Define the email content
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: userEmail,
-            subject: 'Email Verification',
-            text: `Please click on the following link to verify your email: ${process.env.CLIENT_URL}/verify-email/${verificationToken}`
-        };
-
-        // Send the email
-        const info =await transporter.sendMail(mailOptions);
-
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-
+        await sendEmail(userEmail, subject, text, html);
     } catch (error) {
-        throw error;
+        console.error('Error sending verification email:', error);
+        throw auth_error({
+            statusCode: 500,
+            message: 'Failed to send verification email. Please try again later.'
+        });
+    }
+};
+
+export const sendPasswordResetEmail = async (userEmail, verificationToken)=> {
+    const resetLink = `${process.env.CLIENT_URL}/users/reset-password/${verificationToken}`;
+    const subject = 'Password Reset Request';
+    
+    const text = `Please click on the following link to reset your password: ${resetLink}`;
+    
+    const html =  resetPassword_template(resetLink);
+
+    try {
+        await sendEmail(userEmail, subject, text, html);
+    } catch (error) {
+        console.error('Error sending password reset email:', error);
+        throw error; // Let caller handle this error
     }
 };
 
@@ -63,7 +47,7 @@ export const verifyEmail_login = async (user) => {
         user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
         await user.save({ validateBeforeSave: false });
 
-        await sendVerificationEmail(user.email, user.id, verificationToken);
+        await sendVerificationEmail(user.email, verificationToken);
 
         throw auth_error({
             statusCode: 403,
