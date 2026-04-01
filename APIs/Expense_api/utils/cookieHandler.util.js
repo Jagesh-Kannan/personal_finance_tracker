@@ -21,8 +21,8 @@ export const clearCookie = (res, key) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'none',
             maxAge: 3600000, // 1 hour
-            Domain: process.env.DOMAIN,
-            Path: '/'
+            domain: process.env.DOMAIN,
+            path: '/'
         });
     } catch (err) {
         throw err;
