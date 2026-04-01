@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
 // General rate limiter for all requests (optional)
 export const generalLimiter = rateLimit({
@@ -18,8 +18,8 @@ export const loginLimiter = rateLimit({
     legacyHeaders: false,
     skipSuccessfulRequests: false, // Count all requests
     keyGenerator: (req, res) => {
-        // Use email if provided, otherwise use IP
-        return req.body.email || req.ip;
+        // Use email if provided, otherwise use IP with proper IPv6 handling
+        return req.body?.email || ipKeyGenerator(req, res);
     }
 });
 
@@ -31,8 +31,8 @@ export const registrationLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req, res) => {
-        // Use email if provided to prevent spam accounts
-        return req.body.email || req.ip;
+        // Use email if provided to prevent spam accounts, otherwise use IPv6-safe IP
+        return req.body?.email || ipKeyGenerator(req, res);
     }
 });
 
@@ -44,8 +44,8 @@ export const passwordResetLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req, res) => {
-        // Use email to prevent spam
-        return req.body.email || req.ip;
+        // Use email to prevent spam, otherwise use IPv6-safe IP
+        return req.body?.email || ipKeyGenerator(req, res);
     }
 });
 
@@ -57,8 +57,8 @@ export const verificationEmailLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req, res) => {
-        // Use IP address
-        return req.ip;
+        // Use IPv6-safe IP address
+        return ipKeyGenerator(req, res);
     }
 });
 

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Currency_types, payment_modes } = require('../controller/enums/expense.enum');
+import mongoose from 'mongoose';
+import { Currency_types, payment_modes } from '../controller/enums/expense.enum.js';
 
 const expense_schema = new mongoose.Schema({
     expenseName : {
@@ -13,6 +13,11 @@ const expense_schema = new mongoose.Schema({
     amount : {
         type: Number,
         min:1,
+        required: true
+    },
+    userId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
         required: true
     },
     paymentMode : {
@@ -46,4 +51,4 @@ const expense_schema = new mongoose.Schema({
  
 const expense_modal = mongoose.model('expense',expense_schema);
 
-module.exports = expense_modal;
+export default expense_modal;

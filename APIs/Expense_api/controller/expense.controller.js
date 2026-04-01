@@ -1,9 +1,10 @@
-const expense_modal = require("../modal/expense.modal.js");
-const catchAsync = require("../utils/catchAsync.js");
-const mongoose = require("mongoose");
+import expense_modal from '../modal/expense.modal.js';
+import { catchAsync } from '../utils/catchAsync.js';
+import mongoose from 'mongoose';
 
 // to create single expense as an object
 const create_expense = catchAsync(async (req, res, next) => {
+    req.body.userId = req.user.id; // Attach user ID from authenticated request
     const newExpense = await expense_modal.create(req.body);
     res.status(201).json({
         "status": "success",
@@ -13,7 +14,8 @@ const create_expense = catchAsync(async (req, res, next) => {
 
 // to create bulk document as an array of object
 const create_bulk_expense = catchAsync(async (req, res, next) => {
-    const newExpense = await expense_modal.insertMany(req.body);
+    const expenses = req.body.map(expense => ({ ...expense, userId: req.user.id })); // Attach user ID to each expense
+    const newExpense = await expense_modal.insertMany(expenses);
     res.status(201).json({
         "status": "success",
         "message": "Bulk Expense recorded successfully."
@@ -30,7 +32,7 @@ const save_expenses = (req, res, next) => {
 };
 
 const getAll_expenses = catchAsync(async (req, res, next) => {
-    const expenses = await expense_modal.find();
+    const expenses = await expense_modal.find({ userId: req.user.id });
     res.status(200).json({
         "status": "success",
         "data": expenses
@@ -122,7 +124,14 @@ const get_expenses = catchAsync(async (req, res, next) => {
                 "message": "Invalid expense ID format."
             });
         }
-        const expense = await expense_modal.findById(id);
+        const expense = await expense_modal.findOne({ _id: id, userId: req.user.id });
+        // NULL CHECK FIX: Return 404 if expense not found instead of returning null
+        if (!expense) {
+            return res.status(404).json({
+                "status": "error",
+                "message": "Expense not found."
+            });
+        }
         return res.status(200).json({
             "status": "success",
             "data": expense
@@ -130,7 +139,7 @@ const get_expenses = catchAsync(async (req, res, next) => {
     }
 
     // Handle filtered expenses
-    const expenses = await expense_modal.find(filter);
+    const expenses = await expense_modal.find({ ...filter, userId: req.user.id });
     res.status(200).json({
         status: "success",
         results: expenses.length,
@@ -152,7 +161,11 @@ const delete_expense = catchAsync(async (req, res, next) => {
             "message": "Invalid expense ID format."
         });
     }
-    const deletedExpense = await expense_modal.findByIdAndDelete(id);
+    // SECURITY FIX: Add userId filter to prevent users from deleting other users' expenses
+    const deletedExpense = await expense_modal.findByIdAndDelete({
+        _id: id,
+        userId: req.user.id
+    });
     if (!deletedExpense) {
         return res.status(404).json({
             "status": "error",
@@ -194,6 +207,14 @@ const delete_multiple_expenses = catchAsync(async (req, res, next) => {
         });
     }
 
+    // VALIDATION FIX: Check for empty array
+    if (ids.length === 0 && Object.keys(filter).length === 0) {
+        return res.status(400).json({
+            "status": "error",
+            "message": "Please provide at least one expense ID or filter criteria."
+        });
+    }
+
     // Validate IDs if provided
     if (ids.length > 0) {
         const invalidIds = ids.filter(id => !mongoose.Types.ObjectId.isValid(id));
@@ -205,6 +226,9 @@ const delete_multiple_expenses = catchAsync(async (req, res, next) => {
         }
         filter = { _id: { $in: ids.map(id => new mongoose.Types.ObjectId(id)) } };
     }
+
+    // SECURITY FIX: Add userId filter to ensure user can only delete their own expenses
+    filter.userId = req.user.id;
 
     const result = await expense_modal.deleteMany(filter);
 
@@ -249,7 +273,7 @@ const buildDeleteFilter = (params) => {
 };
 
 
-module.exports = {
+export {
     save_expenses,
     getAll_expenses,
     get_expenses,

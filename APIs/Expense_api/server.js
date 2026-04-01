@@ -1,11 +1,13 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const { default: mongoose } = require("mongoose");
-const { connection_error } = require("./errorHandler/dbError");
-const errorhandler = require("./controller/error.controller");
-const expense_route = require("./router/expense.route");
+import express from 'express';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import { connection_error } from './errorHandler/dbError.js';
+import { handle_error } from './controller/error.controller.js';
+import expense_route from './router/expense.route.js';
+import { authenticate } from './middleware/auth.middleware.js';
 
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: './config.env' });
 
 const app = express();
 const port = process.env.PORT;
@@ -13,21 +15,22 @@ const db_url = process.env.DB_URL;
 const db_name = process.env.DB_NAME;
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}/`);
 });
 
-app.use('/api/v1/expense', expense_route);
+app.use('/api/v1/expense', authenticate, expense_route);
 
 // Error handling middleware (must be last)
-app.use(errorhandler.handle_error);
+app.use(handle_error);
 
 mongoose
   .connect(db_url, {
     dbName: db_name,
   })
   .then(() => {
-    console.log("Successfully connected to DB.");
+    console.log('Successfully connected to DB.');
   })
   .catch(connection_error);

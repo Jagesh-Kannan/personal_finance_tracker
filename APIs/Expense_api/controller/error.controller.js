@@ -1,17 +1,17 @@
-const { handle_validation_error } = require("../errorHandler/validationError.handler.js");
+import { handle_validation_error } from '../errorHandler/validationError.handler.js';
 
-module.exports.handle_error = (err, req, res, next) => {
+export const handle_error = (err, req, res, next) => {
     let statusCode = err.statusCode || 500;
-    let message = err.message || "Internal Server Error";
+    let message = err.message || 'Internal Server Error';
 
     console.error(err);
 
     switch (err.name) {
-        case "ValidationError":
+        case 'ValidationError':
             statusCode = 400;
             message = handle_validation_error(err);
             break;
-        case "CastError":
+        case 'CastError':
             statusCode = 400;
             message = `Invalid ${err.path}: ${err.value}.`;
             break;
@@ -20,7 +20,7 @@ module.exports.handle_error = (err, req, res, next) => {
     }
 
     res.status(statusCode).json({
-        status: "error",
+        status: 'error',
         message: message
     });
 

@@ -7,7 +7,6 @@ import { handle_error } from "./controller/error.controller.js";
 import { connection_error } from "./errorHandler/dbError.js";
 import verifyEmail_router from "./routes/verifyEmail.router.js";
 
-
 dotenv.config({ path: "./config.env" });
 
 

@@ -1,8 +1,11 @@
 import nodemailer from 'nodemailer';
+import { decrypt } from './crypto.util.js';
 
 export const sendEmail = async (to, subject, text, html = null) => {
 
         try {
+
+            const decryptedEmailPass = decrypt(process.env.EMAIL_PASS);
             // Create a transporter using your email service credentials
             const transporter = nodemailer.createTransport({
                 host: process.env.EMAIL_HOST,
@@ -11,7 +14,7 @@ export const sendEmail = async (to, subject, text, html = null) => {
                 secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
                 auth: {
                     user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
+                    pass: decryptedEmailPass
                 }
             });
     
