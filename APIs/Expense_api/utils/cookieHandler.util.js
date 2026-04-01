@@ -19,7 +19,10 @@ export const clearCookie = (res, key) => {
         res.clearCookie(key, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
+            sameSite: 'none + secure',
+            maxAge: 3600000, // 1 hour
+            Domain: process.env.DOMAIN,
+            Path: '/'
         });
     } catch (err) {
         throw err;
