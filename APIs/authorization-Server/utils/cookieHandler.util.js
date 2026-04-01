@@ -6,7 +6,7 @@ export const setCookiee = (res, key, value) => {
         res.cookie(key, value, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none + secure',
+            sameSite: 'none',
             maxAge: 3600000, // 1 hour
             Domain: process.env.DOMAIN,
             Path: '/'
