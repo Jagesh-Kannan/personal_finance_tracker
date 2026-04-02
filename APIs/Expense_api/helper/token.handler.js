@@ -1,21 +1,21 @@
 import jwt from 'jsonwebtoken';
 import { auth_error } from '../errorHandler/authError.handler.js';
 
-// export const generateAccessToken = (payload) => {
+export const generateAccessToken = (payload) => {
 
-//     const secret = process.env.JWT_SECRET ;
-//     const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
+    const secret = process.env.JWT_SECRET ;
+    const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
 
-//     return jwt.sign(payload, secret, { expiresIn });
-// };
+    return jwt.sign(payload, secret, { expiresIn });
+};
 
-// export const generateRefreshToken = (payload) => {
+export const generateRefreshToken = (payload) => {
 
-//     const secret = process.env.JWT_SECRET ;
-//     const expiresIn = '7d'; // Refresh token valid for 7 days  
+    const secret = process.env.JWT_SECRET ;
+    const expiresIn = '7d'; // Refresh token valid for 7 days  
 
-//     return jwt.sign(payload, secret, { expiresIn });
-// };
+    return jwt.sign(payload, secret, { expiresIn });
+};
 
 export const generateJWTVerificationToken = (payload) => {
 
