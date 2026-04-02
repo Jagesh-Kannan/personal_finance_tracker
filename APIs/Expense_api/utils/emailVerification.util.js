@@ -6,7 +6,7 @@ import { verifyEmail_template, resetPassword_template } from "./email.template.j
 
 export const sendVerificationEmail = async (userEmail, verificationToken) => {
 
-    const verificationLink = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
+    const verificationLink = `${process.env.SERVER_URL}/verify-email/${verificationToken}`;
     const subject = 'Email Verification';
     
     const text = `Please click on the following link to verify your email: ${verificationLink}`;
