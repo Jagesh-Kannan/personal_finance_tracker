@@ -10,3 +10,8 @@ type RegisterDetails = {
     password: string;
     passwordConfirm: string;
 };
+
+type ResetPasswordDetails = {
+  password: string;
+  passwordConfirm: string;
+};

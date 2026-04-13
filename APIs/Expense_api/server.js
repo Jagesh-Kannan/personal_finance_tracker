@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import { connection_error } from './errorHandler/dbError.js';
@@ -9,15 +10,26 @@ import expense_route from './router/expense.route.js';
 import users_router from './router/users.route.js';
 import verifyEmail_router from "./router/verifyEmail.router.js";
 
+
 dotenv.config({ path: './config.env' });
 
 const app = express();
 const port = process.env.PORT;
 const db_url = process.env.DB_URL;
 const db_name = process.env.DB_NAME;
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
 app.use(express.json());
 app.use(cookieParser());
+
+const corsOptions = {
+  origin: allowedOrigins.length > 0 ? allowedOrigins : '*', // Allow all origins if ALLOWED_ORIGINS is not set
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP verbs
+  allowedHeaders: ['Content-Type', 'Authorization'], // Essential for JWT/Auth
+  credentials: true, // Required if sending cookies or Auth headers
+};
+
+app.use(cors(corsOptions));
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}/`);

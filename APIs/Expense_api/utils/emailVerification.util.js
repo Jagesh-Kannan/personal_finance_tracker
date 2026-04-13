@@ -24,7 +24,7 @@ export const sendVerificationEmail = async (userEmail, verificationToken) => {
 };
 
 export const sendPasswordResetEmail = async (userEmail, verificationToken)=> {
-    const resetLink = `${process.env.CLIENT_URL}/users/reset-password/${verificationToken}`;
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${verificationToken}`;
     const subject = 'Password Reset Request';
     
     const text = `Please click on the following link to reset your password: ${resetLink}`;

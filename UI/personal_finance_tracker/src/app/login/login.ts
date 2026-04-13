@@ -4,6 +4,7 @@ import { AuthService } from '../service/auth.service';
 import { UserService } from '../service/user.service';
 import { LucidIconModule } from '../components/lucidIcon/lucid-icon/lucid-icon-module';
 import { LucideEye, LucideEyeClosed } from '@lucide/angular';
+import { stat } from 'fs';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,7 @@ export class Login {
 
   public isFlipped =  signal<Boolean>(false);
   public showEmailVerification = signal<Boolean>(false);
+  public forgotPassword = signal<Boolean>(false);
 
   protected showPassword = signal<boolean>(false);
   protected readonly passwordEyeIcon = computed(() => this.showPassword() ? LucideEye : LucideEyeClosed);
@@ -38,7 +40,7 @@ export class Login {
 
   constructor(private auth: AuthService, private userService: UserService) { }
 
-  onLogin(form:NgForm) {
+  onSubmit(form:NgForm) {
      
     if(form.valid){
       if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(this.loginData.email)){
@@ -47,20 +49,53 @@ export class Login {
         form.controls['email'].setErrors(null);
       }
 
-      const loginDetails: LoginDetails = {
-        email: form.value.email,
-        password: form.value.password
-      };
-      this.auth.login(loginDetails).subscribe({
+      if(this.forgotPassword()){
+        this.onForgotPassword({ email: form.value.email });
+      } else {
+        const loginDetails: LoginDetails = {
+          email: form.value.email,
+          password: form.value.password
+        };
+        this.login(loginDetails);
+      }
+
+    }
+  }
+
+  login(data: LoginDetails){
+      this.auth.login(data).subscribe({
         next: (response) => {
           console.log('Login successful:', response);
           alert('Login successful!');
+          this.resetForms();
         },
         error: (error) => {
+           alert(JSON.stringify({
+            title: 'Login Failed',
+            status: error.status,
+            text: error.error?.message || 'An error occurred during login. Please try again.'
+           },null, 2));
           console.error('Login failed:', error);
         }
       });
-    }
+  }
+
+  onForgotPassword(data: {email:string}){
+    this.userService.forgotPassword(data).subscribe({
+      next: (response) => {
+        console.log('Password reset requested:', response);
+        alert('Password reset link sent to your email.');
+        this.resetForms();
+      },
+      error: (error) => {
+        alert(JSON.stringify({
+          title: 'Password Reset Failed',
+          status: error.status,
+          text: error.error?.message || 'An error occurred while requesting password reset. Please try again.'
+        }, null, 2));
+        console.error('Password reset failed:', error);
+      }
+    });
   }
 
   onRegistration(form:NgForm) {
@@ -82,12 +117,35 @@ export class Login {
 
       this.userService.register(registerDetails).subscribe({
         next: (response) => {
+          this.resetForms();
           this.showEmailVerification.set(true);
         },
-        error: (error) => {
-          console.error('Registration failed:', error);
+         error: (error) => {
+           alert(JSON.stringify({
+            title: 'Login Failed',
+            status: error.status,
+            text: error.error?.message || 'An error occurred during login. Please try again.'
+           },null, 2));
+          console.error('Login failed:', error);
         }
       });
     }
+  }
+
+  resetForms(){
+    this.loginData = {
+      email: '',
+      password: ''
+    };
+
+    this.registerData = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      passwordConfirm: ''
+    };
+
+
   }
 }
