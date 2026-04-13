@@ -19,6 +19,11 @@ export const handle_error = (err, req, res, next) => {
             break;
     }
 
+    if(err.code === 11000){
+        statusCode = 400;
+        message = handle_validation_error(err);
+    }
+
     res.status(statusCode).json({
         status: 'error',
         message: message

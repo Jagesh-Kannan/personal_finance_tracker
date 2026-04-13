@@ -1,0 +1,402 @@
+<div class="login-page">
+  <!-- Theme Toggle -->
+  <!-- <div class="theme-switch" (click)="toggleTheme()">
+    <span>{{ isDarkMode ? '🌙 Dark Mode' : '☀️ Light Mode' }}</span>
+  </div> -->
+
+  <div class="flip-container" [class.flipped]="isFlipped()">
+    <div class="flip-wrapper">
+      <div class="flip-box front glass-container">
+        <div class="login-box">
+          <div class="logo-section">
+            <div class="icon-circle">💰</div>
+            <h1>Finance<span>Flow</span></h1>
+            <p>Your futuristic wealth tracker</p>
+          </div>
+
+          <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+            <div class="input-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+                email
+                [(ngModel)]="loginData.email"
+                #email="ngModel"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              />
+          
+              @if (email.invalid && email.touched) {
+                <div class="error-msg">
+                  @if (email.errors?.['required']) {
+                    <span>Email is required to access your funds.</span>
+                  }
+                  @if (email.errors?.['email'] || email.errors?.['pattern']) {
+                    <span>Please enter a valid email ID.</span>
+                  }
+                </div>
+              }
+            </div>
+
+
+
+            <div class="input-group">
+              <input
+                [type]=" this.showPassword() ? 'text' : 'password'"
+                name="password"
+                placeholder="Password"
+                required
+                minlength="6"
+                [(ngModel)]="loginData.password"
+                #password="ngModel"
+              />
+              <span class="icon-eye"> <svg [size]="18" [lucideIcon]="passwordEyeIcon()" (click)="showPassword.set(!this.showPassword())"> </svg> </span>
+              @if (password.invalid && password.touched) {
+                <div class="error-msg">
+                  @if (password.errors?.['required']) {
+                    <span>Security key is required.</span>
+                  }
+                  @if (password.errors?.['minlength']) {
+                    <span>Security key must be at least 8 characters.</span>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- The button class logic is handled via CSS :disabled selector -->
+            <button type="submit" class="login-btn" [disabled]="loginForm.invalid">
+              Get In
+            </button>
+          </form>
+
+          <div class="footer-links">
+            <label href="#">Forgot Password?</label>
+            <label (click)="isFlipped.set(true)">Create Account</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-box back glass-container">
+        <div class="register-box">
+          <div class="logo-section">
+            <div class="icon-circle">💰</div>
+            <h1>Finance<span>Flow</span></h1>
+            <p>Your futuristic wealth tracker</p>
+          </div>
+
+          @if (showEmailVerification()) {
+            
+          <div class="registration verify-email">
+              <h2>Account Created</h2>
+              <p>
+                A verification link has been sent to your email. Please check your inbox and click the link to verify your account.
+              </p>
+              <p> <span>If you verified your email, you can now</span> <span (click)="this.isFlipped.set(false)">Log In</span></p> 
+          </div>
+          }
+          @else{
+               <div class="registration form">
+            <form #registerForm="ngForm" (ngSubmit)="onRegistration(registerForm)">
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  required
+                  [(ngModel)]="registerData.firstName"
+                  #firstName="ngModel"
+                />
+                @if (firstName.invalid && firstName.touched) {
+                  <div class="error-msg">
+                    <span>First name is required.</span>
+                  </div>
+                }
+              </div>
+
+              <div class="input-group">
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  required
+                  [(ngModel)]="registerData.lastName"
+                  #lastName="ngModel"
+                />
+                @if (lastName.invalid && lastName.touched) {
+                  <div class="error-msg">
+                    <span>Last name is required.</span>
+                  </div>
+                }
+              </div>
+
+              <div class="input-group">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  required
+                  email
+                  [(ngModel)]="registerData.email"
+                  #regEmail="ngModel"
+                  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                />
+                @if (regEmail.invalid && regEmail.touched) {
+                  <div class="error-msg">
+                    @if (regEmail.errors?.['required']) {
+                      <span>Email is required.</span>
+                    }
+                    @if (regEmail.errors?.['email'] || regEmail.errors?.['pattern']) {
+                      <span>Please enter a valid email.</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="input-group">
+                <input
+                  [type]=" this.showPassword() ? 'text' : 'password'"
+                  name="password"
+                  placeholder="Password"
+                  required
+                  minlength="6"
+                  [(ngModel)]="registerData.password"
+                  #regPassword="ngModel"
+                />
+                <span class="icon-eye"> <svg [size]="18" [lucideIcon]="passwordEyeIcon()" (click)="showPassword.set(!this.showPassword())"> </svg> </span>
+  
+                @if (regPassword.invalid && regPassword.touched) {
+                  <div class="error-msg">
+                    @if (regPassword.errors?.['required']) {
+                      <span>Password is required.</span>
+                    }
+                    @if (regPassword.errors?.['minlength']) {
+                      <span>Password must be at least 8 characters.</span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="input-group">
+                <input
+                  [type]=" this.showConfirmPassword() ? 'text' : 'password'"
+                  name="passwordConfirm"
+                  placeholder="Confirm Password"
+                  required
+                  [(ngModel)]="registerData.passwordConfirm"
+                  #passwordConfirm="ngModel"
+                />
+                <span class="icon-eye"> <svg [size]="18" [lucideIcon]="passwordConfirmEyeIcon()" (click)="showConfirmPassword.set(!this.showConfirmPassword())"> </svg> </span>
+
+                @if (passwordConfirm.invalid && passwordConfirm.touched) {
+                  <div class="error-msg">
+                    <span>Confirm password is required.</span>
+                  </div>
+                }
+                @if (
+                  registerData.passwordConfirm !== registerData.password && passwordConfirm.touched
+                ) {
+                  <div class="error-msg">
+                    <span>Passwords do not match.</span>
+                  </div>
+                }
+              </div>
+
+              <button type="submit" class="login-btn" [disabled]="registerForm.invalid">
+                CREATE ACCOUNT
+              </button>
+            </form>
+
+            <div class="footer-links signin-link">
+              <label (click)="isFlipped.set(false)" class="">Already have an account? Sign In</label>
+            </div>
+          </div>
+          }
+  
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Decorations -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Flip Login / Signup</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        overflow: hidden;
+      }
+      .form-wrapper {
+        width: 500px;
+        height: 450px;
+        perspective: 1000px;
+      }
+      .form-box {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 1s ease;
+      }
+      .form-box.flipped {
+        transform: rotateY(180deg);
+      }
+      .form-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        padding: 40px 30px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        color: #fff;
+        backface-visibility: hidden;
+      }
+      .form-face h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+      .form-face input {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        transition: 0.3s ease;
+        border: 2px solid transparent;
+      }
+      .form-face input:hover {
+        border: 2px solid #edd9ff;
+      }
+      .form-face input:focus {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+      .form-face input::placeholder {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .form-face button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #6d5bba, #8d58bf, #de67a3);
+        background-size: 200% 200%;
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: 0.3s ease;
+      }
+      .form-face button:hover {
+        background-position: right center;
+        transform: scale(1.03);
+      }
+      .form-face button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 2px;
+        background: linear-gradient(90deg, #6d5bba, #8d58bf, #de67a3, #6d5bba);
+        background-size: 300% 300%;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        border-radius: inherit;
+        animation: none;
+      }
+      .form-face button:hover::before {
+        animation: borderMove 2s linear infinite;
+      }
+      @keyframes borderMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 300% 50%;
+        }
+      }
+      .form-face p {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .form-face p span {
+        color: #ff80bf;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .form-face p span:hover {
+        text-decoration: underline;
+      }
+      .back {
+        transform: rotateY(180deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-box" id="formBox">
+        <div class="form-face front">
+          <h2>Login</h2>
+          <input type="text" placeholder="Username or Email" />
+          <input type="password" placeholder="Password" />
+          <button>Login</button>
+          <p>Don’t have an account? <span id="showSignup">Sign Up</span></p>
+        </div>
+        <div class="form-face back">
+          <h2>Sign Up</h2>
+          <input type="text" placeholder="Full Name" />
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <button>Sign Up</button>
+          <p>Already have an account? <span id="showLogin">Login</span></p>
+        </div>
+      </div>
+    </div>
+    <script>
+      const formBox = document.getElementById("formBox");
+      const showSignup = document.getElementById("showSignup");
+      const showLogin = document.getElementById("showLogin");
+      showSignup.addEventListener("click", () => {
+        formBox.classList.add("flipped");
+      });
+      showLogin.addEventListener("click", () => {
+        formBox.classList.remove("flipped");
+      });
+    </script>
+  </body>
+</html> -->
