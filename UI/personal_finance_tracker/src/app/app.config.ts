@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { LucideFileText, provideLucideIcons } from '@lucide/angular';
 
 export const appConfig: ApplicationConfig = {
   
@@ -10,6 +11,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes), 
-    provideClientHydration(withEventReplay())
+    provideClientHydration(withEventReplay()),
+    provideLucideIcons(LucideFileText),
   ],
 };

@@ -3,14 +3,15 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
 import { UserService } from '../service/user.service';
 import { LucidIconModule } from '../components/lucidIcon/lucid-icon/lucid-icon-module';
-import { LucideEye, LucideEyeClosed } from '@lucide/angular';
-import { stat } from 'fs';
+import { LucideEye, LucideEyeClosed, } from '@lucide/angular';
+import { ButtonLoader } from '../components/loader/loader';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, LucidIconModule],
+  imports: [FormsModule, LucidIconModule, ButtonLoader],
   templateUrl: './login.html',
   styleUrl: './login.css',
+  standalone: true,
 })
 export class Login {
 
@@ -38,7 +39,17 @@ export class Login {
   protected readonly passwordConfirmEyeIcon = computed(() => this.showConfirmPassword() ? LucideEye : LucideEyeClosed);
 
 
-  constructor(private auth: AuthService, private userService: UserService) { }
+  // loader variables 
+  protected readonly loginLoader;
+  protected readonly registerLoader;
+  protected readonly forgotPasswordLoader;
+
+
+  constructor(private auth: AuthService, private userService: UserService) { 
+    this.loginLoader = computed(() => this.auth.loginLoader());
+    this.registerLoader = computed(() => this.userService.registerLoader());
+    this.forgotPasswordLoader = computed(() => this.userService.forgotPasswordLoader());
+  }
 
   onSubmit(form:NgForm) {
      

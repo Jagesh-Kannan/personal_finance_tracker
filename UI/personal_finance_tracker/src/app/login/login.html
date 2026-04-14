@@ -68,13 +68,14 @@
           }
             <!-- The button class logic is handled via CSS :disabled selector -->
              @if(forgotPassword()){
-                <button type="submit" class="login-btn" [disabled]="loginForm.invalid">
+                <button type="submit" class="login-btn" [disabled]="loginForm.invalid" [buttonLoader]="forgotPasswordLoader()">
                  Request Password Reset
                </button>
              }
-             @else{
-              <button type="submit" class="login-btn" [disabled]="loginForm.invalid">
-                Get In
+             @else{  
+              <button type="submit" class="login-btn" [disabled]="loginForm.invalid" [buttonLoader]="loginLoader()"> 
+                Get In 
+              
               </button>
              }
           </form>
@@ -216,7 +217,7 @@
                 }
               </div>
 
-              <button type="submit" class="login-btn" [disabled]="registerForm.invalid">
+              <button type="submit" class="login-btn" [disabled]="registerForm.invalid" [buttonLoader]="registerLoader()">
                 CREATE ACCOUNT
               </button>
             </form>
