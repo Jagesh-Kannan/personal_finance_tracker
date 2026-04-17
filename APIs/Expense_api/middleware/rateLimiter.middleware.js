@@ -12,7 +12,7 @@ export const generalLimiter = rateLimit({
 // Rate limiter for login endpoint (stricter)
 export const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // limit each IP to 5 failed login attempts per windowMs
+    max: 500, // limit each IP to 5 failed login attempts per windowMs
     message: 'Too many login attempts, please try again after 15 minutes.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -39,7 +39,7 @@ export const registrationLimiter = rateLimit({
 // Rate limiter for password reset endpoint
 export const passwordResetLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 3, // limit each IP to 3 password reset requests per hour
+    max: 300, // limit each IP to 3 password reset requests per hour
     message: 'Too many password reset requests, please try again after an hour.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -52,7 +52,7 @@ export const passwordResetLimiter = rateLimit({
 // Rate limiter for email verification resend
 export const verificationEmailLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 3, // limit each IP to 3 verification email requests per hour
+    max: 300, // limit each IP to 3 verification email requests per hour
     message: 'Too many verification email requests, please try again after an hour.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -65,7 +65,7 @@ export const verificationEmailLimiter = rateLimit({
 // Rate limiter for refresh token endpoint
 export const refreshTokenLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
-    max: 10, // limit each IP to 10 refresh attempts per minute
+    max: 1000, // limit each IP to 10 refresh attempts per minute
     message: 'Too many token refresh attempts, please try again after a minute.',
     standardHeaders: true,
     legacyHeaders: false,

@@ -56,13 +56,7 @@ export class PasswordReset implements OnInit {
 
       this.userService.resetPassword(this.resetToken!, this.resetPasswordData).subscribe(
         response => {
-          console.log('Password reset successful:', response);
-          alert('Your password has been reset successfully. You can now log in with your new password.');
           this.showPasswordResetSuccess.set(true);
-        },
-        error => {
-          console.error('Password reset failed:', error);
-          alert(JSON.stringify(error.error?.message || 'An error occurred while resetting your password. Please try again.'));
         }
       )
 

@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: "login",
-        loadComponent: () => import('./login/login').then(m => m.Login),
+        loadComponent: () => import('./pages/login/login').then(m => m.Login),
     },
     {
         path: "reset-password/:resetToken",
@@ -11,6 +11,6 @@ export const routes: Routes = [
     },
     {
         path: "landing",
-        loadComponent: () => import('./components/landing/landing').then(m => m.Landing),
+        loadComponent: () => import('./pages/landing/landing').then(m => m.Landing),
     }
 ];

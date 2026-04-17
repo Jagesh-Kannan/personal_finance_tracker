@@ -1,14 +1,16 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { AuthService } from '../service/auth.service';
-import { UserService } from '../service/user.service';
-import { LucidIconModule } from '../components/lucidIcon/lucid-icon/lucid-icon-module';
+import { AuthService } from '../../service/auth.service';
+import { UserService } from '../../service/user.service';
+import { AuthErrorBannerService } from '../../service/auth-error-banner.service';
+import { LucidIconModule } from '../../components/lucidIcon/lucid-icon/lucid-icon-module';
+import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
 import { LucideEye, LucideEyeClosed, } from '@lucide/angular';
-import { ButtonLoader } from '../components/loader/loader';
+import { ButtonLoader } from '../../components/loader/loader';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, LucidIconModule, ButtonLoader],
+  imports: [FormsModule, LucidIconModule, ButtonLoader, AuthErrorBannerComponent],
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
@@ -45,6 +47,8 @@ export class Login {
   protected readonly forgotPasswordLoader;
 
 
+  private errorBannerService = inject(AuthErrorBannerService);
+
   constructor(private auth: AuthService, private userService: UserService) { 
     this.loginLoader = computed(() => this.auth.loginLoader());
     this.registerLoader = computed(() => this.userService.registerLoader());
@@ -76,17 +80,7 @@ export class Login {
   login(data: LoginDetails){
       this.auth.login(data).subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
-          alert('Login successful!');
           this.resetForms();
-        },
-        error: (error) => {
-           alert(JSON.stringify({
-            title: 'Login Failed',
-            status: error.status,
-            text: error.error?.message || 'An error occurred during login. Please try again.'
-           },null, 2));
-          console.error('Login failed:', error);
         }
       });
   }
@@ -94,17 +88,7 @@ export class Login {
   onForgotPassword(data: {email:string}){
     this.userService.forgotPassword(data).subscribe({
       next: (response) => {
-        console.log('Password reset requested:', response);
-        alert('Password reset link sent to your email.');
-        this.resetForms();
-      },
-      error: (error) => {
-        alert(JSON.stringify({
-          title: 'Password Reset Failed',
-          status: error.status,
-          text: error.error?.message || 'An error occurred while requesting password reset. Please try again.'
-        }, null, 2));
-        console.error('Password reset failed:', error);
+        // this.resetForms();
       }
     });
   }
@@ -130,14 +114,6 @@ export class Login {
         next: (response) => {
           this.resetForms();
           this.showEmailVerification.set(true);
-        },
-         error: (error) => {
-           alert(JSON.stringify({
-            title: 'Login Failed',
-            status: error.status,
-            text: error.error?.message || 'An error occurred during login. Please try again.'
-           },null, 2));
-          console.error('Login failed:', error);
         }
       });
     }
@@ -157,6 +133,8 @@ export class Login {
       passwordConfirm: ''
     };
 
+    this.errorBannerService.hideError();
+    this.showEmailVerification.set(false);
 
   }
 }

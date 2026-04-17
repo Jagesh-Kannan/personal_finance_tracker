@@ -1,7 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../environment';
 import { HttpClient } from '@angular/common/http';
-import { finalize } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs';
+import { AuthErrorBannerService } from './auth-error-banner.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +18,16 @@ export class UserService {
   public forgotPasswordLoader = signal<boolean>(false)
   public resetPasswordLoader = signal<boolean>(false)
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient, private authErrorBanner: AuthErrorBannerService) { }
 
   public register(data: RegisterDetails) {
     this.registerLoader.set(true)
     return this._http.post(`${this.baseApiUrl}${this.signupEndpoint}`, data).pipe(
+        catchError((error) => {
+                const errorMessage = error.error?.message || 'An error occurred during registration. Please try again.';
+                this.authErrorBanner.showError(errorMessage);
+                throw error;
+              }),
             finalize(() => {
               this.registerLoader.set(false);
             })
@@ -31,6 +37,16 @@ export class UserService {
   public forgotPassword(data: { email: string }) {
     this.forgotPasswordLoader.set(true)
     return this._http.post(`${this.baseApiUrl}${this.forgotPasswordEndpoint}`, data).pipe(
+      tap((response: any) => {
+        if (response && response.status === 'success') {
+          this.authErrorBanner.showSuccess(response.message);
+        }
+      }),
+        catchError((error) => {
+                const errorMessage = error.error?.message || 'An error occurred during forgot password request. Please try again.';
+                this.authErrorBanner.showError(errorMessage);
+                throw error;
+              }),
             finalize(() => {
               this.forgotPasswordLoader.set(false);
             })
@@ -40,6 +56,11 @@ export class UserService {
   public resetPassword(token: string, data: ResetPasswordDetails) {
     this.resetPasswordLoader.set(true);
     return this._http.post(`${this.baseApiUrl}${this.resetPasswordEndpoint}${token}`, data).pipe(
+        catchError((error) => {
+                const errorMessage = error.error?.message || 'An error occurred during password reset. Please try again.';
+                this.authErrorBanner.showError(errorMessage);
+                throw error;
+              }),
             finalize(() => {
               this.resetPasswordLoader.set(false);
             })
