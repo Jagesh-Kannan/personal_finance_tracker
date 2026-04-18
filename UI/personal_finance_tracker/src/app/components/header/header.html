@@ -1,0 +1,111 @@
+<header class="main-header">
+  <div class="header-left">
+    <!-- Mobile Hamburger (Visible < 754px) -->
+    <button class="menu-toggle" (click)="isMenuOpen.set(!isMenuOpen())" aria-label="Toggle Menu">
+      ☰
+    </button>
+    
+    <div class="logo-box">
+      <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+        <path d="M10 8V30H32" stroke="#ff6a00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 24L18 16L24 20L34 8" stroke="#ff6a00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="34" cy="8" r="3" fill="#ff6a00" />
+      </svg>
+    </div>
+    <span class="app-name">Fumos</span>
+  </div>
+
+
+   <!-- Sliding Sidenav -->
+  <nav class="header-center" [class.mobile-open]="isMenuOpen()">
+    <div class="mobile-header">
+
+        <div class="overlay-header">
+        <div class="logo-box">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+            <path d="M10 8V30H32" stroke="#ff6a00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 24L18 16L24 20L34 8" stroke="#ff6a00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="34" cy="8" r="3" fill="#ff6a00" />
+        </svg>
+        </div>
+       <span class="app-name">Fumos</span>
+        </div>
+  
+       <button class="close-btn" (click)="isMenuOpen.set(false)">×</button>
+    </div>
+
+    <!-- <div class="user">
+        <button class="nav-btn">
+            <div class="btn-content">
+
+            </div>
+        </button>
+    </div>
+    <div class="features"> -->
+    <button class="nav-btn">Analysis</button>
+    <button class="nav-btn active">Overview</button>
+    <button class="nav-btn">Energy</button>
+    <button class="nav-btn">Reports</button>
+   <!-- </div> -->
+  </nav>
+
+
+  <div class="header-right">
+
+    <button class="icon-btn notification">
+      <span class="badge"></span>🔔
+    </button>
+
+    <div class="user-profile"  (click)="isProfileOpen.set(!isProfileOpen())">
+       <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="4" stroke="#ff6a00" stroke-width="2"/>
+          <path d="M20 21C20 18.2386 16.4183 16 12 16C7.58172 16 4 18.2386 4 21" stroke="#ff6a00" stroke-width="2"/>
+       </svg>
+    </div>
+    <!-- User Popover -->
+    @if (isProfileOpen()) {
+          <div class="popover-pointer"></div>
+      <div class="profile-popover">
+
+      
+        <div class="popover-item-wrapper">
+        <div class="popover-item">
+          <svg class="popover-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Me</span>
+        </div>
+        
+        <div class="popover-item" (click)="commonService.toggleTheme(commonService.currentTheme() === 'dark' ? 'light' : 'dark')">
+          @if(commonService.currentTheme() === 'dark') {
+            <svg class="popover-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            <span>Light Mode</span>
+          } @else {
+            <svg class="popover-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m12.72-12.72l-1.41 1.41"/></svg>
+            <span>Dark Mode</span>
+          }
+        </div>
+
+        <div class="popover-item">
+          <svg class="popover-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Password</span>
+        </div>
+
+        <div class="popover-divider"></div>
+
+        <div class="popover-item logout" [routerLink]="'/login'">
+          <svg class="popover-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>Logout</span>
+        </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</header>
+
+
+<!-- Overlay for mobile clicks -->
+@if (isMenuOpen()) {
+  <div class="menu-overlay" (click)="isMenuOpen.set(false)"></div>
+}
+
+

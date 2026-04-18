@@ -1,18 +1,3 @@
-:host {
-  --primary-orange: #ff9a44;
-  --secondary-orange: #ff6a00;
-  --bg-gradient: linear-gradient(135deg, #fff5e6 0%, #ffdfba 100%);
-  --glass-bg: rgba(255, 255, 255, 0.4);
-  --text-color: #4a4a4a;
-  --input-bg: rgba(255, 255, 255, 0.6);
-}
-
-.dark-mode {
-  --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d1b0a 100%);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --text-color: #ffffff;
-  --input-bg: rgba(255, 255, 255, 0.1);
-}
 
 .login-page {
   height: 100vh;

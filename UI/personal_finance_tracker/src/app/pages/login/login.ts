@@ -7,6 +7,7 @@ import { LucidIconModule } from '../../components/lucidIcon/lucid-icon/lucid-ico
 import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
 import { LucideEye, LucideEyeClosed, } from '@lucide/angular';
 import { ButtonLoader } from '../../components/loader/loader';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -49,7 +50,7 @@ export class Login {
 
   private errorBannerService = inject(AuthErrorBannerService);
 
-  constructor(private auth: AuthService, private userService: UserService) { 
+  constructor(private auth: AuthService, private userService: UserService, private router: Router) { 
     this.loginLoader = computed(() => this.auth.loginLoader());
     this.registerLoader = computed(() => this.userService.registerLoader());
     this.forgotPasswordLoader = computed(() => this.userService.forgotPasswordLoader());
@@ -81,6 +82,9 @@ export class Login {
       this.auth.login(data).subscribe({
         next: (response) => {
           this.resetForms();
+          if(response && response.message === "Login successful"){
+             this.router.navigate(['/landing']);
+          }
         }
       });
   }
@@ -88,7 +92,6 @@ export class Login {
   onForgotPassword(data: {email:string}){
     this.userService.forgotPassword(data).subscribe({
       next: (response) => {
-        // this.resetForms();
       }
     });
   }
