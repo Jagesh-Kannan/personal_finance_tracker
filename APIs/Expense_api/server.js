@@ -17,14 +17,30 @@ const app = express();
 const port = process.env.PORT;
 const db_url = process.env.DB_URL;
 const db_name = process.env.DB_NAME;
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim()) 
+  : [];
 
 app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: allowedOrigins.length > 0 ? allowedOrigins : '*', // Allow all origins if ALLOWED_ORIGINS is not set
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP verbs
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.length > 0) {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    } else {
+      // If no origins specified, allow all
+      callback(null, true);
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP verbs
   allowedHeaders: ['Content-Type', 'Authorization'], // Essential for JWT/Auth
   credentials: true, // Required if sending cookies or Auth headers
 };
