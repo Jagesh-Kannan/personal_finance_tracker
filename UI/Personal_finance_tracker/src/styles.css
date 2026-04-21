@@ -1,0 +1,120 @@
+/* ============================================
+   GLOBAL DARK THEME COLOR VARIABLES
+   ============================================ */
+
+/* Light Theme (Default) */
+:root {
+  /* Primary Colors */
+  --bg-color: #fffaf3;
+  --text-color: #4a4a4a;
+  --accent-color: #ff914d;
+
+  /* Orange Theme */
+  --primary-orange: #ff9a44;
+  --secondary-orange: #ff6a00;
+
+  /* Gradients & Transparency */
+  --bg-gradient: linear-gradient(135deg, #fff5e6 0%, #ffdfba 100%);
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --input-bg: rgba(255, 255, 255, 0.6);
+
+  /* Additional Utility Colors */
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --error-color: #ff6b6b;
+  --success-color: #51cf66;
+  --warning-color: #ffd43b;
+
+  --skeleton-bg: #e2e2e2;
+  --skeleton-shimmer: rgba(255, 255, 255, 0.6); /* Bright flash for light mode */
+}
+
+/* Dark Theme */
+:root.dark-theme {
+  /* Primary Colors */
+  --bg-color: #1f1f1f;
+  --text-color: #ffffff;
+  --accent-color: #ff914d;
+
+  /* Orange Theme */
+  --primary-orange: #ff9a44;
+  --secondary-orange: #ff6a00;
+
+  /* Gradients & Transparency */
+  --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d1b0a 100%);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --input-bg: rgba(255, 255, 255, 0.1);
+
+  /* Additional Utility Colors */
+  --border-color: #3a3a3a;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --error-color: #ff8787;
+  --success-color: #69db7c;
+  --warning-color: #ffe066;
+
+  --skeleton-bg: rgba(255, 255, 255, 0.1);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.05); /* Subtle flash for dark mode */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.loader-spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+
+/* //============================================= 
+        Skeleton Loader Styles
+   ============================================= */
+   /* The Shimmer Effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.is-loading .skeleton-loader {
+  position: relative;
+  overflow: hidden;
+  color: transparent !important;
+  background: var(--skeleton-bg) !important;
+  border-color: var(--skeleton-bg) !important;
+  border-radius: 4px;
+  pointer-events: none;
+  user-select: none;
+  min-height: 1em;
+}
+
+/* The Animated Shimmer Overlay */
+.is-loading .skeleton-loader::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(90deg, 
+    transparent 25%, 
+    var(--skeleton-shimmer) 50%, 
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Handle specific shapes */
+.is-loading .avatar-large.skeleton-loader {
+  border-radius: 50%;
+}
