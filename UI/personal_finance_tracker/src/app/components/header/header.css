@@ -309,6 +309,8 @@
   z-index: 1050;
   background: transparent;
   pointer-events: auto;
+  backdrop-filter: blur(2px);
+
 }
 
 @keyframes popIn {

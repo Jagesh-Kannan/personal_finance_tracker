@@ -37,7 +37,7 @@ app.listen(port, () => {
 
 app.use('/api/v1/expense', authenticate, expense_route);
 app.use("/api/v1/users", users_router);
-app.use("/api/v1/verify-email", verifyEmail_router);
+app.use("/verify-email", verifyEmail_router);
 
 // Error handling middleware (must be last)
 app.use(handle_error);

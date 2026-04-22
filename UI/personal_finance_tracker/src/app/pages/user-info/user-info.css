@@ -86,7 +86,7 @@
   margin-bottom: 0.5rem;
 }
 
-.info-item span {
+.info-item span:not(.email) {
   font-weight: 500;
   font-size: 1rem;
   text-transform: capitalize;
