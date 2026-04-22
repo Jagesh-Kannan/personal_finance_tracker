@@ -19,24 +19,17 @@ const db_url = process.env.DB_URL;
 const db_name = process.env.DB_NAME;
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-
+app.use(express.json());
+app.use(cookieParser());
 
 const corsOptions = {
-  origin: 'https://personal-finance-tracker-b9lc.onrender.com', // Allow all origins if ALLOWED_ORIGINS is not set
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP verbs
+  origin: allowedOrigins.length > 0 ? allowedOrigins : '*', // Allow all origins if ALLOWED_ORIGINS is not set
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP verbs
   allowedHeaders: ['Content-Type', 'Authorization'], // Essential for JWT/Auth
   credentials: true, // Required if sending cookies or Auth headers
 };
 
-console.log("allowed origins", allowedOrigins);
-
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
-
-app.use(express.json());
-app.use(cookieParser());
-
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}/`);
