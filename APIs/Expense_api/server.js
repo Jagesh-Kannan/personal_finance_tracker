@@ -28,6 +28,8 @@ const corsOptions = {
   credentials: true, // Required if sending cookies or Auth headers
 };
 
+console.log("allowed origins", allowedOrigins);
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
