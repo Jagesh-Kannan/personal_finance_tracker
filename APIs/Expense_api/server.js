@@ -22,15 +22,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS
 
 
 const corsOptions = {
-  origin: function (origin, callback) {
-  // allow requests with no origin (like mobile apps or curl requests)
-  if (!origin) return callback(null, true);
-  if (allowedOrigins.indexOf(origin) !== -1) {
-    callback(null, true);
-  } else {
-    callback(new Error('Not allowed by CORS'));
-  }
-}, // Allow all origins if ALLOWED_ORIGINS is not set
+  origin: 'https://personal-finance-tracker-b9lc.onrender.com', // Allow all origins if ALLOWED_ORIGINS is not set
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP verbs
   allowedHeaders: ['Content-Type', 'Authorization'], // Essential for JWT/Auth
   credentials: true, // Required if sending cookies or Auth headers
