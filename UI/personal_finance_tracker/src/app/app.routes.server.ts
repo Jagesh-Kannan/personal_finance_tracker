@@ -6,5 +6,9 @@ export const serverRoutes: ServerRoute[] = [
     path: '**',
     renderMode: RenderMode.Prerender
   },
+     {
+    path: 'reset-password/:resetToken',
+    renderMode: RenderMode.Client
 
+  },
 ];
