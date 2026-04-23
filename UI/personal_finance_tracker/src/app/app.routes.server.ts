@@ -3,19 +3,23 @@ import { authGuard } from './service/auth-gaurd-service';
 
 export const serverRoutes: ServerRoute[] = [
   {
+  path: 'reset-password/:resetToken',
+  renderMode: RenderMode.Client 
+},
+  {
     path: '**',
     renderMode: RenderMode.Prerender
   },
-     {
-    path: 'reset-password/:resetToken',
-    renderMode: RenderMode.Prerender,
-    getPrerenderParams: async () => {
-      // Typically you'd fetch IDs from an API here
-      // For a reset token, this is rarely practical
-      return [
-        { resetToken: 'example-token-1' },
-        { resetToken: 'example-token-2' }
-      ];
-    }
-  }
+  //    {
+  //   path: 'reset-password/:resetToken',
+  //   renderMode: RenderMode.Prerender,
+  //   getPrerenderParams: async () => {
+  //     // Typically you'd fetch IDs from an API here
+  //     // For a reset token, this is rarely practical
+  //     return [
+  //       { resetToken: 'example-token-1' },
+  //       { resetToken: 'example-token-2' }
+  //     ];
+  //   }
+  // }
 ];
