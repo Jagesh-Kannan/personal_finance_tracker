@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../environment';
 import { catchError, finalize, Observable } from 'rxjs';
 import { AuthErrorBannerService } from './auth-error-banner.service';
+import { Router } from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,13 @@ export class AuthService {
   private baseApiUrl = environment.expenseApiUrl;
   private loginEndpoint = environment.loginEndpoint;
   public loginLoader = signal<boolean>(false);
-  constructor(private http: HttpClient, private authErrorBanner: AuthErrorBannerService ) { }
+
+  private refreshTokenEndpoint = environment.refreshTokenEndpoint;
+
+
+
+
+  constructor(private http: HttpClient, private authErrorBanner: AuthErrorBannerService, private router:Router ) { }
 
 
   public login(data: LoginDetails):Observable<any> {
@@ -23,6 +31,23 @@ export class AuthService {
         catchError((error) => {
           const errorMessage = error.error?.message || 'An error occurred during login. Please try again.';
           this.authErrorBanner.showError(errorMessage);
+          throw error;
+        }),
+        finalize(() => {
+          this.loginLoader.set(false);
+        })
+      );
+  }
+
+  public getAccessTokenByRefreshToken():Observable<any>{
+    const refreshToken = localStorage.getItem('refresh_token');
+    return this.http.post(`${this.baseApiUrl}${this.refreshTokenEndpoint}`,{refreshToken}).pipe(
+        catchError((error) => {
+          const errorMessage = error.error?.message || 'An error occurred during login. Please try again.';
+          this.authErrorBanner.showError(errorMessage);
+          if(error.status === 401){
+            this.router.navigate(['/login']);
+          }
           throw error;
         }),
         finalize(() => {

@@ -34,16 +34,25 @@ export const login = catchAsync(async (req, res, next) => {
     // Success response - tokens are in cookies, not in body
     res.status(200).json({
         status: 'success',
-        message: 'Login successful'
+        message: 'Login successful',
+        data: {
+            user: {
+                id: user._id,
+                email: user.email
+            },
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        }
     });
 });
 
 export const refreshTokenHandler = catchAsync(async (req, res, next) => {
     // Get refresh token from cookies
-    const refreshToken = getCookie(req, 'refreshToken');
+
+    const refresh_token = getCookie(req, 'refreshToken') || req.body.refreshToken;
 
     // Check if refresh token exists
-    if (!refreshToken) {
+    if (!refresh_token) {
         throw auth_error({
             statusCode: 401,
             message: 'Refresh token not found. Please login again'
@@ -51,24 +60,32 @@ export const refreshTokenHandler = catchAsync(async (req, res, next) => {
     }
 
     try {
-        // Verify refresh token
-        const decoded =  verify_getTokenPayload(refreshToken);
+        // Verify refresh token 
+        const decoded =  verify_getTokenPayload(refresh_token);
 
         // Find user by ID to ensure user still exists
         const user = await get_user({ id: decoded.id });
 
         // Generate new access token
         // Set new tokens in cookies
-        set_token_cookie(res, user, undefined, undefined);
+        const{accessToken, refreshToken} = set_token_cookie(res, user, undefined, undefined);
 
         // Return success response
         res.status(200).json({
             status: 'success',
-            message: 'Token generated successfully'
+            message: 'Token generated successfully',
+            data: {
+            user: {
+                id: user._id,
+                email: user.email
+            },
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        }
         });
 
     } catch (err) {
-        // If refresh token is invalid or expired
+        // If refresh token is invalid or expired  
         throw auth_error({
             statusCode: 401,
             message: 'Invalid or expired refresh token. Please login again'

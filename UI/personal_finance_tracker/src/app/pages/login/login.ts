@@ -8,6 +8,7 @@ import { AuthErrorBannerComponent } from '../../components/error-banner/auth-err
 import { LucideEye, LucideEyeClosed, } from '@lucide/angular';
 import { ButtonLoader } from '../../components/loader/loader';
 import { Router } from '@angular/router';
+import { CommonService } from '../../service/common-service';
 
 @Component({
   selector: 'app-login',
@@ -50,12 +51,15 @@ export class Login {
 
   private errorBannerService = inject(AuthErrorBannerService);
 
-  constructor(private auth: AuthService, private userService: UserService, private router: Router) { 
+  constructor(private auth: AuthService, private userService: UserService, private router: Router, private commonService: CommonService) { 
     this.loginLoader = computed(() => this.auth.loginLoader());
     this.registerLoader = computed(() => this.userService.registerLoader());
     this.forgotPasswordLoader = computed(() => this.userService.forgotPasswordLoader());
   }
 
+  ngOnInit(){
+    this.commonService.clearSessionData();
+  }
   onSubmit(form:NgForm) {
      
     if(form.valid){
@@ -82,7 +86,10 @@ export class Login {
       this.auth.login(data).subscribe({
         next: (response) => {
           if(response && response.message === "Login successful"){
+
              localStorage.setItem('email', data.email);
+             localStorage.setItem('access_token', response.data.accessToken);
+             localStorage.setItem('refresh_token', response.data.refreshToken);
              this.router.navigate(['/landing']);
           }
         }

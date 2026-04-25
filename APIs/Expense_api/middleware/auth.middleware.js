@@ -5,7 +5,7 @@ import { verify_getTokenPayload } from '../helper/token.handler.js';
 
 export const authenticate = catchAsync(async (req, res, next) => {
     // Get token from cookies
-    const token = getCookie(req, 'accessToken');
+    const token = getCookie(req, 'accessToken') || req.headers.authorization?.split(' ')[1]; // Support Bearer token in Authorization header as fallback
     // Check if token exists
     if (!token) {
         throw auth_error({
