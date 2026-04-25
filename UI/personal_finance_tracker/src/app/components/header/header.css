@@ -123,7 +123,7 @@
   .header-center {
     position: fixed;
     top: 0;
-    left: 0;
+    left: -20px;
     width: 126px; /* Fixed width for the menu */
     height: 100vh;
     flex-direction: column;
@@ -147,7 +147,7 @@
 
   /* Slide In State */
   .header-center.mobile-open {
-    transform: translateX(0); /* Move exactly to the edge */
+    transform: translateX(20px); /* Move exactly to the edge */
     box-shadow: 15px 0 30px rgba(0,0,0,0.2);
   }
 

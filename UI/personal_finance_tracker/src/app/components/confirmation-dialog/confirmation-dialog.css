@@ -14,7 +14,7 @@
   width: 100%;
   max-width: 480px;
   /* Matching Login Page Glass */
-  background: var(--glass-bg);
+  background: var(--dialog-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   
