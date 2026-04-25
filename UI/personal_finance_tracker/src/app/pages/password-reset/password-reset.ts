@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LucideEye, LucideEyeClosed } from '@lucide/angular';
 import { LucidIconModule} from '../../components/lucidIcon/lucid-icon/lucid-icon-module';
 import { UserService } from '../../service/user.service';
+import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
 
 
 @Component({
   selector: 'app-password-reset',
-  imports: [FormsModule, LucidIconModule, RouterLink],
+  imports: [FormsModule, LucidIconModule, RouterLink, AuthErrorBannerComponent],
   templateUrl: './password-reset.html',
   styleUrl: './password-reset.css',
 })

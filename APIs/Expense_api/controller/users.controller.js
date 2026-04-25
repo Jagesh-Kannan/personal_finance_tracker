@@ -141,6 +141,10 @@ export const resetPasssword = catchAsync(async (req, res, next) => {
         passwordResetTokenExpires: { $gt: Date.now() }
     });
 
+    console.log("token received", token);
+    console.log("user detail", user);
+    
+    
     if (!user) {
         throw auth_error({
             statusCode: 400,
