@@ -1,0 +1,104 @@
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--dialog-overlay-bg);
+  backdrop-filter: blur(3px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.dialog-box {
+  width: 100%;
+  max-width: 480px;
+  /* Matching Login Page Glass */
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  
+  /* Signature Login Page Border & Radius */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+   transform: translateY(-30%); 
+  animation: popIn 0.4s ease forwards;
+}
+
+/* Header with subtle separation */
+.dialog-header {
+  padding: 1rem 2rem 1rem;
+  text-align: center; /* Matching login's centered style */
+  background: var(--dialog-header-bg);
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600; /* Light weight like your logo section */
+  letter-spacing: 1px;
+  color: var(--dialog-title-color);
+}
+
+/* Body with padding */
+.dialog-body {
+  padding: 1rem 2rem 2rem;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.8; /* Subtle text like your sub-header p tag */
+}
+
+/* Footer mimicking the button/link layout */
+.dialog-footer {
+  padding: 0 2rem 2rem;
+  display: flex;
+  flex-direction: row; /* Buttons stack nicely on mobile, row on desktop */
+  gap: 12px;
+  justify-content: space-between;
+}
+
+/* Action Buttons styled like Login Buttons */
+.action-btn-primary {
+  /* width: 100%; */
+  padding: 10px 19px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+   background: var(--btn-primary-bg);
+  box-shadow: 0 4px 15px var(--btn-primary-shadow);
+}
+
+.action-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 106, 0, 0.4);
+}
+
+.action-btn-secondary {
+  padding: 10px 19px;;
+  background: transparent;
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border: 1px solid var(--secondary-orange);
+  border-radius: 12px;
+
+}
+
+.action-btn-secondary:hover {
+  opacity: 1;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(0%) scale(0.95); }
+  to { opacity: 1; transform: translateY(-30%) scale(1); }
+}

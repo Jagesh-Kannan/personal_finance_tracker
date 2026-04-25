@@ -27,6 +27,13 @@
 
   --skeleton-bg: #e2e2e2;
   --skeleton-shimmer: rgba(255, 255, 255, 0.6); /* Bright flash for light mode */
+
+    /* Dialog Specifics */
+  --dialog-header-bg: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+  --dialog-title-color: var(--text-color);
+  --btn-primary-bg: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+  --btn-primary-shadow: rgba(255, 106, 0, 0.4);
+  --dialog-overlay-bg: rgb(226 226 226 / 30%);
 }
 
 /* Dark Theme */
@@ -54,6 +61,13 @@
 
   --skeleton-bg: rgba(255, 255, 255, 0.1);
   --skeleton-shimmer: rgba(255, 255, 255, 0.05); /* Subtle flash for dark mode */
+
+   /* Dialog Specifics (Adjusted for Dark Mode) */
+  --dialog-header-bg: rgba(255, 154, 68, 0.15); /* Subtle glass tint */
+  --dialog-title-color: var(--primary-orange);   /* Themed text color */
+  --btn-primary-bg: linear-gradient(90deg, #e67e22, #d35400); /* Deeper orange */
+  --btn-primary-shadow: rgba(211, 84, 0, 0.4);
+  --dialog-overlay-bg: rgba(0, 0, 0, 0.6);      /* Darker backdrop */
 }
 
 body {

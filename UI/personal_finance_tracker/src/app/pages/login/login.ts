@@ -81,8 +81,8 @@ export class Login {
   login(data: LoginDetails){
       this.auth.login(data).subscribe({
         next: (response) => {
-          this.resetForms();
           if(response && response.message === "Login successful"){
+             localStorage.setItem('email', data.email);
              this.router.navigate(['/landing']);
           }
         }

@@ -1,0 +1,38 @@
+
+<div class="dialog-overlay" (click)="close()">
+  <div class="dialog-box" (click)="$event.stopPropagation()">
+    
+    @if (config().title) {
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ config().title }}</h2>
+      </div>
+    }
+
+    <div class="dialog-body">
+      @if (config().message) {
+        <p>{{ config().message }}</p>
+      }
+      @if (config().template) {
+        <ng-container *ngTemplateOutlet="config().template"></ng-container>
+      }
+    </div>
+
+    @if (config().actions?.length) {
+      <div class="dialog-footer">
+        <!-- Main Actions (Right actions become primary buttons) -->
+        @for (action of rightActions(); track action.label) {
+          <button class="action-btn-secondary" (click)="handleAction(action)">
+            {{ action.label }}
+          </button>
+        }
+        
+        <!-- Cancel/Secondary Actions (Left actions become footer links) -->
+        @for (action of leftActions(); track action.label) {
+          <button class="action-btn-primary" (click)="handleAction(action)">
+            {{ action.label }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>
