@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../service/auth.service';
+import { environment } from '../environment';
 
 export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
@@ -13,7 +14,7 @@ export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
   const accessToken = localStorage.getItem('access_token');
 
   // Attach token if it exists and we aren't on auth routes
-  if (accessToken && !req.url.includes('/login') && !req.url.includes('/refresh-token')) {
+  if (accessToken && !req.url.includes(environment.login_path) && !req.url.includes('/refresh-token')) {
     authReq = authReq.clone({
       setHeaders: { Authorization: `Bearer ${accessToken}` }
     });
@@ -22,7 +23,7 @@ export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       // 2. Check for 401 and ensure we aren't already trying to refresh
-      if (error.status === 401 && !req.url.includes('/refresh-token')) {
+      if (error.status === 401 && !req.url.includes('/refresh-token') && !req.url.includes(environment.login_path)) {
         
         return authService.getAccessTokenByRefreshToken().pipe(
           switchMap((response: any) => {
@@ -43,7 +44,7 @@ export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
           catchError((refreshError) => {
             // 5. Refresh failed (Refresh Token expired) -> Logout user
             // authService.logout(); // Clear local storage/cookies
-            router.navigate(['/login']);
+            router.navigate([environment.login_path]);
             return throwError(() => refreshError);
           })
         );

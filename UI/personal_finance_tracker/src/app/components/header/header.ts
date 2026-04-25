@@ -1,12 +1,15 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonService } from '../../service/common-service';
 import { Router, RouterLink } from "@angular/router";
 import { DialogService } from '../../service/confirmation-dialog.service';
 import { UserService } from '../../service/user.service';
+import { environment } from '../../environment';
+import { AuthService } from '../../service/auth.service';
+import { ButtonLoader } from '../loader/loader';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, ButtonLoader],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -14,8 +17,15 @@ export class Header {
 
   isMenuOpen = signal<boolean>(false);
   isProfileOpen = signal<boolean>(false);
+  loginRoute = environment.login_path;
 
-  constructor(public commonService: CommonService, private dialogService: DialogService, private router: Router, private userService: UserService) { }
+  protected readonly logoutLoader;
+
+  constructor(public commonService: CommonService, private dialogService: DialogService, private router: Router, private userService: UserService,
+    private authService:AuthService
+  ) {
+    this.logoutLoader = computed(() => this.authService.logoutLoader());
+   }
 
   showConfirmation(){
     this.dialogService.open({
@@ -47,8 +57,22 @@ export class Header {
         
       }
     });
-    this.router.navigate(['/login']);
+    this.router.navigate([environment.login_path]);
   }
 
+  getLogoutConfirmation(){
+     this.dialogService.open({
+      title: 'Logout',
+      message: 'Are you sure ?  Do you want to logout ?',
+      actions: [
+        { label: 'No', position: 'left', callback: () => null },
+        { label: 'Yes', position: 'right', callback: () => this.logout() }
+      ]
+    });
+  }
+
+  logout(){
+     this.authService.logout().subscribe();
+  }
 
 }

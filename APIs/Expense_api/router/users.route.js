@@ -26,7 +26,7 @@ users_router.post('/forgot-password', passwordResetLimiter, forgotPassword);
 users_router.post('/reset-password/:token', passwordResetLimiter, resetPasssword);
 
 // POST: Logout
-users_router.get('/logout', logout);
+users_router.get('/logout',authenticate, logout);
 
 
 export default users_router;
