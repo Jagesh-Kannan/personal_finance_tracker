@@ -5,11 +5,12 @@ import { LucideEye, LucideEyeClosed } from '@lucide/angular';
 import { LucidIconModule} from '../../components/lucidIcon/lucid-icon/lucid-icon-module';
 import { UserService } from '../../service/user.service';
 import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
+import { ButtonLoader } from "../../components/loader/loader";
 
 
 @Component({
   selector: 'app-password-reset',
-  imports: [FormsModule, LucidIconModule, RouterLink, AuthErrorBannerComponent],
+  imports: [FormsModule, LucidIconModule, RouterLink, AuthErrorBannerComponent, ButtonLoader],
   templateUrl: './password-reset.html',
   styleUrl: './password-reset.css',
 })
@@ -30,8 +31,11 @@ export class PasswordReset implements OnInit {
   protected showConfirmPassword = signal<boolean>(false);
   protected readonly passwordConfirmEyeIcon = computed(() => this.showConfirmPassword() ? LucideEye : LucideEyeClosed);
 
+  protected readonly resetPasswordLoader;
 
-  constructor(private actRoute: ActivatedRoute, private userService: UserService) { }
+  constructor(private actRoute: ActivatedRoute, private userService: UserService) {
+    this.resetPasswordLoader = computed(()=>this.userService.resetPasswordLoader());
+   }
 
   ngOnInit(): void {
     this.actRoute.paramMap.subscribe(params => {

@@ -21,9 +21,19 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/home/home').then(m => m.Home),
         children: [
             {
+                path:'',
+                redirectTo: 'overview',
+                pathMatch:'full'
+            },
+            {
                 path: "me",
                 canActivate: [authGuard],
                 loadComponent: () => import('./pages/user-info/user-info').then(m => m.UserInfo),
+            },
+            {
+                path: "overview",
+                canActivate: [authGuard],
+                loadComponent: () => import('./pages/overview/overview').then(m => m.Overview),
             },
         ]
     },

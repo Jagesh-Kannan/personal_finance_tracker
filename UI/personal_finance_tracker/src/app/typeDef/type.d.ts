@@ -50,3 +50,28 @@ type DialogConfig = {
   actions?: DialogAction[];
   onClose?: () => void;
 };
+
+type ExpenseSchema = {
+  _id: string;
+  expenseName: string;
+  expenseCategory: string; // or 'Food & Dining' | 'Rent' | etc.
+  amount: number;
+  userId: {
+    $oid: string;
+  };
+  paymentMode: 'CASH','CREDIT CARD','DEBIT CARD','UPI','WALLET','BANK_TRANSFER','CHEQUE'; 
+  mode: 'DEBITED' | 'CREDITED';
+  expenseDate: {
+    $date: string;
+  };
+  notes: string;
+  currency: string;
+  customGrouping: string;
+  __v: number;
+  createdAt: {
+    $date: string;
+  };
+  updatedAt: {
+    $date: string;
+  };
+};
