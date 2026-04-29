@@ -1,0 +1,68 @@
+
+
+
+.statistics-block-container {
+   position: relative; /*Essential for absolute togglers */
+}
+
+.statistic-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.statistics-block-wrapper {
+  display: flex;
+  gap: 20px;
+  padding: 20px 60px; /* Extra horizontal padding for arrow clearance */
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.statistics-block-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* The Toggler/Gradient Container */
+.statistic-content .toggler {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45px; /* Width of the gradient effect */
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Left side gradient: White to Transparent */
+.statistic-content .toggler.left {
+  left: 0;
+  background: linear-gradient(to right, #fffaf3 40%, rgba(255, 255, 255, 0));
+  justify-content: flex-start;
+  padding-left: 12px;
+}
+
+/* Right side gradient: Transparent to White */
+.statistic-content .toggler.right {
+  right: 0;
+ background: linear-gradient(to left, #fffaf3 40%, rgba(255, 255, 255, 0));
+  justify-content: flex-end;
+  padding-right: 12px;
+}
+
+/* Styling the arrow text/icon inside */
+.toggler {
+  font-size: 24px;
+  font-weight: bold;
+  color: #808080;
+  user-select: none;
+}
+
+.toggler:hover {
+  color: #000;
+  font-scale: 1.1;
+}

@@ -38,7 +38,9 @@ export const login = catchAsync(async (req, res, next) => {
         data: {
             user: {
                 id: user._id,
-                email: user.email
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName
             },
             accessToken: accessToken,
             refreshToken: refreshToken

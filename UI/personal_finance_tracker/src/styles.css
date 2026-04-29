@@ -28,13 +28,14 @@
   --skeleton-bg: #e2e2e2;
   --skeleton-shimmer: rgba(255, 255, 255, 0.6); /* Bright flash for light mode */
 
-    /* Dialog Specifics */
+  /* Dialog Specifics */
   --dialog-header-bg: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
   --dialog-title-color: var(--text-color);
   --btn-primary-bg: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
   --btn-primary-shadow: rgba(255, 106, 0, 0.4);
   --dialog-bg: #ffffff;
   --dialog-overlay-bg: #7b7b7b4d;
+   font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
 }
 
 /* Dark Theme */
@@ -63,13 +64,14 @@
   --skeleton-bg: rgba(255, 255, 255, 0.1);
   --skeleton-shimmer: rgba(255, 255, 255, 0.05); /* Subtle flash for dark mode */
 
-   /* Dialog Specifics (Adjusted for Dark Mode) */
+  /* Dialog Specifics (Adjusted for Dark Mode) */
   --dialog-header-bg: rgba(255, 154, 68, 0.15); /* Subtle glass tint */
-  --dialog-title-color: var(--primary-orange);   /* Themed text color */
+  --dialog-title-color: var(--primary-orange); /* Themed text color */
   --btn-primary-bg: linear-gradient(90deg, #e67e22, #d35400); /* Deeper orange */
   --btn-primary-shadow: rgba(211, 84, 0, 0.4);
   --dialog-bg: var(--glass-bg); /* Use glass effect for dialog background */
-  --dialog-overlay-bg: rgba(0, 0, 0, 0.6);      /* Darker backdrop */
+  --dialog-overlay-bg: rgba(0, 0, 0, 0.6); /* Darker backdrop */
+   font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
 }
 
 body {
@@ -77,8 +79,10 @@ body {
   padding: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: 'Segoe UI', Roboto, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .loader-spin {
@@ -89,19 +93,25 @@ body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
-
-
 
 /* //============================================= 
         Skeleton Loader Styles
    ============================================= */
-   /* The Shimmer Effect */
+/* The Shimmer Effect */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .is-loading .skeleton-loader {
@@ -118,14 +128,13 @@ body {
 
 /* The Animated Shimmer Overlay */
 .is-loading .skeleton-loader::after {
-  content: "";
+  content: '';
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  background: linear-gradient(90deg, 
-    transparent 25%, 
-    var(--skeleton-shimmer) 50%, 
-    transparent 75%
-  );
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(90deg, transparent 25%, var(--skeleton-shimmer) 50%, transparent 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -133,4 +142,55 @@ body {
 /* Handle specific shapes */
 .is-loading .avatar-large.skeleton-loader {
   border-radius: 50%;
+}
+
+/* responsive styles  */
+
+/* Mobile only */
+@media (max-width: 767px) {
+  .welcome-title {
+    font-size: 30px;
+    font-weight: 300;
+  }
+
+  .welcome-title .welcome-word{
+        font-size: 43px;
+    letter-spacing: -0.8px;
+  }
+  .overview-wrapper .title-wrapper{
+    margin-left: 15px;
+  }
+}
+
+/* Tablet only */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .welcome-title {
+    font-size: 48px;
+    font-weight: 300;
+  }
+
+    .welcome-title .welcome-name{
+        font-size: 38px;
+    letter-spacing: -0.8px;
+  }
+
+  .overview-wrapper .title-wrapper{
+    margin-left: 30px;
+  }
+}
+
+/* Laptop and up */
+@media (min-width: 1024px) {
+  .welcome-title {
+    font-size: 60px;
+    font-weight: 300;
+  }
+
+    .welcome-title .welcome-name{
+        font-size: 38px;
+  }
+
+  .overview-wrapper .title-wrapper{
+    margin-left: 50px;
+  }
 }

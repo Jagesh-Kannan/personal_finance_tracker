@@ -1,0 +1,44 @@
+<article class="statistic-card-container">
+    <div class="statistic-card-wrapper">
+       <section class="card-header section">
+         <div class="head wrapper">
+            <div class="card-title">
+                <h3>{{this.statisticData().title}}</h3>
+            </div>
+            <div class="card-note">
+                @for(note of this.statisticData().note; track $index){
+                    <div class="note-content">
+                        <label for="card-note" class="note-value" 
+                        [ngClass]="note.direction === 'increase' ? 'positive' : 'negative'">
+                        {{note.direction === 'increase' ? '▲' : '▼' }}{{note.value}}{{note.symbol}}</label>
+                        <label for="card-note" class="note-description">{{note.description}}</label> 
+                    </div> 
+                }
+            </div>
+         </div>
+       </section>
+       <section class="card-body section">
+         <div class="body wrapper">
+             <div class="value" [style.color]="this.statisticData().body.color">{{this.statisticData().body.symbol}}{{this.statisticData().body.value}}</div>
+         </div>
+       </section>
+       <section class="card-footer section">
+         <div class="footer wrapper">
+            @for(note of this.statisticData().footer; track $index){
+                <div class="footer-note note">
+                    <div class="trend trend-direction"></div>
+                    <div class="metadata">
+                        <span class="sign" 
+                        [ngClass]="note.direction === 'increase' ? 'positive' : 'negative'">
+                        {{note.direction === 'increase' ? '+' : '-'}}</span>
+                        <span class="value"  
+                        [ngClass]="note.direction === 'increase' ? 'positive' : 'negative'">
+                          {{note.value}}&nbsp;</span>
+                        <span class="description">{{note.description}}</span>
+                    </div>
+                </div>
+            }
+         </div>
+       </section>
+    </div>
+</article>

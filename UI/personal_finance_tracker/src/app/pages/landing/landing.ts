@@ -3,7 +3,7 @@ import { Header } from '../../components/header/header';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../service/expense.service';
 import { Store } from '@ngrx/store';
-import { ExpenseActions } from '../../stateManagement/action/expense.action';
+import { StateDispatch } from '../../service/state-dispatch';
 
 @Component({
   selector: 'app-landing',
@@ -13,16 +13,18 @@ import { ExpenseActions } from '../../stateManagement/action/expense.action';
 })
 export class Landing {
 
-  constructor(private router: Router, private expenseService: ExpenseService, private store:Store) {}
+  constructor(private router: Router, private expenseService: ExpenseService, private stateDispatchService:StateDispatch
+  ) {}
 
   ngOnInit(){
+
      this.getAllExpenses();
   }
 
   getAllExpenses(){
       this.expenseService.getAllExpense().subscribe({
       next: (res:any) =>{
-          this.store.dispatch(ExpenseActions.storeNewExpenses({expenses:res.data}))
+          this.stateDispatchService.storeExpense(res.data);
          this.router.navigate(['/home']);
       },
     })

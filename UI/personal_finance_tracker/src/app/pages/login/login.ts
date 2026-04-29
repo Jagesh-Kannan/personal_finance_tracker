@@ -9,6 +9,7 @@ import { LucideEye, LucideEyeClosed, } from '@lucide/angular';
 import { ButtonLoader } from '../../components/loader/loader';
 import { Router } from '@angular/router';
 import { CommonService } from '../../service/common-service';
+import { StateDispatch } from '../../service/state-dispatch';
 
 @Component({
   selector: 'app-login',
@@ -51,7 +52,9 @@ export class Login {
 
   private errorBannerService = inject(AuthErrorBannerService);
 
-  constructor(private auth: AuthService, private userService: UserService, private router: Router, private commonService: CommonService) { 
+  constructor(private auth: AuthService, private userService: UserService, private router: Router, private commonService: CommonService,
+    private stateDispatchService:StateDispatch
+  ) { 
     this.loginLoader = computed(() => this.auth.loginLoader());
     this.registerLoader = computed(() => this.userService.registerLoader());
     this.forgotPasswordLoader = computed(() => this.userService.forgotPasswordLoader());
@@ -90,6 +93,11 @@ export class Login {
              localStorage.setItem('email', data.email);
              localStorage.setItem('access_token', response.data.accessToken);
              localStorage.setItem('refresh_token', response.data.refreshToken);
+             localStorage.setItem('first_name', response.data.user.firstName);
+             localStorage.setItem('last_name', response.data.user.lastName);
+
+             this.stateDispatchService.storeUser({email:data.email, first_name: response.data.user.firstName, last_name: response.data.user.lastName});
+
              this.router.navigate(['/landing']);
           }
         }

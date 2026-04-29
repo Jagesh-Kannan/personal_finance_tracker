@@ -12,6 +12,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { credentialsInterceptor } from './interseptor/http-interseptor.service';
 import { provideStore } from '@ngrx/store';
 import { expenseReducer } from './stateManagement/reducer/expense.reducer';
+import { userReducer } from './stateManagement/reducer/user.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +22,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideLucideIcons(LucideFileText),
     provideHttpClient(withInterceptors([credentialsInterceptor])),
-    provideStore({expenses:expenseReducer}),
+    provideStore({expenses:expenseReducer, user:userReducer}),
   ],
 };

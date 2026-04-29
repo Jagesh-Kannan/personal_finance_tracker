@@ -75,3 +75,35 @@ type ExpenseSchema = {
     $date: string;
   };
 };
+
+
+type UserState = {
+  email: string,
+  first_name: string,
+  last_name: string
+}
+
+type StatisticsNote = {
+  value: string,
+  symbol: string,
+  direction: 'increase' | 'decrease',
+  description: string
+}
+
+type statisticFooter = {
+  value: string,
+  direction: 'increase' | 'decrease',
+  description: string
+}
+
+type StatisticDetail = {
+  title: string,
+  note: StatisticsNote[],
+  body: {
+    symbol: string,
+    value: string,
+    color: string
+  }
+  footer: statisticFooter[]
+
+}

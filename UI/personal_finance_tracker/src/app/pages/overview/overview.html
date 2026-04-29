@@ -1,1 +1,27 @@
-<p>overview works!</p>
+<div class="overview-container">
+  <div class="overview-wrapper">
+    <div class="title-container">
+      <div class="title-wrapper">
+        <h1 class="welcome-title">
+          <label for="welcome-title" class="welcome-word">Hello</label>
+          <label for="welcome-title" class="welcome-name">{{this.user_detail().first_name}}</label>
+        </h1>
+        <p class="welcome-description">Hope you are doing well. Find insights of you expenses below.</p>
+      </div>
+    </div>
+    <div class="overview-content">
+      <div class="overview-content-wrapper">
+        <div class="overview-sections">
+          <div class="statistics">
+            <section class="section-1">
+               <statistic-block [statisticsList]="this.sampdata()"></statistic-block>
+            </section>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>
+<div  class="dashboard-container">
+      
+    </div>
