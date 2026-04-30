@@ -86,13 +86,13 @@ type UserState = {
 type StatisticsNote = {
   value: string,
   symbol: string,
-  direction: 'increase' | 'decrease',
+  direction: 'increase' | 'decrease' | null,
   description: string
 }
 
 type statisticFooter = {
   value: string,
-  direction: 'increase' | 'decrease',
+  direction: 'increase' | 'decrease' | null,
   description: string
 }
 

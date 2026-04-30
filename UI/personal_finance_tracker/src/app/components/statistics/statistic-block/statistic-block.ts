@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, input, Input, signal, Signal, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, input, Input, signal, Signal, viewChild } from '@angular/core';
 import { StatisticCard } from "../statistic-card/statistic-card";
 
 @Component({
@@ -13,9 +13,35 @@ export class StatisticBlock {
 
 
   public statisticsList = input.required<StatisticDetail[]>();
+  public cardLoader = input.required<boolean>();
   
   public hideLeftArrow = signal<boolean>(false);
   public hideRightArrow = signal<boolean>(false);
+
+  // Helper method to create skeleton placeholder data
+  private createSkeletonCard(): StatisticDetail {
+    return {
+      title: '',
+      note: [
+        { value: '', symbol: '', direction: null, description: '' }
+      ],
+      body: {
+        symbol: '',
+        value: '',
+        color: '#f97316'
+      },
+      footer: [
+        { value: '', direction: null, description: '' }
+      ]
+    };
+  }
+
+  // Computed signal to display skeleton loaders while loading or actual data when loaded
+  public displayList = computed(() => {
+    return this.cardLoader() 
+      ? Array(4).fill(null).map(() => this.createSkeletonCard())
+      : this.statisticsList();
+  });
 
   ngAfterViewInit() {
     // Initial check after view loads
@@ -38,8 +64,11 @@ export class StatisticBlock {
     });
   }
 
+
   checkContentScrolled(element:HTMLElement ){
+    console.log((element.scrollWidth-element.clientWidth));
+    console.log((element.scrollLeft));
      this.hideLeftArrow.set(element.scrollLeft > 10);
-     this.hideRightArrow.set((element.scrollWidth-element.clientWidth) !== element.scrollLeft)
+     this.hideRightArrow.set((element.scrollWidth-element.clientWidth) > element.scrollLeft+10)
   }
 }

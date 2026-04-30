@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  // expenseApiUrl: 'http://localhost:8082/api/v1/',
-   expenseApiUrl: 'https://expense-api-mono.onrender.com/api/v1/',
+  expenseApiUrl: 'http://localhost:8082/api/v1/',
+  //  expenseApiUrl: 'https://expense-api-mono.onrender.com/api/v1/',
 
   login_path:'/login',
 

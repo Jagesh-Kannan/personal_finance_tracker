@@ -1,16 +1,16 @@
 <div class="statistics-block-container">
   <div class="statistic-content"> 
 
-    @if(this.hideLeftArrow()){
+    @if(this.hideLeftArrow() && !this.cardLoader()){
     <div class="toggler left" (click)="scrollTo('left', scrollList)"><</div>
 
     }
     <div class="statistics-block-wrapper" #scrollList (scroll)="checkContentScrolled(scrollList)">
-      @for (statisticData of this.statisticsList(); track $index) {
-        <statistic-card [statisticData]="statisticData"></statistic-card>
+      @for (statisticData of this.displayList(); track $index) {
+        <statistic-card [statisticData]="statisticData" [statisticCardLoader]="this.cardLoader()"></statistic-card>
       }
     </div>
-    @if(this.hideRightArrow()){
+    @if(this.hideRightArrow() && !this.cardLoader()){
          <div class="toggler right" (click)="scrollTo('right', scrollList)">></div>
     }
    

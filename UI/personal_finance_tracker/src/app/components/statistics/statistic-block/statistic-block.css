@@ -38,18 +38,18 @@
   transition: all 0.3s ease;
 }
 
-/* Left side gradient: White to Transparent */
+/* Left side gradient: Background to Transparent */
 .statistic-content .toggler.left {
   left: 0;
-  background: linear-gradient(to right, #fffaf3 40%, rgba(255, 255, 255, 0));
+  background: linear-gradient(to right, var(--bg-color) 40%, rgba(255, 255, 255, 0));
   justify-content: flex-start;
   padding-left: 12px;
 }
 
-/* Right side gradient: Transparent to White */
+/* Right side gradient: Transparent to Background */
 .statistic-content .toggler.right {
   right: 0;
- background: linear-gradient(to left, #fffaf3 40%, rgba(255, 255, 255, 0));
+ background: linear-gradient(to left, var(--bg-color) 40%, rgba(255, 255, 255, 0));
   justify-content: flex-end;
   padding-right: 12px;
 }
@@ -58,11 +58,27 @@
 .toggler {
   font-size: 24px;
   font-weight: bold;
-  color: #808080;
+  color: #a0a0a0;
   user-select: none;
+  transition: color 0.3s ease;
 }
 
 .toggler:hover {
-  color: #000;
+  color: var(--text-color);
   font-scale: 1.1;
 }
+
+/* Mobile only */
+@media (max-width: 767px) {
+  .statistics-block-wrapper{
+    padding: 20px 40px;
+
+  }
+}
+
+
+/* Tablet only */
+@media (min-width: 768px) and (max-width: 1023px) {}
+
+/* Laptop and up */
+@media (min-width: 1024px) {}
