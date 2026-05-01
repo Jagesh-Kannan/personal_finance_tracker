@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  LOCALE_ID,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
@@ -23,5 +24,6 @@ export const appConfig: ApplicationConfig = {
     provideLucideIcons(LucideFileText),
     provideHttpClient(withInterceptors([credentialsInterceptor])),
     provideStore({expenses:expenseReducer, user:userReducer}),
+     { provide: LOCALE_ID, useValue: 'en-IN' }
   ],
 };

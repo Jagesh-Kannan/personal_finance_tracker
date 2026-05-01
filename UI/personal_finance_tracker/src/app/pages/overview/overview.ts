@@ -1,8 +1,8 @@
-import { Component, effect, ElementRef, input, viewChild, WritableSignal, Signal, signal } from '@angular/core';
-import * as echarts from 'echarts';
-import { aggregate } from '@manufac/echarts-simple-transform';
+import { Component, computed, Signal, signal, WritableSignal } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
+import { getExpenseList } from '../../stateManagement/selector/expense.selector';
+import { AggrigateService } from '../../logics/aggrigate';
 
 @Component({
   selector: 'app-overview',
@@ -12,82 +12,141 @@ import { StatisticBlock } from '../../components/statistics/statistic-block/stat
 })
 export class Overview {
 
-    public sampdata =  signal<any>([{
-      title: 'Total Revenuw',
-      note:[
-        {
-          value:'12.5',
-          symbol:'%',
-          direction:'decrease',
-          description:'This month'
-        },
-      ],
-      body:{
-        symbol:'₹',
-        value:'24.5K',
-        color:''
-      },
-      footer:[
-        {
-          value:'2000',
-          direction:'decrease',
-          description:'Than last month',
-        }
-      ]
-  },
-{
-      title: 'Total Revenuw',
-      note:[
-        {
-          value:'12.5',
-          symbol:'%',
-          direction:'decrease',
-          description:'This month'
-        },
-      ],
-      body:{
-        symbol:'₹',
-        value:'24.5K',
-        color:''
-      },
-      footer:[
-        {
-          value:'2000',
-          direction:'decrease',
-          description:'Than last month',
-        }
-      ]
-  },
-{
-      title: 'Total Revenuw',
-      note:[
-        {
-          value:'12.5',
-          symbol:'%',
-          direction:'decrease',
-          description:'This month'
-        },
-      ],
-      body:{
-        symbol:'₹',
-        value:'24.5K',
-        color:''
-      },
-      footer:[
-        {
-          value:'2000',
-          direction:'decrease',
-          description:'Than last month',
-        }
-      ]
-  }])
+  public statisticsDetails = signal<StatisticDetail[]>([]);
 
   public user_detail: Signal<UserState> = getUser();
+  public expense_details: Signal<ExpenseSchema[]> = getExpenseList();
 
-  constructor() {
+  private expenseInsights:Signal<MonthlyExpenseInsights>;
 
+  constructor(private aggrigateService:AggrigateService) {
+     this.expenseInsights = computed(() =>this.aggrigateService.calculateExpenseInsights());
   }
 
+  ngOnInit(){
+
+    console.log(this.expense_details().filter(d=>d.mode==='CREDITED'));
+    console.log(this.expenseInsights());
+    
+    
+
+   let fullYear = new Date().getUTCFullYear();
+   let month = new Date().getUTCMonth();
+   let pre_month = month-1
+   const currentMonth_insight = this.expenseInsights()[fullYear+'-'+month];
+   const lastMonth_insight = this.expenseInsights()[fullYear+'-'+pre_month];
+
+   const expense_diff = currentMonth_insight.financialTotals.totalOutflow- lastMonth_insight.financialTotals.totalOutflow
+   const perc_diff = (expense_diff / lastMonth_insight.financialTotals.totalOutflow)*100;
+
+   const statistic1:StatisticDetail = {
+      title: 'Total Expense',
+      note: [{
+        value: perc_diff.toString(),
+        symbol: '%',
+        direction: expense_diff > 0 ? 'increase' : 'decrease',
+        sign: expense_diff > 0 ? 'negative' : 'positive',
+        description: 'This month'
+      }],
+      body: {
+        currency: 'INR',
+        value: currentMonth_insight.financialTotals.totalOutflow.toString(),
+        color: '',
+        symbol: null
+      },
+      footer: [{
+        value: expense_diff.toString(),
+        direction: expense_diff > 0 ? 'increase' : 'decrease',
+        sign: expense_diff > 0 ? 'negative' : 'positive',
+        description: 'then last month'
+      }]
+    };
+
+
+   const earning_diff = currentMonth_insight.financialTotals.totalInflow- lastMonth_insight.financialTotals.totalInflow
+   const perc_er_diff = (earning_diff / lastMonth_insight.financialTotals.totalInflow)*100;
+
+     const statistic2:StatisticDetail = {
+      title: 'Total Earning',
+      note: [{
+        value: perc_er_diff.toString(),
+        symbol: '%',
+        direction: perc_er_diff > 0 ? 'increase' : 'decrease',
+        sign: perc_er_diff > 0 ? 'positive' : 'negative',
+        description: 'This month'
+      }],
+      body: {
+        currency: 'INR',
+        value: currentMonth_insight.financialTotals.totalInflow.toString(),
+        color: '#1bc738',
+        symbol: null
+      },
+      footer: [{
+        value: earning_diff.toString(),
+        direction: perc_er_diff > 0 ? 'increase' : 'decrease',
+        sign: perc_er_diff > 0 ? 'positive' : 'negative',
+        description: 'then last month'
+      }]
+    };
+
+
+   const cashflow_diff = currentMonth_insight.financialTotals.netCashFlow- lastMonth_insight.financialTotals.netCashFlow
+   const perc_cashflow_diff = (cashflow_diff / lastMonth_insight.financialTotals.netCashFlow)*100;
+
+
+    const statistic3:StatisticDetail = {
+      title: 'Net Cash Flow',
+      note: [{
+        value: perc_cashflow_diff.toString(),
+        symbol: '%',
+        direction: cashflow_diff > 0 ? 'decrease' : 'increase',
+        sign: cashflow_diff > 0 ? 'positive' : 'negative',
+        description: 'This month'
+      }],
+      body: {
+        currency: 'INR',
+        value: currentMonth_insight.financialTotals.netCashFlow.toString(),
+        color: currentMonth_insight.financialTotals.netCashFlow > 0 ? 'rgb(27, 199, 56)':'var(--error-color)' ,
+        symbol: currentMonth_insight.financialTotals.netCashFlow > 0 ? '+' : '-'
+      },
+      footer: [{
+        value: cashflow_diff.toString(),
+        direction: null,
+        sign: cashflow_diff > 0 ? 'positive' : 'negative',
+        description: 'less then last month'
+      }]
+    };
+
+
+    const most_spent = currentMonth_insight.distributions.topCategory;
+    const perct_most = most_spent ? (most_spent.amount / currentMonth_insight.financialTotals.totalOutflow) * 100 : '';
+
+     const statistic4:StatisticDetail = {
+      title: 'Most Spent',
+      note: [{
+        value: perct_most.toString(),
+        symbol: '%',
+        direction: null,
+        sign: 'negative',
+        description: 'on total spent'
+      }],
+      body: {
+        currency: 'INR',
+        value: most_spent ? most_spent.amount.toString() : '',
+        color: '' ,
+        symbol: null
+      },
+      footer: [{
+        value: most_spent ? most_spent.category.toString() : '',
+        direction: null,
+        sign: null,
+        description:   ''
+      }]
+    };
+
+    this.statisticsDetails.update(current=> [...current, statistic1, statistic2, statistic3, statistic4])
+
+ }
 }
 
 
@@ -625,3 +684,5 @@ export class Overview {
 //     this.pieChart?.dispose();
 //   }
 // }
+
+

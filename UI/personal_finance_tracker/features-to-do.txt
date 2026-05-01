@@ -1,1 +1,2 @@
 1 - generate a nike name for the user , and provide a option to edit their nick name at the over view page wellcome message
+2 - expense schema and expense type  expenseDate need to be changed to transactionDate

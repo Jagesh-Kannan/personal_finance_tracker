@@ -65,7 +65,6 @@
 
 .toggler:hover {
   color: var(--text-color);
-  font-scale: 1.1;
 }
 
 /* Mobile only */

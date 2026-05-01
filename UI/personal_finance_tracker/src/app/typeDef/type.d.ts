@@ -56,24 +56,16 @@ type ExpenseSchema = {
   expenseName: string;
   expenseCategory: string; // or 'Food & Dining' | 'Rent' | etc.
   amount: number;
-  userId: {
-    $oid: string;
-  };
+  userId:  string;
   paymentMode: 'CASH','CREDIT CARD','DEBIT CARD','UPI','WALLET','BANK_TRANSFER','CHEQUE'; 
   mode: 'DEBITED' | 'CREDITED';
-  expenseDate: {
-    $date: string;
-  };
+  expenseDate: string;
   notes: string;
   currency: string;
   customGrouping: string;
   __v: number;
-  createdAt: {
-    $date: string;
-  };
-  updatedAt: {
-    $date: string;
-  };
+  createdAt:  string;
+   updatedAt:  string;
 };
 
 
@@ -87,12 +79,14 @@ type StatisticsNote = {
   value: string,
   symbol: string,
   direction: 'increase' | 'decrease' | null,
+  sign: 'positive' | 'negative' | null,
   description: string
 }
 
 type statisticFooter = {
   value: string,
   direction: 'increase' | 'decrease' | null,
+  sign: 'positive' | 'negative' | null,
   description: string
 }
 
@@ -100,10 +94,45 @@ type StatisticDetail = {
   title: string,
   note: StatisticsNote[],
   body: {
-    symbol: string,
+    currency: 'INR',
     value: string,
-    color: string
+    color: string,
+    symbol: string | null
   }
   footer: statisticFooter[]
 
+};
+
+type AggregatedStat  = {
+  totalAmount: number;
+  transactionCount: number;
 }
+
+type AggregationResult = Record<string, AggregatedStat>;
+
+type Months = 'jan' | 'feb' | 'mar' | 'apr' | 'may' | 'jun' | 'jul' | 'aug' | 'sep' | 'oct' | 'nov' | 'dec';
+
+type ExpenseInsightsStatistics = {
+  financialTotals: {
+    totalOutflow: number;
+    totalInflow: number;
+    netCashFlow: number;
+  };
+  behavioral: {
+    highestSinglePurchase: number;
+    averageTransactionValue: number;
+    totalTransactions: number;
+  };
+  distributions: {
+    byCategory: Record<string, number>;
+    byPaymentMode: Record<string, number>;
+    byCustomGroup: Record<string, number>;
+    topCategory: { category: string; amount: number } | null;
+    preferredPaymentMode: { mode: string; count: number } | null;
+  };
+}
+//  averageMonthlySpend: number;
+//     peakMonth: { month: string; amount: number } | null;
+//     dailyBurnRate: number;
+
+type MonthlyExpenseInsights = Record<string, ExpenseInsightsStatistics>;

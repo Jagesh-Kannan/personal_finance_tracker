@@ -9,8 +9,8 @@
                 @for(note of this.statisticData().note || []; track $index){
                     <div class="note-content">
                         <label for="card-note" class="note-value" 
-                        [ngClass]="note.direction === 'increase' ? 'positive' : note.direction === 'decrease' ? 'negative' : ''">
-                        {{note.direction === 'increase' ? '▲' : note.direction === 'decrease' ? '▼'  : ''}}{{note.value}}{{note.symbol}}</label>
+                        [ngClass]="note.sign">
+                        {{note.direction === 'increase' ? '▲' : note.direction === 'decrease' ? '▼'  : ''}}{{note.value | number : '1.2-2'}}{{note.symbol}}</label>
                         <label for="card-note" class="note-description">{{note.description}}</label> 
                     </div> 
                 }
@@ -19,7 +19,7 @@
        </section>
        <section class="card-body section">
          <div class="body wrapper">
-             <div class="value skeleton-loader" [style.color]="this.statisticData().body.color || ''">{{this.statisticData().body.symbol}}{{this.statisticData().body.value}}</div>
+             <div class="value skeleton-loader" [style.color]="this.statisticData().body.color || ''">{{ this.statisticData().body.symbol }} {{ this.statisticData().body.value | abs | CurrencyFormatter: this.statisticData().body.currency}}</div>
          </div>
        </section>
        <section class="card-footer section">
@@ -29,11 +29,11 @@
                     <div class="trend trend-direction"></div>
                     <div class="metadata">
                         <span class="sign" 
-                        [ngClass]="note.direction === 'increase' ? 'positive' : note.direction === 'decrease' ? 'negative' : ''">
+                        [ngClass]="note.sign">
                         {{note.direction === 'increase' ?  '+' : note.direction === 'decrease' ? '-' : ''}}</span>
                         <span class="value"  
-                        [ngClass]="note.direction === 'increase' ? 'positive' : note.direction === 'decrease' ? 'negative' : ''">
-                          {{note.value}}&nbsp;</span>
+                        [ngClass]="note.sign">
+                          {{note.value | abs |CurrencyFormatter: this.statisticData().body.currency}}&nbsp;</span>
                         <span class="description">{{note.description}}</span>
                     </div>
                 </div>

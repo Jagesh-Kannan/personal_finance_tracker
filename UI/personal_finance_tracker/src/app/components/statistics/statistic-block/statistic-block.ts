@@ -23,15 +23,16 @@ export class StatisticBlock {
     return {
       title: '',
       note: [
-        { value: '', symbol: '', direction: null, description: '' }
+        { value: '', symbol: '', direction: null, description: '', sign: null }
       ],
       body: {
-        symbol: '',
+        currency: 'INR',
         value: '',
-        color: '#f97316'
+        color: '#f97316',
+        symbol: null
       },
       footer: [
-        { value: '', direction: null, description: '' }
+        { value: '', direction: null, description: '', sign: null }
       ]
     };
   }
@@ -66,8 +67,6 @@ export class StatisticBlock {
 
 
   checkContentScrolled(element:HTMLElement ){
-    console.log((element.scrollWidth-element.clientWidth));
-    console.log((element.scrollLeft));
      this.hideLeftArrow.set(element.scrollLeft > 10);
      this.hideRightArrow.set((element.scrollWidth-element.clientWidth) > element.scrollLeft+10)
   }
