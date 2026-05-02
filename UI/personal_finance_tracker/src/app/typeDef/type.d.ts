@@ -80,14 +80,15 @@ type StatisticsNote = {
   symbol: string,
   direction: 'increase' | 'decrease' | null,
   sign: 'positive' | 'negative' | null,
-  description: string
+  description: string,
+  graphData: number[]
 }
 
 type statisticFooter = {
   value: string,
   direction: 'increase' | 'decrease' | null,
   sign: 'positive' | 'negative' | null,
-  description: string
+  description: string,
 }
 
 type StatisticDetail = {

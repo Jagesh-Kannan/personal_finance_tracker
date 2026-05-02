@@ -46,7 +46,8 @@ export class Overview {
         symbol: '%',
         direction: expense_diff > 0 ? 'increase' : 'decrease',
         sign: expense_diff > 0 ? 'negative' : 'positive',
-        description: 'This month'
+        description: 'This month',
+        graphData: [lastMonth_insight.financialTotals.totalOutflow, currentMonth_insight.financialTotals.totalOutflow]
       }],
       body: {
         currency: 'INR',
@@ -73,12 +74,13 @@ export class Overview {
         symbol: '%',
         direction: perc_er_diff > 0 ? 'increase' : 'decrease',
         sign: perc_er_diff > 0 ? 'positive' : 'negative',
-        description: 'This month'
+        description: 'This month',
+        graphData: [lastMonth_insight.financialTotals.totalInflow, currentMonth_insight.financialTotals.totalInflow]
       }],
       body: {
         currency: 'INR',
         value: currentMonth_insight.financialTotals.totalInflow.toString(),
-        color: '#1bc738',
+        color: 'var(--success-color)',
         symbol: null
       },
       footer: [{
@@ -101,12 +103,13 @@ export class Overview {
         symbol: '%',
         direction: cashflow_diff > 0 ? 'decrease' : 'increase',
         sign: cashflow_diff > 0 ? 'positive' : 'negative',
-        description: 'This month'
+        description: 'This month',
+        graphData: [lastMonth_insight.financialTotals.netCashFlow, currentMonth_insight.financialTotals.netCashFlow]
       }],
       body: {
         currency: 'INR',
         value: currentMonth_insight.financialTotals.netCashFlow.toString(),
-        color: currentMonth_insight.financialTotals.netCashFlow > 0 ? 'rgb(27, 199, 56)':'var(--error-color)' ,
+        color: currentMonth_insight.financialTotals.netCashFlow > 0 ? 'var(--success-color)':'var(--error-color)' ,
         symbol: currentMonth_insight.financialTotals.netCashFlow > 0 ? '+' : '-'
       },
       footer: [{
@@ -128,7 +131,8 @@ export class Overview {
         symbol: '%',
         direction: null,
         sign: 'negative',
-        description: 'on total spent'
+        description: 'on total spent',
+        graphData:[]
       }],
       body: {
         currency: 'INR',

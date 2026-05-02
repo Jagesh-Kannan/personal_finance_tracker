@@ -89,14 +89,14 @@
 @media (max-width: 767px) {
   .statistic-card-container{
    
-    min-width: 250px;
+    min-width: 270px;
 }
 
 .card-header > .head.wrapper{
   margin-bottom: 5px;
 }
 .statistic-card-container > .statistic-card-wrapper{
-  padding: 14px;
+  padding: 14px 14px 6px 14px;
 }
 .card-header .card-title > h3{
   font-size: 1rem;
@@ -112,11 +112,14 @@
     font-size: 1.7rem;
 }
 .card-footer > .footer.wrapper{
-      gap: 5px;
+    gap: 5px;
     font-size: 0.675rem;
 }
 .card-footer .footer-note.note .description{
   font-size: 0.7rem;
+}
+.card-footer > .footer.wrapper .sparkline-container {
+  height: 21px;
 }
 }
 
@@ -130,7 +133,7 @@
   padding-bottom: 5px;
 }
 .statistic-card-container > .statistic-card-wrapper{
-  padding: 21px;
+  padding: 21px 21px 8px 21px;
 }
 .card-header .card-title > h3{
   font-size: 0.9rem;
@@ -144,6 +147,9 @@
 .card-footer .footer-note.note .description{
   font-size: 0.75rem;
 }
+.card-footer > .footer.wrapper .sparkline-container {
+  height: 25px;
+}
 }
 
 /* Laptop and up */
@@ -156,7 +162,7 @@
   padding-bottom: 5px;
 }
 .statistic-card-container > .statistic-card-wrapper{
-  padding: 24px;
+  padding: 24px 24px 10px 24px;
 }
 .card-header .card-title > h3{
   font-size: 1.1rem;
@@ -169,5 +175,8 @@
 }
 .card-footer .footer-note.note .description{
   font-size: 0.8rem;
+}
+.card-footer > .footer.wrapper .sparkline-container {
+  height: 30px;
 }
 }

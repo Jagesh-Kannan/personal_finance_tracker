@@ -23,7 +23,7 @@ export class StatisticBlock {
     return {
       title: '',
       note: [
-        { value: '', symbol: '', direction: null, description: '', sign: null }
+        { value: '', symbol: '', direction: null, description: '', sign: null, graphData:[] }
       ],
       body: {
         currency: 'INR',
