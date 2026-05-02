@@ -64,7 +64,7 @@ export class AggrigateService {
       // 1. Extract clean Year-Month key "YYYY-MM"
      const recDate = new Date(record.expenseDate);
       const year = recDate.getUTCFullYear();
-      const _month = String(recDate.getUTCMonth() + 1);
+      const _month = String(recDate.getUTCMonth());
       const yearMonth = `${year}-${_month}`;
 
       // 2. Initialize month object if it doesn't exist

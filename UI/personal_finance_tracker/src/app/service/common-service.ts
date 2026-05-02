@@ -6,7 +6,7 @@ import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 })
 export class CommonService {
 
-  private themeMode = signal<'light' | 'dark'>('light');
+  public themeMode = signal<'light' | 'dark'>('light');
   readonly currentTheme = this.themeMode.asReadonly();
 
    private platformId = inject(PLATFORM_ID);

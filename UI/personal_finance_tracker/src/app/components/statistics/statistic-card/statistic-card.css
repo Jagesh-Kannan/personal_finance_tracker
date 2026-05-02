@@ -28,7 +28,9 @@
     font-family: inherit;
     min-width: 70px;
 }
-
+.card-header .card-note {
+  display: flex;
+}
 .card-header .card-note > .note-content{
     display: grid;
     justify-items: end;

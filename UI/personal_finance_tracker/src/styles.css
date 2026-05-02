@@ -21,7 +21,7 @@
   /* Additional Utility Colors */
   --border-color: #e0e0e0;
   --shadow-color: rgba(0, 0, 0, 0.1);
-  --error-color: #ff2f2f;
+  --error-color: #e23f3f;
   --error-gradient: rgba(217, 39, 39, 0.4);
   --success-color: #16a34a;
   --success-gradient: rgba(74, 222, 128, 0.4);
@@ -60,7 +60,9 @@
   --border-color: #3a3a3a;
   --shadow-color: rgba(0, 0, 0, 0.5);
   --error-color: #ff8787;
+   --error-gradient: rgba(217, 39, 39, 0.4);
   --success-color: #4ade80;
+   --success-gradient: rgba(74, 222, 128, 0.4);
   --warning-color: #ffe066;
 
   --skeleton-bg: rgba(255, 255, 255, 0.1);

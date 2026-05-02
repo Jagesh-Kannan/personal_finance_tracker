@@ -1,9 +1,10 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, input, signal} from '@angular/core';
+import { Component, effect, input, signal} from '@angular/core';
 import { SkeletonLoader } from '../../skeleton-loader/skeleton-loader';
 import { AbsolutePipe } from '../../custom-pipes/mathAbsolute';
 import { SmartCurrencyPipe } from '../../custom-pipes/currency-converter';
 import * as echarts from 'echarts';
+import { CommonService } from '../../../service/common-service';
 
 @Component({
   selector: 'statistic-card',
@@ -27,14 +28,25 @@ export class StatisticCard {
 
   private sparkLineChart?: echarts.ECharts;
 
-  
+
+  constructor(private commonService:CommonService) {
+    effect(() => {
+      const mode = this.commonService.themeMode();
+      if (this.sparkLineChart && !this.statisticCardLoader()) {
+        setTimeout(() => {
+          this.sparkLineChart?.setOption(this.getOptions());
+        }, 0);
+      }
+    });
+  }
+
   ngAfterContentInit(){
     setTimeout(()=>{  
     const chartId = this.statsUUID() + '_sparkLine';
     const chartElement = document.getElementById(chartId);
 
     if (chartElement) {
-      this.sparkLineChart = echarts.init(chartElement, null, { renderer: 'svg' });
+      this.sparkLineChart = echarts.init(chartElement, null, { renderer: 'canvas' });
       this.sparkLineChart.setOption(this.getOptions());
     }},0)
   
@@ -42,12 +54,22 @@ export class StatisticCard {
 
   private getOptions() {
 
+    const resolveColor = (variableName: string): string => {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(variableName)
+      .trim();
+    if (!value) {
+      return variableName.includes('success') ? '#4ade80' : '#d92727';
+    }
+    return value;
+  };
+
     let seriesArr:any[] = [];
     this.statisticData().note.forEach(d =>{
 
       const isPositive = d.sign === 'positive';
-      const mainColor = isPositive ? 'var(--success-color)' : 'var(--error-color)';
-      const areaColor = isPositive ? 'var(--success-gradient)' : 'var(--error-gradient)';
+      const mainColor = resolveColor(isPositive ? '--success-color' : '--error-color');
+      const areaColor = resolveColor(isPositive ? '--success-gradient' : '--error-gradient');
       const areaColorBottom = isPositive ? 'rgba(74, 222, 128, 0)' : 'rgba(217, 39, 39, 0)';
 
       const series:any = {
@@ -68,7 +90,6 @@ export class StatisticCard {
 
     
     return {
-      animation: false, 
       grid: { left: 0, right: 0, top: 5, bottom: 0 },
       xAxis: { type: 'category', show: false, boundaryGap: false },
       yAxis: { type: 'value', show: false },
