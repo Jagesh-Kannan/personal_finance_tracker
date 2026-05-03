@@ -1,41 +1,40 @@
-import { Component, computed, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
+import { getExpenseList } from '../../stateManagement/selector/expense.selector'; // <-- your selectSignal
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
 import { StatisticDataBuilder } from '../../logics/statistic-data.builder';
+import { ExpenseService } from '../../service/expense.service';
 
 @Component({
   selector: 'app-overview',
-  imports: [ StatisticBlock],
+  imports: [StatisticBlock],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
 export class Overview {
 
-  public statisticsDetails = signal<StatisticDetail[]>([]);
-
   public user_detail: Signal<UserState> = getUser();
+  private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
+  public statisticsDetails: Signal<StatisticDetail[]>;
+  public readonly statisticsLoader: Signal<boolean>;
 
+  constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService) {
+    const month: Months = 'apr';
 
-  constructor(private statisticsDataBuilder:StatisticDataBuilder) { }
+    this.statisticsLoader = this.expenseService.getExpenseLoader;
+    this.statisticsDetails = computed(() => {
+      const expenses = this.expensesList(); 
+      if (!expenses || expenses.length === 0) return [];
 
-  ngOnInit(){
-
-    const month: Months = 'apr'
-    this.statisticsDetails.update(current=> [
-      ...current, 
-      this.statisticsDataBuilder.getTotalOutFlow(month),
-      this.statisticsDataBuilder.getTotalInFlow(month),
-      this.statisticsDataBuilder.getTotalCashFlow(month),
-      this.statisticsDataBuilder.getMostSpentCategory(month)
-    ])
-
- }
+      return [
+        this.statisticsDataBuilder.getTotalOutFlow(month),
+        this.statisticsDataBuilder.getTotalInFlow(month),
+        this.statisticsDataBuilder.getTotalCashFlow(month),
+        this.statisticsDataBuilder.getMostSpentCategory(month),
+      ];
+    });
+  }
 }
-
-
-
-
-
 
 
 

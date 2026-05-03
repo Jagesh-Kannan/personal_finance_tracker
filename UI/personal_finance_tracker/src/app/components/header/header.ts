@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonService } from '../../service/common-service';
-import { Router, RouterLink } from "@angular/router";
+import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { DialogService } from '../../service/confirmation-dialog.service';
 import { UserService } from '../../service/user.service';
 import { environment } from '../../environment';
@@ -9,7 +9,7 @@ import { ButtonLoader } from '../loader/loader';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, ButtonLoader],
+  imports: [RouterLink, ButtonLoader, RouterLinkActive],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
