@@ -31,26 +31,25 @@ export class StatisticCard {
 
   constructor(private commonService:CommonService) {
     effect(() => {
-      const mode = this.commonService.themeMode();
-      if (this.sparkLineChart && !this.statisticCardLoader()) {
-        setTimeout(() => {
-          this.sparkLineChart?.setOption(this.getOptions());
-        }, 0);
-      }
-    });
-  }
-
-  ngAfterContentInit(){
-    setTimeout(()=>{  
+      const isLoaded = !this.statisticCardLoader();
+    const mode = this.commonService.themeMode();
     const chartId = this.statsUUID() + '_sparkLine';
-    const chartElement = document.getElementById(chartId);
 
-    if (chartElement) {
-      this.sparkLineChart = echarts.init(chartElement, null, { renderer: 'canvas' });
-      this.sparkLineChart.setOption(this.getOptions());
-    }},0)
-  
+    if (isLoaded) {
+      // Small timeout ensures Angular has rendered the div after skeleton is hidden
+      setTimeout(() => {
+        const chartElement = document.getElementById(chartId);
+        if (chartElement) {
+          if (!this.sparkLineChart) {
+            this.sparkLineChart = echarts.init(chartElement, null, { renderer: 'canvas' });
+          }
+          this.sparkLineChart.setOption(this.getOptions());
+        }
+      }, 0);
+    }
+  });
   }
+
 
   private getOptions() {
 
