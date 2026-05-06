@@ -7,12 +7,13 @@ def main():
     all_transactions = []
     current_row = None
     
-    # Regex to detect date at start of line (e.g., 01-09-2025)
-    date_pattern = re.compile(r'^(\d{2}-\d{2}-\d{4})')
+    # Regex to identify a line starting with a date (DD-MM-YYYY)
+    date_regex = r'^(\d{2}-\d{2}-\d{4})'
+    # Regex to find currency amounts (e.g., 2,97,901.36)
+    amount_regex = r'(\d{1,3}(?:,\d{2,3})*\.\d{2})'
 
     with pdfplumber.open(io.BytesIO(input_bytes)) as pdf:
         for page in pdf.pages:
-            # 200 DPI is optimal for ICICI scanned clarity vs RAM usage
             img = page.to_image(resolution=200).original
             text = pytesseract.image_to_string(img, config='--psm 6')
             
@@ -21,48 +22,51 @@ def main():
                 if not line or "Page" in line or "Total:" in line:
                     continue
                 
-                date_match = date_pattern.match(line)
+                date_match = re.match(date_regex, line)
                 
                 if date_match:
-                    # If we were building a previous row, save it before starting new one
+                    # Save previous row before starting new one
                     if current_row:
                         all_transactions.append(current_row)
                     
-                    # Split line into parts
-                    parts = re.split(r"\s{2,}", line)
+                    transaction_date = date_match.group(1)
+                    # Remove the date from the line to process the rest
+                    remaining_text = line[len(transaction_date):].strip()
                     
-                    # Logic: date is parts[0]. Balance is always the last part.
-                    # Deposits/Withdrawals are the 2nd/3rd to last parts.
-                    # Everything in between is 'Particulars'.
-                    date = parts[0]
-                    balance = parts[-1]
+                    # Find all amounts in this line
+                    amounts = re.findall(amount_regex, remaining_text)
                     
-                    # Identify if it's a Deposit or Withdrawal based on position
-                    # ICICI format: Date | Particulars | Deposits | Withdrawals | Balance
-                    withdrawal = parts[-2] if len(parts) >= 4 else ""
-                    deposit = parts[-3] if len(parts) >= 5 else ""
+                    # In ICICI format, the last amount is ALWAYS the Balance
+                    balance = amounts[-1] if len(amounts) >= 1 else ""
                     
-                    # Join middle parts as the initial description
-                    particulars = " ".join(parts[1:-3]) if len(parts) >= 5 else " ".join(parts[1:-1])
+                    # If there are 3 amounts: [Deposit/Withdrawal, (ignored), Balance]
+                    # If there are 2 amounts: [Withdrawal, Balance]
+                    # We'll extract them from the end of the amounts list
+                    val1 = amounts[-2] if len(amounts) >= 2 else ""
+                    
+                    # Clean the particulars by removing the extracted amounts from the string
+                    particulars = remaining_text
+                    for amt in amounts:
+                        particulars = particulars.replace(amt, "").strip()
 
                     current_row = {
-                        "date": date,
+                        "date": transaction_date,
                         "particulars": particulars,
-                        "deposit": deposit,
-                        "withdrawal": withdrawal,
+                        "amount": val1, # This is the transaction value
                         "balance": balance
                     }
                 else:
-                    # Continuation line: Append this text to the current row's particulars
+                    # If no date, this is a continuation of the particulars
                     if current_row:
-                        current_row["particulars"] += " " + line
+                        # Remove any stray amounts that might have been picked up in wrapped text
+                        clean_continuation = re.sub(amount_regex, "", line).strip()
+                        current_row["particulars"] += " " + clean_continuation
 
-        # Add the very last row processed
         if current_row:
             all_transactions.append(current_row)
 
-    # Clean up JSON: remove the B/F (Balance Brought Forward) row or rows without amounts
-    final_data = [tx for tx in all_transactions if tx['date'] != 'DATE' and "B/F" not in tx['particulars']]
+    # Final cleanup: Remove the 'B/F' row as it's not a transaction
+    final_data = [tx for tx in all_transactions if "B/F" not in tx['particulars']]
 
     sys.stdout.write(json.dumps(final_data))
 
