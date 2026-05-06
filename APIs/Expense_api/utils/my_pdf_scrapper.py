@@ -1,101 +1,43 @@
-import sys, io, json, re, pdfplumber, pytesseract
+import sys, io, json, pdfplumber, pytesseract
+import pandas as pd
 
 def main():
     input_bytes = sys.stdin.buffer.read()
     if not input_bytes: sys.exit(1)
 
-    all_transactions = []
-    current_row = None
-    last_balance = None
+    all_pages_raw = []
     
-    date_regex = r'^(\d{2}-\d{2}-\d{4})'
-    # Improved regex to handle commas and ensure it captures the full currency value
-    amount_regex = r'(\d[\d,.]*\.\d{2})'
-
+    # PSM 6 is essential for keeping rows horizontally aligned
     custom_config = r'--psm 6 -c preserve_interword_spaces=1'
 
     with pdfplumber.open(io.BytesIO(input_bytes)) as pdf:
         for page in pdf.pages:
+            # High-res image conversion
             img = page.to_image(resolution=200).original
-            text = pytesseract.image_to_string(img, config=custom_config)
             
-            for line in text.split("\n"):
-                line = line.strip()
-                if not line or "Page" in line or "Total:" in line: continue
+            # Get detailed data (coordinates, text, line numbers)
+            data = pytesseract.image_to_data(img, config=custom_config, output_type=pytesseract.Output.DICT)
+            
+            df = pd.DataFrame(data)
+            
+            # 1. Filter out low-confidence or empty results
+            df = df[df['text'].str.strip() != ""]
+            
+            # 2. Group by 'block_num' and 'line_num' 
+            # This identifies words that belong to the same physical line on the page
+            lines = df.groupby(['block_num', 'line_num'])['text'].apply(lambda x: ' '.join(x)).reset_index()
+            
+            for _, row in lines.iterrows():
+                line_text = row['text'].strip()
                 
-                if "B/F" in line:
-                    amounts = re.findall(amount_regex, line)
-                    if amounts: 
-                        last_balance = float(amounts[-1].replace(',', ''))
+                # Skip headers and empty lines
+                if not line_text or "Page" in line_text or "Visit" in line_text:
                     continue
-
-                date_match = re.match(date_regex, line)
                 
-                if date_match:
-                    if current_row: all_transactions.append(current_row)
-                    
-                    tx_date = date_match.group(1)
-                    remaining = line[len(tx_date):].strip()
-                    
-                    # Find all valid currency strings
-                    amounts = re.findall(amount_regex, remaining)
-                    
-                    if len(amounts) >= 2:
-                        # Balance is ALWAYS the last one
-                        balance_str = amounts[-1]
-                        # Transaction amount is the one before the balance
-                        tx_amount = amounts[-2]
-                        
-                        # Cut the particulars string before the transaction amount starts
-                        amt_idx = remaining.find(tx_amount)
-                        particulars = remaining[:amt_idx].strip()
-                    else:
-                        balance_str = amounts[-1] if amounts else "0.00"
-                        tx_amount = "0.00"
-                        particulars = remaining
-                        for amt in amounts:
-                            particulars = particulars.replace(amt, "").strip()
+                all_pages_raw.append(line_text)
 
-                    current_row = {
-                        "date": tx_date,
-                        "particulars": particulars,
-                        "amount": tx_amount,
-                        "balance": balance_str
-                    }
-                else:
-                    if current_row:
-                        # Append continuation text, removing any stray numbers
-                        clean_cont = re.sub(amount_regex, "", line).strip()
-                        if clean_cont:
-                            current_row["particulars"] += " " + clean_cont
-
-        if current_row: all_transactions.append(current_row)
-
-    # Post-Processing
-    final_data = []
-    running_balance = last_balance
-
-    for tx in all_transactions:
-        try:
-            # Convert to float for comparison (remove commas)
-            clean_amt = float(tx['amount'].replace(',', ''))
-            curr_bal = float(tx['balance'].replace(',', ''))
-            
-            # Recalculate mode based on balance shift
-            if running_balance is not None:
-                tx["mode"] = "credited" if curr_bal > running_balance else "debited"
-            else:
-                tx["mode"] = "debited"
-            
-            # Clean up the text
-            tx["particulars"] = re.sub(r'\s{2,}', ' ', tx["particulars"]).strip()
-            
-            running_balance = curr_bal
-            final_data.append(tx)
-        except:
-            continue
-
-    sys.stdout.write(json.dumps(final_data))
+    # Return the raw lines as a flat array
+    sys.stdout.write(json.dumps(all_pages_raw))
 
 if __name__ == "__main__":
     main()
