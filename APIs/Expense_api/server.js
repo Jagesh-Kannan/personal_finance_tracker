@@ -9,7 +9,9 @@ import { authenticate } from './middleware/auth.middleware.js';
 import expense_route from './router/expense.route.js';
 import users_router from './router/users.route.js';
 import verifyEmail_router from "./router/verifyEmail.router.js";
-
+import { spawn } from 'child_process';
+import fileUpload from 'express-fileupload';
+import path from 'path';
 
 dotenv.config({ path: './config.env' });
 
@@ -21,6 +23,11 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS
 
 app.use(express.json());
 app.use(cookieParser());
+// Use memory storage for privacy (no files saved to disk)
+app.use(fileUpload({
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    abortOnLimit: true
+}));
 
 const corsOptions = {
   origin: allowedOrigins.length > 0 ? allowedOrigins : '*', // Allow all origins if ALLOWED_ORIGINS is not set
@@ -31,13 +38,71 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}/`);
-});
-
 app.use('/api/v1/expense', authenticate, expense_route);
 app.use("/api/v1/users", users_router);
 app.use("/verify-email", verifyEmail_router);
+app.post('/extract', (req, res) => {
+    // 1. Check if a file named 'statement' was uploaded
+    if (!req.files || !req.files.statement) {
+        return res.status(400).json({ error: "Please upload a PDF file named 'statement'" });
+    }
+
+    const pdfBuffer = req.files.statement.data;
+
+    // 2. Spawn the Python process
+    // In Docker/Linux, we use 'python3'
+    const pythonProcess = spawn('python3', ['utils/my_pdf_scrapper.py']);
+
+    let resultData = '';
+    let errorData = '';
+
+    // 3. Pipe the PDF Buffer to Python's stdin
+    pythonProcess.stdin.write(pdfBuffer);
+    pythonProcess.stdin.end();
+
+    // 4. Capture standard output (The JSON result)
+    pythonProcess.stdout.on('data', (data) => {
+        resultData += data.toString();
+    });
+
+    // 5. Capture errors (Crucial for debugging OCR on Render)
+    pythonProcess.stderr.on('data', (data) => {
+        errorData += data.toString();
+    });
+
+    // 6. Handle process completion
+    pythonProcess.on('close', (code) => {
+        if (code !== 0) {
+            console.error(`Python process failed: ${errorData}`);
+            return res.status(500).json({ 
+                error: "Extraction failed", 
+                details: errorData 
+            });
+        }
+
+        try {
+            const jsonResponse = JSON.parse(resultData);
+            res.json({
+                success: true,
+                count: jsonResponse.length,
+                data: jsonResponse
+            });
+        } catch (err) {
+            console.error("JSON Parse Error:", resultData);
+            res.status(500).json({ error: "Failed to parse data from Python" });
+        }
+    });
+});
+
+// Health check for Render
+app.get('/', (req, res) => res.send('PDF Scraper Service is Online'));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+
 
 // Error handling middleware (must be last)
 app.use(handle_error);
@@ -50,3 +115,6 @@ mongoose
     console.log('Successfully connected to DB.');
   })
   .catch(connection_error);
+
+
+  
