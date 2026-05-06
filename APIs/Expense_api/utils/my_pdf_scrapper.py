@@ -1,91 +1,99 @@
-import sys, io, json, re, ocrmypdf, pdfplumber
-
-def is_date(val: str) -> bool:
-    """Check if a string looks like a transaction date (dd-mm-yyyy or dd/mm/yyyy)."""
-    if not val: 
-        return False
-    return bool(re.match(r"\d{2}[-/]\d{2}[-/]\d{4}", val.strip()))
-
-def clean_amount(val: str) -> str:
-    """Normalize OCR’d amount strings."""
-    if not val: 
-        return ""
-    val = val.replace(",", "").replace("O", "0").replace("l", "1").strip()
-    return val
+import sys, io, json, re, pdfplumber, pytesseract
 
 def main():
-    # 1. Read PDF bytes from Node.js
     input_bytes = sys.stdin.buffer.read()
-    if not input_bytes:
-        sys.exit(1)
+    if not input_bytes: sys.exit(1)
 
-    # 2. OCR the PDF in memory
-    input_pdf_io = io.BytesIO(input_bytes)
-    output_pdf_io = io.BytesIO()
-    try:
-        ocrmypdf.ocr(
-            input_pdf_io, output_pdf_io,
-            force_ocr=True,
-            optimize=0,
-            output_type='pdf',
-            progress_bar=False
-        )
-        output_pdf_io.seek(0)
-    except Exception as e:
-        sys.stderr.write(f"OCRmyPDF Error: {str(e)}")
-        sys.exit(1)
-
-    # 3. Extract transactions with pdfplumber
     all_transactions = []
-    current_txn = None
+    current_row = None
+    last_balance = None
+    
+    # Matches DD-MM-YYYY
+    date_regex = r'^(\d{2}-\d{2}-\d{4})'
+    # Matches numbers like 1,234.56 or 123.00
+    amount_regex = r'(\d{1,3}(?:,\d{2,3})*\.\d{2})'
 
-    with pdfplumber.open(output_pdf_io) as pdf:
+    # PSM 6 keeps the horizontal line intact
+    custom_config = r'--psm 6 -c preserve_interword_spaces=1'
+
+    with pdfplumber.open(io.BytesIO(input_bytes)) as pdf:
         for page in pdf.pages:
-            table_settings = {
-                "vertical_strategy": "text",
-                "horizontal_strategy": "text",
-                "snap_y_tolerance": 5,
-                "intersection_x_tolerance": 15
-            }
-            table = page.extract_table(table_settings)
-            if not table: 
-                continue
-
-            for row in table:
-                row = [cell.strip() if cell else "" for cell in row]
-                if not any(row): 
+            img = page.to_image(resolution=200).original
+            text = pytesseract.image_to_string(img, config=custom_config)
+            
+            for line in text.split("\n"):
+                line = line.strip()
+                if not line or "Page" in line or "Total:" in line: continue
+                
+                # Capture starting balance from B/F line
+                if "B/F" in line:
+                    amounts = re.findall(amount_regex, line)
+                    if amounts: 
+                        last_balance = float(amounts[-1].replace(',', ''))
                     continue
 
-                if is_date(row[0]):
-                    # Start a new transaction
-                    if current_txn:
-                        all_transactions.append(current_txn)
+                date_match = re.match(date_regex, line)
+                
+                if date_match:
+                    if current_row: all_transactions.append(current_row)
+                    
+                    tx_date = date_match.group(1)
+                    remaining = line[len(tx_date):].strip()
+                    
+                    # Find all amounts (usually [TransactionAmount, Balance])
+                    amounts = re.findall(amount_regex, remaining)
+                    
+                    if len(amounts) >= 2:
+                        balance_str = amounts[-1]
+                        tx_amount = amounts[-2]
+                        # Everything between the date and the first amount is particulars
+                        # We find where the first amount starts to cut the string
+                        first_amt_idx = remaining.find(tx_amount)
+                        particulars = remaining[:first_amt_idx].strip()
+                    else:
+                        # Fallback if OCR missed one of the numbers
+                        balance_str = amounts[-1] if amounts else "0.00"
+                        tx_amount = "0.00"
+                        particulars = re.sub(amount_regex, "", remaining).strip()
 
-                    deposit = clean_amount(row[2]) if len(row) > 2 else ""
-                    withdrawal = clean_amount(row[3]) if len(row) > 3 else ""
-                    balance = clean_amount(row[4]) if len(row) > 4 else ""
-                    mode = "credited" if deposit else "debited"
-                    amount = deposit if deposit else withdrawal
-
-                    current_txn = {
-                        "date": row[0],
-                        "particulars": row[1] if len(row) > 1 else "",
-                        "amount": amount,
-                        "mode": mode,
-                        "balance": balance
+                    current_row = {
+                        "date": tx_date,
+                        "particulars": particulars,
+                        "amount": tx_amount,
+                        "balance": balance_str
                     }
                 else:
-                    # Continuation line: merge into particulars
-                    if current_txn:
-                        extra_text = " ".join([c for c in row if c])
-                        current_txn["particulars"] += " " + extra_text
+                    # This is a continuation line (no date at start)
+                    if current_row:
+                        # Clean any stray numbers from the description continuation
+                        clean_cont = re.sub(amount_regex, "", line).strip()
+                        if clean_cont:
+                            current_row["particulars"] += " " + clean_cont
 
-    # Append the last transaction
-    if current_txn:
-        all_transactions.append(current_txn)
+        if current_row: all_transactions.append(current_row)
 
-    # 4. Return structured JSON
-    sys.stdout.write(json.dumps(all_transactions, ensure_ascii=False, indent=2))
+    # Final Post-Processing for Mode and Cleanup
+    final_data = []
+    running_balance = last_balance
+
+    for tx in all_transactions:
+        try:
+            # Clean up the particulars (remove multiple spaces)
+            tx["particulars"] = re.sub(r'\s{2,}', ' ', tx["particulars"]).strip()
+            
+            # Determine Mode
+            curr_bal = float(tx['balance'].replace(',', ''))
+            if running_balance is not None:
+                tx["mode"] = "credited" if curr_bal > running_balance else "debited"
+            else:
+                tx["mode"] = "debited"
+            
+            running_balance = curr_bal
+            final_data.append(tx)
+        except:
+            continue
+
+    sys.stdout.write(json.dumps(final_data))
 
 if __name__ == "__main__":
     main()
