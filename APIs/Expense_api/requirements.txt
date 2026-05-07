@@ -1,4 +1,3 @@
-ocrmypdf
 pdfplumber
 pytesseract
 Pillow

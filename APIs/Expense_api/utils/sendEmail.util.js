@@ -18,23 +18,6 @@ export const sendEmail = async (to, subject, text, html = null) => {
                 }
             });
     
-    
-            // tester
-             // Create a test account
-    //   let testAccount = await nodemailer.createTestAccount();
-    
-    //   // Create a transporter using the test SMTP
-    //   let transporter = nodemailer.createTransport({
-    //     host: "smtp.ethereal.email",
-    //     port: 587,
-    //     secure: false, // true for 465, false for other ports
-    //     auth: {
-    //       user: testAccount.user,
-    //       pass: testAccount.pass,
-    //     },
-    //   });
-    
-    
             // Define the email content
             const mailOptions = {
                 from: process.env.EMAIL_USER,
