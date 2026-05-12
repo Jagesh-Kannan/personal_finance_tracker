@@ -1,0 +1,326 @@
+<div class="page-container add-expense-container">
+  <div class="page-container-wrapper add-expense-wrapper">
+    <div class="title-container">
+      <div class="title-wrapper">
+        <h1 class="welcome-title">
+          <label for="welcome-title" class="welcome-word" >Add New</label>
+          <label for="welcome-title" class="welcome-name">Expense</label>
+        </h1>
+        <p class="welcome-description">Upload a statement or enter details manually</p>
+      </div>
+    </div>
+    @if (!this.fileExtractionLoader() && this.extractedData().length === 0) {
+      <div class="add-expense-content">
+        <div class="add-expense-content-wrapper">
+          <div class="add-expense-sections">
+            <section class="section-container darg-drop-section">
+              <div class="drag-drop-wrapper">
+                <div class="file-upload-zone">
+                  @if (!selectedFile()) {
+                    <!-- STAGE 1: EMPTY STATE -->
+                    <div
+                      class="drop-zone"
+                      [class.active]="isDragging()"
+                      (dragover)="onDragOver($event)"
+                      (dragleave)="onDragLeave()"
+                      (drop)="onFileDropped($event)"
+                    >
+                      <div class="drop-zone-content">
+                        <svg
+                          class="upload-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                          />
+                        </svg>
+                        <p>Please upload your expense file here</p>
+                        <input
+                          type="file"
+                          #fileInput
+                          (change)="onFileSelected($event)"
+                          accept=".pdf,.xlsx,.xls,.csv"
+                          hidden
+                        />
+                        <button class="action-btn-primary" (click)="fileInput.click()">
+                          Select File
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <!-- STAGE 2, 3 & 4: UPLOAD / EXTRACTION / SUCCESS -->
+                    <div
+                      class="progress-container glass-container"
+                      [class.success]="
+                        fileUploadProgress() === 100 &&
+                        !fileExtractionLoader() &&
+                        fileExtractionSuccess()
+                      "
+                    >
+                      <div class="progress-header">
+                        <div class="file-details">
+                          <div class="file-info-group">
+                            <span class="file-icon">📄</span>
+                            <span class="file-name">{{ selectedFile()?.name }}</span>
+                          </div>
+
+                          @if (!fileExtractionLoader() && fileExtractionSuccess()) {
+                            <div class="success-badge-inline animate-fade-in">
+                              <span class="check-icon-small">✓</span>
+                              <span>Extraction Successful</span>
+                            </div>
+                          }
+                        </div>
+                        <button class="remove-file-btn" (click)="clearFile()" title="Cancel Upload">
+                          ×
+                        </button>
+                      </div>
+                      <div class="progress-bar-wrapper">
+                        <div class="progress-track">
+                          <!-- If extraction is happening, we add a pulse class -->
+                          <div
+                            class="progress-fill"
+                            [style.width.%]="fileUploadProgress()"
+                            [class.pulse]="fileExtractionLoader()"
+                          ></div>
+                        </div>
+                        <span class="progress-percentage">
+                          {{ fileExtractionLoader() ? '...' : fileUploadProgress() + '%' }}
+                        </span>
+                      </div>
+                      <p class="upload-status">
+                        @if (fileExtractionLoader() && !fileExtractionSuccess()) {
+                          <span class="loader-spin">⏳</span> Analyzing and Extracting data...
+                        } @else if (fileUploadProgress() === 100 && fileExtractionSuccess()) {
+                          File processed successfully.
+                        } @else {
+                          Uploading to FinanceFlow...
+                        }
+                      </p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </section>
+            <div class="divider-container">
+              <div class="divider-line"></div>
+              <span class="divider-text">OR</span>
+              <div class="divider-line"></div>
+            </div>
+            <section class="section-container manual-entry-section">
+              <div class="self-entry-container">
+                <button class="action-btn-self-entry">
+                  <span class="btn-icon"></span>
+                  Self Entry
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="viewEdit-expense-container">
+        <div class="viewEdit-expense-wrapper">
+          <div class="header">
+            <h2>Expense Overview</h2>
+            <div class="header-actions">
+              <button class="icon-btn" title="Import">
+                <svg lucideImport></svg>
+              </button>
+              <button class="icon-btn" title="Add New Expense" (click)="addNewExpense()">
+                <svg lucidePlus></svg>
+              </button>
+            </div>
+          </div>
+          <div class="viewEdit-expense-content">
+            <div class="extracted-expenses-list">
+              @for (expense of extractedData(); track $index) {
+                <article class="glass-container expense-card animate-fade-in">
+                  <div class="item-wrapper">
+                    <!-- Section 1: Icon/Ab -->
+                    <div class="icon-section">
+                      <span class="avatar-text">A<span>b</span></span>
+                    </div>
+
+                    <!-- Section 2: Text Info -->
+                    <div class="definition-section">
+                      <div class="category-section">{{ expense.expenseCategory }}</div>
+                      <div class="mode-section">{{ expense.paymentMode }}</div>
+                    </div>
+
+                    <!-- Section 3: Numerics -->
+                    <div class="numerics-section">
+                      <div
+                        class="amount-section"
+                        [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'"
+                      >
+                        <span class="amount-sign">{{
+                          expense.mode === 'DEBITED' ? '-' : '+'
+                        }}</span>
+                        {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+                      </div>
+                      <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
+                    </div>
+
+                    <!-- Section 4: Action -->
+                    <div class="action-section">
+                      <button class="edit-btn" aria-label="Edit" (click)="editExpense(expense)">
+                        <!-- You can replace this with your Lucide or SVG icon -->
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+          </div>
+          <div class="footer">
+            <div class="footer-wrapper">
+              <button class="action-btn" (click)="createExpense()" [buttonLoader]="createExpenseLoader()">Add Expenses</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<app-error-banner></app-error-banner>
+
+@if (openExpenseForm()) {
+  <div class="adaptive-overlay" (click)="openExpenseForm.set(false)">
+    <div class="adaptive-content glass-container" (click)="$event.stopPropagation()">
+      <!-- Mobile Handle -->
+      <div class="sheet-grabber mobile-only"></div>
+
+      <div class="adaptive-header">
+        <h2 class="welcome-title">
+          <span class="title-word">Manual</span>
+          <span class="title-name">Entry</span>
+        </h2>
+
+        <button class="close-btn" (click)="openExpenseForm.set(false)">×</button>
+      </div>
+      <p class="welcome-description">Fill in the details to add your expense manually.</p>
+      <div class="adaptive-body">
+        <form class="manual-entry-form" [formGroup]="expenseForm">
+          <!-- Main Row: Name -->
+          <div class="form-row full-width">
+            <label class="required">Expense Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Starbucks Coffee"
+              formControlName="expenseName"
+              name="expenseName"
+            />
+          </div>
+
+          <!-- Second Row: Category & Amount -->
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="required">Category</label>
+              <input
+                type="text"
+                placeholder="e.g. Food"
+                formControlName="expenseCategory"
+                name="expenseCategory"
+              />
+            </div>
+             <div class="form-row">
+              <label class="required">Payment Mode</label>
+              <select formControlName="paymentMode" name="paymentMode">
+                <option value="UPI">UPI</option>
+                <option value="CASH">CASH</option>
+                <option value="CREDIT CARD">CREDIT CARD</option>
+                <option value="DEBIT CARD">DEBIT CARD</option>
+                <option value="WALLET">WALLET</option>
+                <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                <option value="CHEQUE">CHEQUE</option>
+              </select>
+            </div>
+           
+          </div>
+
+          <!-- Third Row: Payment Mode & Type -->
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="required">Amount (INR)</label>
+              <input
+                type="number"
+                placeholder="0.00"
+                formControlName="amount"
+                name="amount"
+              />
+            </div>
+            <div class="form-row">
+              <label class="required">Transaction Type</label>
+              <div class="toggle-group">
+                <button 
+      type="button" 
+      [class.active]="expenseForm.get('mode')?.value === 'DEBITED'" 
+      (click)="expenseForm.get('mode')?.setValue('DEBITED')">
+      Debited
+    </button>
+
+    <button 
+      type="button" 
+      [class.active]="expenseForm.get('mode')?.value === 'CREDITED'" 
+      (click)="expenseForm.get('mode')?.setValue('CREDITED')">
+      Credited
+    </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fourth Row: Date & Grouping -->
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="required">Date & Time</label>
+              <input
+                type="datetime-local"
+                formControlName="expenseDate"
+                name="expenseDate"
+              />
+            </div>
+            <div class="form-row">
+              <label>Custom Grouping</label>
+              <input
+                type="text"
+                placeholder="e.g. Trip to Goa"
+                formControlName="customGrouping"
+                name="customGrouping"
+              />
+            </div>
+          </div>
+
+          <!-- Fifth Row: Notes -->
+          <div class="form-row full-width">
+            <label>Notes</label>
+            <textarea
+              rows="3"
+              placeholder="Add additional details..."
+              formControlName="notes"
+              name="notes"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="adaptive-footer">
+        <button class="action-btn-self-entry" (click)="initiate_update_expense()">Update Transaction</button>
+      </div>
+    </div>
+  </div>
+}

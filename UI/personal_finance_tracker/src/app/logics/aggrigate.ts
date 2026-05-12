@@ -137,7 +137,7 @@ export class AggrigateService {
   }
 
   // Fallback state
-private getEmptyMonthInsight(): ExpenseInsightsStatistics {
+  public getEmptyMonthInsight(): ExpenseInsightsStatistics {
     return {
       financialTotals: { totalOutflow: 0, totalInflow: 0, netCashFlow: 0 },
       behavioral: { highestSinglePurchase: 0, averageTransactionValue: 0, totalTransactions: 0 },

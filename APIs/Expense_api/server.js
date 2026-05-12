@@ -42,7 +42,7 @@ app.use(cors(corsOptions));
 app.use('/api/v1/expense', authenticate, expense_route);
 app.use("/api/v1/users", users_router);
 app.use("/verify-email", verifyEmail_router);
-app.use("/file-extractor", authenticate, fileExtractor_route);
+app.use("/api/v1/file-extractor", authenticate, fileExtractor_route);
 // app.post('/extract-pdf', (req, res) => {
 //     // 1. Check if a file named 'statement' was uploaded
 //     if (!req.files || !req.files.statement) {

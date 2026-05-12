@@ -17,9 +17,10 @@ export class StatisticDataBuilder {
 
   private readonly current_fullYear =  new Date().getUTCFullYear();
   private readonly current_month = new Date().getUTCMonth();
-
+  private readonly emptyMonthlyInsights:ExpenseInsightsStatistics; 
   constructor(private aggrigateService:AggrigateService){
     this.expenseInsights = computed(() =>this.aggrigateService.calculateExpenseInsights());
+    this.emptyMonthlyInsights = this.aggrigateService.getEmptyMonthInsight();
   }
 
 
@@ -28,10 +29,10 @@ export class StatisticDataBuilder {
    const  utcMonth :number= this.monthMap.get(month) || 0;
 
    const currentMonth_insight = this.expenseInsights()[this.current_fullYear+'-'+utcMonth];
-   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11];
+   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
-   const expense_diff = currentMonth_insight.financialTotals.totalOutflow- lastMonth_insight.financialTotals.totalOutflow
-   const perc_diff = (expense_diff / lastMonth_insight.financialTotals.totalOutflow)*100;
+   const expense_diff = currentMonth_insight.financialTotals.totalOutflow - lastMonth_insight.financialTotals.totalOutflow
+   const perc_diff = (expense_diff / (lastMonth_insight.financialTotals.totalOutflow || expense_diff))*100;
 
      return {
       title: 'Total Expense',
@@ -66,10 +67,10 @@ export class StatisticDataBuilder {
    const  utcMonth :number= this.monthMap.get(month) || 0;
 
    const currentMonth_insight = this.expenseInsights()[this.current_fullYear+'-'+utcMonth];
-   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11];
+   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
     const earning_diff = currentMonth_insight.financialTotals.totalInflow- lastMonth_insight.financialTotals.totalInflow
-    const perc_er_diff = (earning_diff / lastMonth_insight.financialTotals.totalInflow)*100;
+    const perc_er_diff = (earning_diff / (lastMonth_insight.financialTotals.totalInflow || earning_diff))*100;
 
     return {
       title: 'Total Earning',
@@ -102,10 +103,10 @@ export class StatisticDataBuilder {
     const  utcMonth :number= this.monthMap.get(month) || 0;
 
    const currentMonth_insight = this.expenseInsights()[this.current_fullYear+'-'+utcMonth];
-   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11];
+   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
    const cashflow_diff = currentMonth_insight.financialTotals.netCashFlow- lastMonth_insight.financialTotals.netCashFlow
-   const perc_cashflow_diff = (cashflow_diff / lastMonth_insight.financialTotals.netCashFlow)*100;
+   const perc_cashflow_diff = (cashflow_diff / (lastMonth_insight.financialTotals.netCashFlow || cashflow_diff))*100;
 
    return {
       title: 'Net Cash Flow',
@@ -137,10 +138,10 @@ export class StatisticDataBuilder {
      const  utcMonth :number= this.monthMap.get(month) || 0;
 
    const currentMonth_insight = this.expenseInsights()[this.current_fullYear+'-'+utcMonth];
-   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11];
+   const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
     const most_spent = currentMonth_insight.distributions.topCategory;
-    const perct_most = most_spent ? (most_spent.amount / currentMonth_insight.financialTotals.totalOutflow) * 100 : '';
+    const perct_most = most_spent ? (most_spent.amount / (currentMonth_insight.financialTotals.totalOutflow || 1)) * 100 : '';
 
     return {
       title: 'Most Spent',

@@ -105,6 +105,12 @@ body {
   }
 }
 
+label.required::after {
+  content: " *";
+  color: #ff4d4f; /* Modern Red */
+  font-weight: bold;
+  margin-left: 2px;
+}
 /* //============================================= 
         Skeleton Loader Styles
    ============================================= */
@@ -161,7 +167,7 @@ body {
         font-size: 43px;
     letter-spacing: -0.8px;
   }
-  .overview-wrapper .title-wrapper{
+  .page-container-wrapper .title-wrapper{
     margin-left: 15px;
   }
 }
@@ -178,7 +184,7 @@ body {
     letter-spacing: -0.8px;
   }
 
-  .overview-wrapper .title-wrapper{
+  .page-container-wrapper .title-wrapper{
     margin-left: 30px;
   }
 }
@@ -194,7 +200,8 @@ body {
         font-size: 38px;
   }
 
-  .overview-wrapper .title-wrapper{
+  .page-container-wrapper .title-wrapper{
     margin-left: 50px;
   }
+
 }

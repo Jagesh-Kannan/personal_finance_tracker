@@ -31,7 +31,7 @@
        <span class="app-name">Fumos</span>
         </div>
   
-       <button class="close-btn" (click)="isMenuOpen.set(false)">×</button>
+       <button class="close-btn" (click)="isMenuOpen.set(false)">x</button>
     </div>
 
     <!-- <div class="user">
@@ -43,7 +43,7 @@
     </div>
     <div class="features"> -->
     <button class="nav-btn" [routerLink]="'overview'" [routerLinkActive]="'active'">Overview</button>
-    <button class="nav-btn">Tab-1</button>
+    <button class="nav-btn" [routerLink]="'import'" [routerLinkActive]="'active'">Import/Add Expenses</button>
     <button class="nav-btn">Tab-2</button>
     <button class="nav-btn">Tab-3</button>
    <!-- </div> -->

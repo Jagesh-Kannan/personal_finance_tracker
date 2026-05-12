@@ -8,7 +8,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { LucideFileText, provideLucideIcons } from '@lucide/angular';
+import { LucideFileText, LucideImport, LucidePlus, provideLucideIcons } from '@lucide/angular';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { credentialsInterceptor } from './interseptor/http-interseptor.service';
 import { provideStore } from '@ngrx/store';
@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideLucideIcons(LucideFileText),
+    provideLucideIcons(LucideFileText, LucideImport, LucidePlus),
     provideHttpClient(withInterceptors([credentialsInterceptor])),
     provideStore({expenses:expenseReducer, user:userReducer}),
      { provide: LOCALE_ID, useValue: 'en-IN' }

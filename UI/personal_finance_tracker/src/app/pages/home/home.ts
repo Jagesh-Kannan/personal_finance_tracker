@@ -26,9 +26,7 @@ export class Home {
   async getAllExpenses(){
     try {
     const res: any = await firstValueFrom(this.expenseService.getAllExpense());
-    if (res && res.data) {
-      this.stateDispatchService.storeExpense(res.data);
-    }
+    
     return res.data;
   } catch (error) {
     console.error('Error fetching expenses:', error);

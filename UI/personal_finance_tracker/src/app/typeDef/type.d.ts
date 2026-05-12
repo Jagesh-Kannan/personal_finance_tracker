@@ -68,6 +68,29 @@ type ExpenseSchema = {
    updatedAt:  string;
 };
 
+type ExtractedExpenseData = {
+    expenseName: string;
+    expenseCategory: string;
+    amount: number;
+    paymentMode: string;
+    mode: 'DEBITED' | 'CREDITED';
+    expenseDate: string;
+    notes: string,
+    currency: string,
+    customGrouping: string
+};
+
+type CreateExpenseBody = {
+      expenseName: string;
+      expenseCategory: string;
+      amount: number;
+      paymentMode: string;
+      mode: 'DEBITED' | 'CREDITED';
+      expenseDate: string;
+      notes: string,
+      currency: 'INR',
+      customGrouping: string
+};
 
 type UserState = {
   email: string,

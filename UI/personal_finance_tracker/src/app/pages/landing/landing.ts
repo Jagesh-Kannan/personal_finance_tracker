@@ -24,7 +24,7 @@ export class Landing {
   getAllExpenses(){
       this.expenseService.getAllExpense().subscribe({
       next: (res:any) =>{
-          this.stateDispatchService.storeExpense(res.data);
+        
          this.router.navigate(['/home']);
       },
     })
