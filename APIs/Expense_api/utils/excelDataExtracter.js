@@ -95,7 +95,8 @@ function getPaymentMode(modeStr) {
  */
 function parseExcelDate(num) {
   if (!num) return null;
-  const str = String(num).padStart(8, '0'); // ensure 8 digits
+  const pureDigits = String(num).replace(/[^0-9]/g, '');
+  const str = pureDigits.padStart(8, '0'); // ensure 8 digits
   const day = str.slice(0, 2);
   const month = str.slice(2, 4);
   const year = str.slice(4);
