@@ -44,3 +44,88 @@
    font-size: 14px;
 }
 }
+
+.dropdown-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px; /* Aligns neatly in toolbars or sidebars */
+  font-family: inherit;
+}
+
+.custom-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* Wrapper to isolate the field layout positioning */
+.select-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff;
+  
+  /* Glassmorphism architecture */
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Reset browser UI constraints */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Visual reactions on interactive hover / focus bounds */
+.custom-select:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.custom-select:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+/* Dropdown native list styling inside context menu */
+.custom-select option {
+  background-color: #1a1a1a; /* Dark theme option background context */
+  color: #ffffff;
+  font-size: 0.95rem;
+  padding: 12px;
+}
+
+/* Custom indicator chevron icon placement */
+.select-arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none; /* Prevents pointer obstruction */
+  transition: border-color 0.2s;
+}
+
+.custom-select:focus + .select-arrow {
+  border-color: #ffffff;
+}

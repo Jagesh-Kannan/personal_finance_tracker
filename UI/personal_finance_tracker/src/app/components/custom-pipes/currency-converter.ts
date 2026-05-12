@@ -10,7 +10,7 @@ export class SmartCurrencyPipe implements PipeTransform {
   private currencyPipe = inject(CurrencyPipe);
 
   transform(value: string | number, currencyCode: string = 'INR'): string {
-    if (!value) return '';
+    if (!value) return '0';
     
     const input = String(value);
     

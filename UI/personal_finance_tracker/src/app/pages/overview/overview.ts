@@ -1,13 +1,20 @@
-import { Component, computed, Signal } from '@angular/core';
+import { Component, computed, signal, Signal } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
 import { getExpenseList } from '../../stateManagement/selector/expense.selector'; // <-- your selectSignal
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
 import { StatisticDataBuilder } from '../../logics/statistic-data.builder';
 import { ExpenseService } from '../../service/expense.service';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+
+interface MonthOption {
+  value: Months;       // e.g., "2026-05" (Useful for backend filtering)
+  displayName: string; // e.g., "May 2026"
+}
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
@@ -17,22 +24,70 @@ export class Overview {
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
   public statisticsDetails: Signal<StatisticDetail[]>;
   public readonly statisticsLoader: Signal<boolean>;
+  public monthOptions = signal<MonthOption[]>([]);
+   monthControl = new FormControl('');
+   public selectedMonth = signal<Months>('jan');
 
   constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService) {
     const month: Months = 'apr';
-
+     this.generateMonthDropdown();
     this.statisticsLoader = this.expenseService.getExpenseLoader;
     this.statisticsDetails = computed(() => {
       const expenses = this.expensesList(); 
+      const selectedMonth = this.selectedMonth();
+      
       if (!expenses || expenses.length === 0) return [];
 
       return [
-        this.statisticsDataBuilder.getTotalOutFlow(month),
-        this.statisticsDataBuilder.getTotalInFlow(month),
-        this.statisticsDataBuilder.getTotalCashFlow(month),
-        this.statisticsDataBuilder.getMostSpentCategory(month),
+        this.statisticsDataBuilder.getTotalOutFlow(selectedMonth),
+        this.statisticsDataBuilder.getTotalInFlow(selectedMonth),
+        this.statisticsDataBuilder.getTotalCashFlow(selectedMonth),
+        this.statisticsDataBuilder.getMostSpentCategory(selectedMonth),
       ];
     });
+
+
+   
+  }
+
+
+    private generateMonthDropdown() {
+    const options: MonthOption[] = [];
+    const currentDate = new Date();
+    
+    // Generate next 12 months starting from the current month
+    for (let i = 0; i < 12; i++) {
+      const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+      
+      const year = targetDate.getFullYear();
+      // Ensure month is always 2 digits (e.g., "05")
+      const monthStr = String(targetDate.getMonth() + 1).padStart(2, '0');
+      
+      // Format Display Text (e.g., "May 2026")
+      const displayName = targetDate.toLocaleString('default', { 
+        month: 'long', 
+        year: 'numeric' 
+      });
+
+      const value = targetDate.toLocaleString('default', { month: 'short' }).toLowerCase() as Months;
+
+      options.push({
+        value: value,
+        displayName: displayName
+      });
+    }
+
+    // Set the signal value
+    this.monthOptions.set(options);
+    
+    // Automatically pre-select the current month as default value
+    if (options.length > 0) {
+      this.monthControl.setValue(options[0].value);
+      this.selectedMonth.set(options[0].value);
+      this.monthControl.valueChanges.subscribe((value: any) => {
+        this.selectedMonth.set(value);
+      });
+    }
   }
 }
 
