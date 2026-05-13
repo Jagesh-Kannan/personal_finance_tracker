@@ -45,87 +45,193 @@
 }
 }
 
+
+/* // date select element styles  */
+
+/* ==========================================
+   1. LAPTOP & DESKTOP (DEFAULT SYSTEM BASE)
+   ========================================== */
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  width: 100%;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.title-wrapper {
+  flex: 1;
+}
+
 .dropdown-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  max-width: 280px; /* Aligns neatly in toolbars or sidebars */
-  font-family: inherit;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .custom-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
-/* Wrapper to isolate the field layout positioning */
 .select-container {
   position: relative;
-  width: 100%;
+  width: 220px; /* Base width for Laptops */
+   margin-right: 23px;
 }
 
 .custom-select {
   width: 100%;
-  padding: 12px 40px 12px 16px;
-  font-size: 0.95rem;
+  padding: 10px 36px 10px 20px; /* Base padding for Laptops */
+  font-size: 0.9rem; /* Base font size for Laptops */
   font-weight: 500;
-  color: #ffffff;
-  
-  /* Glassmorphism architecture */
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 12px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  
-  /* Reset browser UI constraints */
+  cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   outline: none;
-  cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-/* Visual reactions on interactive hover / focus bounds */
 .custom-select:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: var(--primary-orange);
+  background: var(--glass-bg);
 }
 
 .custom-select:focus {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+  background: var(--glass-bg);
+  border-color: var(--secondary-orange);
+  box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.2), 0 4px 12px var(--shadow-color);
 }
 
-/* Dropdown native list styling inside context menu */
 .custom-select option {
-  background-color: #1a1a1a; /* Dark theme option background context */
-  color: #ffffff;
+  padding: 12px 20px;
   font-size: 0.95rem;
-  padding: 12px;
+  font-weight: 500;
+  background-color: var(--dialog-bg, #ffffff);
+  color: var(--text-color);
 }
 
-/* Custom indicator chevron icon placement */
 .select-arrow {
   position: absolute;
   right: 16px;
   top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid rgba(255, 255, 255, 0.6);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
   transform: translateY(-70%) rotate(45deg);
-  pointer-events: none; /* Prevents pointer obstruction */
-  transition: border-color 0.2s;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--text-color);
+  border-bottom: 2px solid var(--text-color);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: border-color 0.2s, opacity 0.2s;
 }
 
 .custom-select:focus + .select-arrow {
-  border-color: #ffffff;
+  border-color: var(--secondary-orange);
+  opacity: 1;
 }
+
+/* ==========================================
+   2. TABLET SCENS (MAX-WIDTH: 1023px)
+   ========================================== */
+@media (max-width: 1023px) {
+  .title-container {
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 16px;
+  }
+
+  .dropdown-wrapper {
+    gap: 8px; /* Shrunk from 12px */
+  }
+
+  .custom-label {
+    font-size: 0.8rem; /* Shrunk from 0.85rem */
+  }
+
+  .select-container {
+    width: 170px; /* Shrunk width from 220px */
+  }
+
+  .custom-select {
+    padding: 8px 32px 8px 14px; /* Shrunk padding from 10px/20px */
+    font-size: 0.85rem; /* Shrunk font size from 0.9rem */
+    border-radius: 10px;
+    max-height: 240px; /* Set max height for dropdown view constraints */
+  }
+
+  .custom-select option {
+    padding: 10px 14px; /* Shrunk option internal padding */
+    font-size: 0.85rem; /* Shrunk option text size */
+  }
+
+  .select-arrow {
+    right: 12px;
+    width: 6px; /* Shrunk vector size */
+    height: 6px;
+  }
+}
+
+/* ==========================================
+   3. MOBILE SCREEN (MAX-WIDTH: 767px)
+   ========================================== */
+@media (max-width: 767px) {
+  .title-container {
+    flex-direction: column; /* Stacks layout elements vertically */
+    align-items: flex-start;
+    gap: 14px;
+    padding-bottom: 12px;
+  }
+
+  .dropdown-wrapper {
+    width: 100%; /* Spans full screen width */
+    justify-content: end; /* Labels left, drop selector right */
+    gap: 6px;
+  }
+
+  .custom-label {
+    font-size: 0.6rem; /* Shrunk text further */
+  }
+
+  .select-container {
+          width: 28%;
+        max-width: 120px;
+       
+  }
+
+  .custom-select {
+    padding: 7px 28px 7px 12px; /* Compressed padding specs */
+    font-size: 0.8rem; /* Lowest readable font scale */
+    border-radius: 8px;
+    max-height: 180px; /* Scroll viewport height limit to avoid display clip */
+  }
+
+  .custom-select option {
+    padding: 8px 12px; /* Compressed mobile target spacing */
+    font-size: 0.8rem;
+  }
+
+  .select-arrow {
+    right: 10px;
+    width: 5px;
+    height: 5px;
+  }
+}
+

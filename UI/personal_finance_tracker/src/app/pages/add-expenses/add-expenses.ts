@@ -120,12 +120,12 @@ clearFile() {
             this.fileUploadProgress.set(progress);
           } else if (event.type === HttpEventType.Response) {
             this.fileUploadProgress.set(100);
-            this.extractedData.set(event.body.data || []);   
+            this.extractedData.update( data => [...data, ...(event.body.data || [])] ); 
           }
         },
       error: (err) => {
         console.error('File upload error:', err);
-        alert('Failed to upload file. Please try again.');
+        alert(err.error.details || 'Failed to upload file. Please try again.');
       }
     });
   }
@@ -211,7 +211,6 @@ clearFile() {
         } as ExtractedExpenseData;
         this.extractedData.update(list => [newExpense, ...list]);
 
-    this.openExpenseForm.set(false);
      this.resetExpenseForm();
   }
 

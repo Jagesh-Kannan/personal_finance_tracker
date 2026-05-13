@@ -1,3 +1,8 @@
+
+
+
+<app-error-banner></app-error-banner>
+
 <div class="page-container add-expense-container">
   <div class="page-container-wrapper add-expense-wrapper">
     <div class="title-container">
@@ -57,7 +62,7 @@
                       [class.success]="
                         fileUploadProgress() === 100 &&
                         !fileExtractionLoader() &&
-                        fileExtractionSuccess()
+                        fileExtractionSuccess() === true
                       "
                     >
                       <div class="progress-header">
@@ -67,10 +72,16 @@
                             <span class="file-name">{{ selectedFile()?.name }}</span>
                           </div>
 
-                          @if (!fileExtractionLoader() && fileExtractionSuccess()) {
+                          @if (!fileExtractionLoader() && fileExtractionSuccess() === true) {
                             <div class="success-badge-inline animate-fade-in">
                               <span class="check-icon-small">✓</span>
                               <span>Extraction Successful</span>
+                            </div>
+                          }
+                          @else if(!fileExtractionLoader() && fileExtractionSuccess() === false){
+                             <div class="error-badge-inline animate-fade-in">
+                              <span class="check-icon-small error">✗</span>
+                              <span>Extraction Failed</span>
                             </div>
                           }
                         </div>
@@ -92,11 +103,13 @@
                         </span>
                       </div>
                       <p class="upload-status">
-                        @if (fileExtractionLoader() && !fileExtractionSuccess()) {
+                        @if (fileExtractionLoader() && fileExtractionSuccess() === null) {
                           <span class="loader-spin">⏳</span> Analyzing and Extracting data...
-                        } @else if (fileUploadProgress() === 100 && fileExtractionSuccess()) {
+                        } @else if (fileUploadProgress() === 100 && fileExtractionSuccess() === true) {
                           File processed successfully.
-                        } @else {
+                        } @else if (fileUploadProgress() === 100 && fileExtractionSuccess() === false) {
+                          File processing failed.
+                        }  @else {
                           Uploading to FinanceFlow...
                         }
                       </p>
@@ -112,7 +125,7 @@
             </div>
             <section class="section-container manual-entry-section">
               <div class="self-entry-container">
-                <button class="action-btn-self-entry">
+                <button class="action-btn-self-entry" (click)="addNewExpense()">
                   <span class="btn-icon"></span>
                   Self Entry
                 </button>
@@ -125,9 +138,16 @@
       <div class="viewEdit-expense-container">
         <div class="viewEdit-expense-wrapper">
           <div class="header">
-            <h2>Expense Overview</h2>
+            <h2>Expense Overview <span class="count">( {{ extractedData().length }} )</span></h2>
             <div class="header-actions">
-              <button class="icon-btn" title="Import">
+              <input
+                          type="file"
+                          #fileInput
+                          (change)="onFileSelected($event)"
+                          accept=".pdf,.xlsx,.xls,.csv"
+                          hidden
+                        />
+              <button class="icon-btn" title="Import" (click)="fileInput.click()">
                 <svg lucideImport></svg>
               </button>
               <button class="icon-btn" title="Add New Expense" (click)="addNewExpense()">
@@ -197,7 +217,6 @@
   </div>
 </div>
 
-<app-error-banner></app-error-banner>
 
 @if (openExpenseForm()) {
   <div class="adaptive-overlay" (click)="openExpenseForm.set(false)">

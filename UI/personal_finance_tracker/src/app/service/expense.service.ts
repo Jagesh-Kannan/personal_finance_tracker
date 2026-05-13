@@ -16,7 +16,7 @@ export class ExpenseService {
 
   public getExpenseLoader = signal<boolean>(false);
   public fileExtractionLoader = signal<boolean>(false);
-  public fileExtractionSuccess = signal<boolean>(false);
+  public fileExtractionSuccess = signal<boolean | null>(null);
   public createExpenseLoader = signal<boolean>(false);
 
   constructor(private http: HttpClient,private stateDispatchService:StateDispatch) {}
@@ -57,7 +57,7 @@ export class ExpenseService {
   }
 
   public uploadExpenseFile(file: File) {
-    this.fileExtractionSuccess.set(false);
+    this.fileExtractionSuccess.set(null);
 
     const formData = new FormData();
     formData.append('statementFile', file);
@@ -80,6 +80,7 @@ export class ExpenseService {
           }
         }),
         catchError((error) => {
+          this.fileExtractionSuccess.set(false); // Mark extraction as failed
           const errorMessage =
             error.error?.message || 'An error occurred during file upload. Please try again.';
           throw error;

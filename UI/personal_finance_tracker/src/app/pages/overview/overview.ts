@@ -1,4 +1,4 @@
-import { Component, computed, signal, Signal } from '@angular/core';
+import { Component, computed, effect, signal, Signal } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
 import { getExpenseList } from '../../stateManagement/selector/expense.selector'; // <-- your selectSignal
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
@@ -29,11 +29,15 @@ export class Overview {
    public selectedMonth = signal<Months>('jan');
 
   constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService) {
-    const month: Months = 'apr';
-     this.generateMonthDropdown();
+     
+     effect(() => {
+      this.generateMonthDropdown();
+    });
+
     this.statisticsLoader = this.expenseService.getExpenseLoader;
     this.statisticsDetails = computed(() => {
       const expenses = this.expensesList(); 
+
       const selectedMonth = this.selectedMonth();
       
       if (!expenses || expenses.length === 0) return [];
@@ -51,47 +55,51 @@ export class Overview {
   }
 
 
-    private generateMonthDropdown() {
-    const options: MonthOption[] = [];
-    const currentDate = new Date();
+private generateMonthDropdown() {
+  const options: MonthOption[] = [];
+
+  const availableMonths = this.getAvailableMonths();
+
+  availableMonths.forEach(({ year, sortMonth }) => {
+    options.push({
+      value: `${sortMonth as Months}`,
+      displayName: `${sortMonth.charAt(0).toUpperCase() + sortMonth.slice(1)} ${year}`
+    });
+   });
+
+  // Set the signal value
+  this.monthOptions.set(options);
+  
+  // Pre-select the current month (which is now index 0)
+  if (options.length > 0) {
+    this.monthControl.setValue(options[0].value);
+    this.selectedMonth.set(options[0].value);
     
-    // Generate next 12 months starting from the current month
-    for (let i = 0; i < 12; i++) {
-      const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
-      
-      const year = targetDate.getFullYear();
-      // Ensure month is always 2 digits (e.g., "05")
-      const monthStr = String(targetDate.getMonth() + 1).padStart(2, '0');
-      
-      // Format Display Text (e.g., "May 2026")
-      const displayName = targetDate.toLocaleString('default', { 
-        month: 'long', 
-        year: 'numeric' 
-      });
-
-      const value = targetDate.toLocaleString('default', { month: 'short' }).toLowerCase() as Months;
-
-      options.push({
-        value: value,
-        displayName: displayName
-      });
-    }
-
-    // Set the signal value
-    this.monthOptions.set(options);
-    
-    // Automatically pre-select the current month as default value
-    if (options.length > 0) {
-      this.monthControl.setValue(options[0].value);
-      this.selectedMonth.set(options[0].value);
-      this.monthControl.valueChanges.subscribe((value: any) => {
-        this.selectedMonth.set(value);
-      });
-    }
+    this.monthControl.valueChanges.subscribe((value: any) => {
+      this.selectedMonth.set(value);
+    });
   }
 }
 
 
+private getAvailableMonths(){
+
+  const monthKeys = Object.keys(this.statisticsDataBuilder.expenseInsights());
+  if(monthKeys.length > 0){
+    return monthKeys
+    .sort((a, b) => b.localeCompare(a))
+    .map(key => {
+      const [year, month] = key.split('-');
+     const dummyDate = new Date(Number(year), Number(month), 1);
+     const sortMonth = dummyDate.toLocaleString('default', { month: 'short' }).toLowerCase();
+      return { year, sortMonth };
+    })
+  }
+
+  return [];
+}
+
+}
 
 
 

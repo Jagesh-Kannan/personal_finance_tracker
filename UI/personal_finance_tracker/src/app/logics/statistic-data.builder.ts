@@ -13,20 +13,33 @@ export class StatisticDataBuilder {
   ]);
 
   public expense_details: Signal<ExpenseSchema[]> = getExpenseList();
-  private expenseInsights:Signal<MonthlyExpenseInsights>;
+  public expenseInsights:Signal<MonthlyExpenseInsights>;
 
   private readonly current_fullYear =  new Date().getUTCFullYear();
   private readonly current_month = new Date().getUTCMonth();
   private readonly emptyMonthlyInsights:ExpenseInsightsStatistics; 
+
+
   constructor(private aggrigateService:AggrigateService){
-    this.expenseInsights = computed(() =>this.aggrigateService.calculateExpenseInsights());
+
     this.emptyMonthlyInsights = this.aggrigateService.getEmptyMonthInsight();
+
+     this.expenseInsights = computed(() => {
+      const currentExpenses = this.expense_details();   
+      if (!currentExpenses || currentExpenses.length === 0) {
+        return this.aggrigateService.calculateExpenseInsights(currentExpenses) || this.emptyMonthlyInsights;
+      }
+      return this.aggrigateService.calculateExpenseInsights(currentExpenses);
+    });
   }
 
 
  public getTotalOutFlow(month: Months, ) : StatisticDetail{
 
    const  utcMonth :number= this.monthMap.get(month) || 0;
+
+   console.log(this.expenseInsights());
+   
 
    const currentMonth_insight = this.expenseInsights()[this.current_fullYear+'-'+utcMonth];
    const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;

@@ -153,7 +153,14 @@
   background: var(--success-gradient); color: var(--success-color);
   border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid var(--success-color);
 }
+.error-badge-inline {
+  display: flex; align-items: center; gap: 6px; padding: 4px 12px;
+  background: var(--error-gradient); color: var(--error-color);
+  border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid var(--error-color);
+}
 .check-icon-small { background: var(--success-color); color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+.check-icon-small.error { background: var(--error-color); }
+
 .upload-status { margin-top: 10px; font-size: 0.85rem; opacity: 0.6; text-align: center; }
 
 /* --- ANIMATIONS --- */
@@ -376,6 +383,10 @@
   font-size: 18px;
   font-weight: 300;
   padding: 0px 5px;
+}
+
+.viewEdit-expense-wrapper > .header > h2 > .count{
+  color: var(--primary-orange);
 }
 .viewEdit-expense-container {
   display: flex;
