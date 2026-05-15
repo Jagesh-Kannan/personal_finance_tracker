@@ -57,7 +57,7 @@ export class StatisticBlock {
   scrollTo(direction: 'left' | 'right', element: HTMLElement) {
  
     // 320px is a good default (300px card + 20px gap)
-    const scrollAmount = direction === 'left' ? -230 : 230;
+    const scrollAmount = direction === 'left' ? -277 : 277;
     
     element.scrollBy({
       left: scrollAmount,

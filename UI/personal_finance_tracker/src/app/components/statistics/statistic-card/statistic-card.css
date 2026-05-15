@@ -57,7 +57,7 @@
     font-size: 2rem;
     font-weight: 700;
     color: var(--accent-color);
-    margin-bottom: 5px;
+    margin-bottom: 9px;
     margin-left: 10%;
     font-family: inherit;
     letter-spacing: 1px;
@@ -66,7 +66,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 0.875rem;
+    font-size: 0.7rem;
     color: var(--text-color);
     /* opacity: 0.7; */
     font-family: inherit
@@ -118,7 +118,7 @@
     font-size: 0.675rem;
 }
 .card-footer .footer-note.note .description{
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 .card-footer > .footer.wrapper .sparkline-container {
   height: 21px;
