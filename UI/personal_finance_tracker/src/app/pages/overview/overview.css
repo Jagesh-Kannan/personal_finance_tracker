@@ -25,7 +25,7 @@
 @media (max-width: 767px) {
   
 .welcome-description{
-   font-size: 11px;
+   font-size: 9px;
 }
 }
 
@@ -207,7 +207,7 @@
   }
 
   .custom-label {
-    font-size: 0.6rem; /* Shrunk text further */
+    font-size: 0.5rem; /* Shrunk text further */
   }
 
   .select-container {
@@ -217,10 +217,10 @@
   }
 
   .custom-select {
-    padding: 7px 28px 7px 12px; /* Compressed padding specs */
-    font-size: 0.8rem; /* Lowest readable font scale */
-    border-radius: 8px;
-    max-height: 180px; /* Scroll viewport height limit to avoid display clip */
+        padding: 6px 28px 6px 12px;
+        font-size: 0.7rem;
+        border-radius: 8px;
+        max-height: 180px;
   }
 
   .custom-select option {

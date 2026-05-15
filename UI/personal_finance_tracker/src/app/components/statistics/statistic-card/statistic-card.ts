@@ -33,6 +33,7 @@ export class StatisticCard {
     effect(() => {
       const isLoaded = !this.statisticCardLoader();
     const mode = this.commonService.themeMode();
+    const data = this.statisticData()
     const chartId = this.statsUUID() + '_sparkLine';
 
     if (isLoaded) {

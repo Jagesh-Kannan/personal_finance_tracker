@@ -50,14 +50,14 @@
 }
 
 .card-header .card-note > .note-content >.note-description{
-  font-size: 11px;
+  font-size: 9px;
     font-weight: bold;
 }
 .card-body .value{
     font-size: 2rem;
     font-weight: 700;
     color: var(--accent-color);
-    margin-bottom: 12px;
+    margin-bottom: 5px;
     margin-left: 10%;
     font-family: inherit;
     letter-spacing: 1px;
@@ -101,7 +101,7 @@
   padding: 14px 14px 6px 14px;
 }
 .card-header .card-title > h3{
-  font-size: 1rem;
+  font-size: 0.9rem;
     margin: 0 0 6px 0;
 }
 .card-header .card-note > .note-content > .note-value {

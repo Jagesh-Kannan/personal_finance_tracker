@@ -159,12 +159,12 @@ label.required::after {
 /* Mobile only */
 @media (max-width: 767px) {
   .welcome-title {
-    font-size: 30px;
+    font-size: 23px;
     font-weight: 300;
   }
 
   .welcome-title .welcome-word{
-        font-size: 43px;
+        font-size: 32px;
     letter-spacing: -0.8px;
   }
   .page-container-wrapper .title-wrapper{

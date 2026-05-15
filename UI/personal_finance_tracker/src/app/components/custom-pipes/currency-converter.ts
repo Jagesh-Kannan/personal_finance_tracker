@@ -8,38 +8,41 @@ import { CurrencyPipe } from '@angular/common';
 export class SmartCurrencyPipe implements PipeTransform {
   private currencyPipe = inject(CurrencyPipe);
 
-  transform(value: string | number, currencyCode: string = 'INR'): string {
+transform(value: string | number, currencyCode: string = 'INR'): string {
     const input = String(value).trim();
     
-    // Quick shortcut for standalone '0' strings to bypass complex regex lookups
+    // 1. Quick shortcut for standalone mathematical zero strings
     if (input === '0') {
       const fallbackZero = this.currencyPipe.transform(0, currencyCode, 'symbol', '1.2-2');
       return fallbackZero || '0.00';
     }
 
-    // Regex to separate text from numbers (handles "Shopping2000" or "Rent | 500")
-    const match = input.match(/^(.*?)(-?\d+\.?\d*)$/);
-    
-    if (match) {
-      const label = match[1].trim();
-      const amount = parseFloat(match[2]);
+    // 2. UPDATED REGEX: Matches ONLY raw numbers (optional minus sign, commas, digits, optional decimal)
+    // Examples it WILL match: "2000", "-500", "1250.50", "33"
+    // Examples it WILL IGNORE: "Shopping2000", "Rent | 500", "abc#123", "12-05-2026"
+    const strictNumericPattern = /^-?[\d,]+(?:\.\d+)?$/;
+
+    if (strictNumericPattern.test(input)) {
+      // Clean up commas if they exist in the raw string before parsing to float
+      const cleanNumericString = input.replace(/,/g, '');
+      const amount = parseFloat(cleanNumericString);
       
-      // Calculate formatted layout
+      // We pass the raw amount without Math.abs() to preserve negative signs (e.g. -33 -> -₹33.00)
       let formattedAmount = this.currencyPipe.transform(
-        Math.abs(amount), 
+        amount, 
         currencyCode, 
         'symbol', 
         '1.2-2'
       );
 
-      // FIX BUG HERE: Fallback to static zero if the built-in pipe fails or outputs null
       if (!formattedAmount) {
         formattedAmount = '0.00';
       }
 
-      return label ? `${label} ${formattedAmount}` : `${formattedAmount}`;
+      return formattedAmount;
     }
     
+    // 3. Fallback: If it contains letters, spaces, or special characters, return it exactly as it is
     return input;
   }
 }

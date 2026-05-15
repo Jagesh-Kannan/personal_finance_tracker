@@ -47,6 +47,8 @@ export class StatisticDataBuilder {
    const expense_diff = currentMonth_insight.financialTotals.totalOutflow - lastMonth_insight.financialTotals.totalOutflow
    const perc_diff = (expense_diff / (lastMonth_insight.financialTotals.totalOutflow || expense_diff))*100;
 
+    console.log(lastMonth_insight.financialTotals.totalOutflow);
+    
      return {
       title: 'Total Expense',
       note: [{
@@ -139,9 +141,9 @@ export class StatisticDataBuilder {
       },
       footer: [{
         value: cashflow_diff.toString(),
-        direction: null,
+        direction: perc_cashflow_diff > 0 ? 'increase' : 'decrease',
         sign: cashflow_diff > 0 ? 'positive' : 'negative',
-        description: 'less then last month'
+        description: ' then last month'
       }]
     }
  }
