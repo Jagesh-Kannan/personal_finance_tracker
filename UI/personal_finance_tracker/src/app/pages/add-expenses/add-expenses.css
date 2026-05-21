@@ -1,6 +1,6 @@
 /* --- PAGE LAYOUT --- */
 .page-container {
-  height: 91vh;
+  height: 85vh;
   display: flex;
   flex-direction: column;
 }
@@ -183,7 +183,7 @@
 
 /* --- RESPONSIVE --- */
 @media (max-width: 767px) {
-  .welcome-title { font-size: 37px; }
+  .welcome-title { font-size: 34px; }
   .welcome-title > .title-word{font-size: 25px;}
   .welcome-title > .title-name{font-size: 30px; color: var(--primary-orange);}
   
@@ -195,8 +195,8 @@
     max-width: 400px;   /* Optional: keeps it from getting too wide on small tablets */
   }
   .file-details { flex-direction: column; align-items: flex-start; }
-.welcome-title .welcome-word { font-size: 33px; letter-spacing: -0.8px; } 
-.welcome-description { font-size: 11px; } 
+.welcome-title .welcome-word { font-size: 30px; letter-spacing: -0.8px; } 
+.welcome-description { font-size: 10px; } 
 .drop-zone-content { flex-direction: column; /* Stack on mobile for better thumb reach */ gap: 16px; text-align: center; } 
 .drop-zone { padding: 1.5rem; width: 95%; } 
 .drop-zone-content p { font-size: 14px; } 
@@ -226,8 +226,8 @@
   /* Give the card a more "Solid" presence */
   background: var(--input-bg); 
   border: 1px solid var(--border-color);
-  border-radius: 22px;
-  padding: 10px;
+  border-radius: 20px;
+  padding: 8px;
   margin-bottom: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px var(--shadow-color);
@@ -249,10 +249,10 @@
 
 /* 1. ICON SECTION: Solid & Vibrant */
 .icon-section {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
-  border-radius: 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -263,7 +263,7 @@
 .avatar-text {
   color: white;
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.16rem;
   letter-spacing: -1px;
 }
 
@@ -329,8 +329,8 @@
 
 /* 4. ACTION SECTION: Clean Button */
 .edit-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   background: var(--bg-color);
   border: 1px solid var(--border-color);
   border-radius: 14px;
@@ -378,7 +378,7 @@
     align-items: center; /* Vertically centers everything */
     justify-content: space-between; /* Pushes h2 to left and actions to right */
     flex-shrink: 0; /* Prevent header from shrinking */
-    margin: 0px 13px;
+    margin: 0px 18px;
 }
 .viewEdit-expense-wrapper > .header > h2{
   font-size: 18px;
