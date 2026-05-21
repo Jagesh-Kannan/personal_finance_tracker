@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { lucideDefaultConfig, LucideDynamicIcon, LucideEye, LucideEyeClosed, LucideFileText, LucideLoaderCircle } from '@lucide/angular';
+import { lucideDefaultConfig, LucideDynamicIcon, LucideEye, LucideEyeClosed, LucideFileText, LucideLoaderCircle, LucideLayoutDashboard, LucidePlus, LucideSearch, LucideHistory, LucideUser } from '@lucide/angular';
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, LucideDynamicIcon, LucideEye, LucideEyeClosed, LucideFileText, LucideLoaderCircle],
-  exports: [LucideDynamicIcon, LucideEye, LucideEyeClosed, LucideFileText, LucideLoaderCircle],
+  imports: [CommonModule, LucideDynamicIcon, LucideEye, LucideEyeClosed, LucideFileText, LucideLoaderCircle, LucideLayoutDashboard, LucidePlus, LucideSearch, LucideHistory, LucideUser],
+  exports: [LucideDynamicIcon, LucideEye, LucideEyeClosed, LucideFileText, LucideLoaderCircle, LucideLayoutDashboard, LucidePlus, LucideSearch, LucideHistory, LucideUser],
   providers: [
     {
       provide: lucideDefaultConfig,

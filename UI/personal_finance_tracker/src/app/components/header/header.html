@@ -1,10 +1,5 @@
 <header class="main-header">
   <div class="header-left">
-    <!-- Mobile Hamburger (Visible < 754px) -->
-    <button class="menu-toggle" (click)="isMenuOpen.set(!isMenuOpen())" aria-label="Toggle Menu">
-      ☰
-    </button>
-    
     <div class="logo-box">
       <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
         <path d="M10 8V30H32" stroke="#ff6a00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -15,43 +10,16 @@
     <span class="app-name">Fumos</span>
   </div>
 
-
-   <!-- Sliding Sidenav -->
+  <!-- Desktop Navigation -->
   <nav class="header-center" [class.mobile-open]="isMenuOpen()">
-    <div class="mobile-header">
-
-        <div class="overlay-header">
-        <div class="logo-box">
-        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-            <path d="M10 8V30H32" stroke="#ff6a00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M10 24L18 16L24 20L34 8" stroke="#ff6a00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="34" cy="8" r="3" fill="#ff6a00" />
-        </svg>
-        </div>
-       <span class="app-name">Fumos</span>
-        </div>
-  
-       <button class="close-btn" (click)="isMenuOpen.set(false)">x</button>
-    </div>
-
-    <!-- <div class="user">
-        <button class="nav-btn">
-            <div class="btn-content">
-
-            </div>
-        </button>
-    </div>
-    <div class="features"> -->
     <button class="nav-btn" [routerLink]="'overview'" [routerLinkActive]="'active'">Overview</button>
     <button class="nav-btn" [routerLink]="'import'" [routerLinkActive]="'active'">Import/Add Expenses</button>
     <button class="nav-btn">Tab-2</button>
     <button class="nav-btn">Tab-3</button>
-   <!-- </div> -->
   </nav>
 
 
   <div class="header-right">
-
     <button class="icon-btn notification">
       <span class="badge"></span>🔔
     </button>
@@ -62,15 +30,41 @@
           <path d="M20 21C20 18.2386 16.4183 16 12 16C7.58172 16 4 18.2386 4 21" stroke="#ff6a00" stroke-width="2"/>
        </svg>
     </div>
-
   </div>
 </header>
 
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="bottom-nav">
+  <!-- Overview -->
+  <button class="bottom-nav-item" [routerLink]="'overview'" [routerLinkActive]="'active'" (click)="closeBottomNav()" [attr.aria-label]="'Overview'">
+    <svg class="bottom-nav-icon" [lucideIcon]="layoutDashboardIcon"></svg>
+    <span class="bottom-nav-label">Overview</span>
+  </button>
 
-<!-- Overlay for mobile clicks -->
-@if (isMenuOpen()) {
-  <div class="menu-overlay" (click)="isMenuOpen.set(false)"></div>
-}
+  <!-- Import/Add Expenses -->
+  <button class="bottom-nav-item" [routerLink]="'import'" [routerLinkActive]="'active'" (click)="closeBottomNav()" [attr.aria-label]="'Add Expenses'">
+    <svg class="bottom-nav-icon" [lucideIcon]="plusIcon"></svg>
+    <span class="bottom-nav-label">Add</span>
+  </button>
+
+  <!-- Tab-2 (Search) -->
+  <button class="bottom-nav-item" [attr.aria-label]="'Search'">
+    <svg class="bottom-nav-icon" [lucideIcon]="searchIcon"></svg>
+    <span class="bottom-nav-label">Search</span>
+  </button>
+
+  <!-- Tab-3 (History) -->
+  <button class="bottom-nav-item" [attr.aria-label]="'History'">
+    <svg class="bottom-nav-icon" [lucideIcon]="historyIcon"></svg>
+    <span class="bottom-nav-label">History</span>
+  </button>
+
+  <!-- Profile -->
+  <button class="bottom-nav-item" [attr.aria-label]="'Profile'" (click)="toggleProfileFromBottom()">
+    <svg class="bottom-nav-icon" [lucideIcon]="userIcon"></svg>
+    <span class="bottom-nav-label">Profile</span>
+  </button>
+</nav>
 
 <!-- User Popover - Moved outside header to fix stacking context -->
 @if (isProfileOpen()) {

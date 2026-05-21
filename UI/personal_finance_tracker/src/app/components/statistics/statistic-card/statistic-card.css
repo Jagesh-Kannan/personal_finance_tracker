@@ -105,10 +105,10 @@
     margin: 0 0 6px 0;
 }
 .card-header .card-note > .note-content > .note-value {
-    font-size: 9px;
+    font-size: 10px;
 }
 .card-header .card-note > .note-content > .note-description{
-    font-size: 9px;
+    font-size: 10px;
 }
 .card-body .value{
     font-size: 1.7rem;

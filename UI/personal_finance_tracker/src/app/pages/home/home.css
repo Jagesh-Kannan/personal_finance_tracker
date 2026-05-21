@@ -1,0 +1,12 @@
+.home-container {
+  min-height: calc(100vh - 70px);
+  transition: padding-bottom 0.3s ease;
+}
+
+/* Add bottom padding on mobile to prevent content from being hidden behind the bottom nav */
+@media (max-width: 754px) {
+  .home-container {
+    padding-bottom: 70px;
+    min-height: auto;
+  }
+}

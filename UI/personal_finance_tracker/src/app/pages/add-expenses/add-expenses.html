@@ -138,7 +138,7 @@
       <div class="viewEdit-expense-container">
         <div class="viewEdit-expense-wrapper">
           <div class="header">
-            <h2>Expense Overview <span class="count">( {{ extractedData().length }} )</span></h2>
+            <h2>Overview <span class="count">( {{ extractedData().length }} )</span></h2>
             <div class="header-actions">
               <input
                           type="file"
@@ -162,7 +162,7 @@
                   <div class="item-wrapper">
                     <!-- Section 1: Icon/Ab -->
                     <div class="icon-section">
-                      <span class="avatar-text">A<span>b</span></span>
+                      <span class="avatar-text">{{expense.customGrouping.trim().charAt(0).toUpperCase()}} <span>{{expense.customGrouping.trim().charAt(2) ? expense.customGrouping.trim().charAt(2).toLowerCase() : ''}}</span></span>
                     </div>
 
                     <!-- Section 2: Text Info -->

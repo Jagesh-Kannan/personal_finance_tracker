@@ -257,6 +257,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 10px var(--btn-primary-shadow);
+  padding: 1px 3px;
 }
 
 .avatar-text {
@@ -454,7 +455,7 @@
 .footer {
   flex-shrink: 0; /* Prevent footer from shrinking */
   position: relative;
-  z-index: 2000;
+  z-index: 5;
   
   /* Glassmorphism Logic */
   background: var(--glass-bg);
@@ -467,7 +468,7 @@
 }
 
 .footer-wrapper {
-  max-width: 1200px;
+  max-width: unset;
   margin: 0 auto;
   display: flex;
   justify-content: flex-end; /* Default: Right aligned for Desktop/Tablet */
@@ -733,7 +734,7 @@
   }
 
   .adaptive-body {
-    max-height: 60vh;
+    max-height: 42vh;
     overflow-y: auto;
     padding-right: 8px;
     scrollbar-width: thin;

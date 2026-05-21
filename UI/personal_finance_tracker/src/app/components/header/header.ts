@@ -6,10 +6,12 @@ import { UserService } from '../../service/user.service';
 import { environment } from '../../environment';
 import { AuthService } from '../../service/auth.service';
 import { ButtonLoader } from '../loader/loader';
+import { LucidIconModule } from '../lucidIcon/lucid-icon/lucid-icon-module';
+import { LucideLayoutDashboard, LucidePlus, LucideSearch, LucideHistory, LucideUser } from '@lucide/angular';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, ButtonLoader, RouterLinkActive],
+  imports: [RouterLink, ButtonLoader, RouterLinkActive, LucidIconModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -20,6 +22,12 @@ export class Header {
   loginRoute = environment.login_path;
 
   protected readonly logoutLoader;
+
+  protected readonly layoutDashboardIcon = LucideLayoutDashboard;
+  protected readonly plusIcon = LucidePlus;
+  protected readonly searchIcon = LucideSearch;
+  protected readonly historyIcon = LucideHistory;
+  protected readonly userIcon = LucideUser;
 
   constructor(public commonService: CommonService, private dialogService: DialogService, private router: Router, private userService: UserService,
     private authService:AuthService
@@ -73,6 +81,16 @@ export class Header {
 
   logout(){
      this.authService.logout().subscribe();
+  }
+
+  closeBottomNav() {
+    // Method to close bottom nav if needed on route change
+    // Currently bottom nav stays visible for navigation
+  }
+
+  toggleProfileFromBottom() {
+    // Toggle profile popover from bottom nav profile button
+    this.isProfileOpen.set(!this.isProfileOpen());
   }
 
 }
