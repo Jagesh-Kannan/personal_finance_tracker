@@ -13,12 +13,13 @@ import { lastValueFrom } from 'rxjs';
 import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
 import { AuthErrorBannerService } from '../../service/auth-error-banner.service';
 import { Router } from '@angular/router';
+import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 
 @Component({
   selector: 'app-add-expenses',
   imports: [DatePipe, CommonModule, LucidIconModule, LucideImport, LucidePlus, 
     AbsolutePipe, SmartCurrencyPipe, FormsModule, ReactiveFormsModule, ButtonLoader,
-    AuthErrorBannerComponent],
+    AuthErrorBannerComponent, SlideUpForm],
   providers: [CurrencyPipe],
   templateUrl: './add-expenses.html',
   styleUrl: './add-expenses.css',

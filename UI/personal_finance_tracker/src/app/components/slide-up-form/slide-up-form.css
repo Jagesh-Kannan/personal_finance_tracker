@@ -1,0 +1,640 @@
+/* =====================================================
+   SLIDE-UP FORM COMPONENT STYLES
+   ===================================================== */
+
+/* SHARED OVERLAY */
+.adaptive-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--dialog-overlay-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 4000;
+  display: flex;
+  transition: all 0.3s ease;
+}
+
+.adaptive-content {
+  background: var(--bg-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* =====================================================
+   MOBILE VIEW (Bottom Sheet)
+   ===================================================== */
+@media (max-width: 767px) {
+  .adaptive-overlay {
+    align-items: flex-end; /* Align to bottom */
+  }
+
+  .adaptive-content {
+    width: 100%;
+    border-radius: 24px 24px 0 0;
+    padding: 1rem 1.4rem 1rem;
+    animation: slideUp 0.4s cubic-bezier(0.32, 1, 0.23, 1);
+    box-sizing: border-box;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+  .adaptive-footer{
+    margin-top: 1rem !important;
+  }
+}
+
+/* =====================================================
+   TABLET & DESKTOP (Centered Dialog)
+   ===================================================== */
+@media (min-width: 768px) {
+  .adaptive-overlay {
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+  }
+
+  .adaptive-content {
+    width: 90%;
+    max-width: 500px;
+    border-radius: 28px;
+    padding: 2.5rem;
+    transform: translateY(0%); /* Slight upward nudge for visual balance */
+    animation: popIn 0.3s ease-out;
+  }
+
+  .mobile-only {
+    display: none;
+  }
+}
+
+/* =====================================================
+   ANIMATIONS
+   ===================================================== */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(-10%);
+  }
+}
+
+/* =====================================================
+   INTERNAL ELEMENTS
+   ===================================================== */
+
+/* Sheet Grabber (Mobile Handle) */
+.sheet-grabber {
+  width: 40px;
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 10px;
+  margin: 0 auto 1rem;
+}
+
+/* Header */
+.adaptive-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-title {
+  margin-bottom: 0;
+  display: flex;
+  font-weight: 300;
+}
+
+.title-word {
+  margin-right: 10px;
+}
+
+.title-name , .filtered-result-container > .result-title{
+  color: var(--primary-orange);
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--text-color);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+/* Description */
+.welcome-description {
+  margin-top: 0;
+  color: #a1a1a1;
+  letter-spacing: 1px;
+  font-size: 14px;
+  margin-bottom: 1.5rem;
+}
+
+/* Body Content */
+.adaptive-body {
+  margin-bottom: 1.5rem;
+}
+
+/* =====================================================
+   FORM LAYOUT
+   ===================================================== */
+.manual-entry-form, .overview-filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-row.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-row label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.form-row label.required::after {
+  content: ' *';
+  color: var(--error-color);
+}
+
+/* =====================================================
+   INPUTS & SELECTS
+   ===================================================== */
+.manual-entry-form input, .overview-filter-form input,
+.manual-entry-form select, .overview-filter-form select,
+.manual-entry-form textarea, .overview-filter-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--input-bg);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 15px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus State */
+.manual-entry-form input:focus, .overview-filter-form input:focus,
+.manual-entry-form select:focus, .overview-filter-form select:focus,
+.manual-entry-form textarea:focus, .overview-filter-form textarea:focus {
+  outline: none;
+  border-color: var(--secondary-orange);
+  background: var(--glass-bg);
+  box-shadow: 0 0 0 4px rgba(255, 154, 68, 0.15);
+}
+
+/* Hover State */
+.manual-entry-form input:hover,
+.manual-entry-form select:hover,
+.manual-entry-form textarea:hover,
+.overview-filter-form input:hover,
+.overview-filter-form select:hover,
+.overview-filter-form textarea:hover {
+  border-color: var(--primary-orange);
+}
+
+/* Disabled State */
+.manual-entry-form input:disabled,
+.manual-entry-form select:disabled,
+.manual-entry-form textarea:disabled,
+.overview-filter-form input:disabled,
+.overview-filter-form select:disabled,
+.overview-filter-form textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   TOGGLE GROUP
+   ===================================================== */
+.toggle-group {
+  display: flex;
+  background: var(--input-bg);
+  border-radius: 10px;
+  padding: 4px;
+  border: 1px solid var(--border-color);
+  gap: 4px;
+}
+
+.toggle-group button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-group button:hover {
+  background: rgba(255, 154, 68, 0.1);
+}
+
+/* Active State */
+.toggle-group button.active {
+  background: var(--btn-primary-bg);
+  color: white;
+  box-shadow: 0 4px 10px var(--btn-primary-shadow);
+}
+
+/* =====================================================
+   FOOTER & BUTTONS
+   ===================================================== */
+.adaptive-footer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-btn-self-entry {
+  background: var(--btn-primary-bg);
+  color: white;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 15px var(--btn-primary-shadow);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 15px;
+}
+
+.action-btn-self-entry:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px var(--btn-primary-shadow);
+}
+
+.action-btn-self-entry:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.action-btn-self-entry:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   RESPONSIVE ADJUSTMENTS
+   ===================================================== */
+
+/* Mobile */
+@media (max-width: 767px) {
+  .form-grid {
+    grid-template-columns: 1fr; /* Stack everything on mobile */
+  }
+
+  .overview-filter-form .form-grid{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .adaptive-body {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 154, 68, 0.3) transparent;
+  }
+
+  /* Custom scrollbar styling for webkit browsers */
+  .adaptive-body::-webkit-scrollbar,
+  .expense-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .adaptive-body::-webkit-scrollbar-track,
+  .expense-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .adaptive-body::-webkit-scrollbar-thumb,
+  .expense-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 154, 68, 0.3);
+    border-radius: 3px;
+  }
+
+  .adaptive-body::-webkit-scrollbar-thumb:hover,
+  .expense-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 154, 68, 0.5);
+  }
+
+  .welcome-title {
+    font-size: 25px;
+    margin-top: 0px;
+  }
+  .filtered-result-container > .result-title{
+    font-size: 16px;
+  }
+
+  .welcome-description {
+    font-size: 10px;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .adaptive-footer .action-btn-self-entry {
+    width: auto;
+    padding: 12px 40px;
+  }
+
+  .welcome-title {
+    font-size: 36px;
+  }
+  .filtered-result-container > .result-title{
+    font-size: 22px;
+  }
+
+  .welcome-description {
+    font-size: 13px;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+  .adaptive-footer .action-btn-self-entry {
+    width: auto;
+    padding: 12px 40px;
+  }
+
+  .welcome-title {
+    font-size: 40px;
+  }
+
+  .filtered-result-container > .result-title{
+    font-size: 24px;
+  }
+  .welcome-description {
+    font-size: 14px;
+  }
+
+  .adaptive-footer{
+    margin-top: 1rem !important;
+  }
+}
+
+  .filtered-result-container {
+    margin-top: 10px;
+  }
+  
+.expense-list{
+  max-height: 35vh;
+   scrollbar-width: thin;
+    scrollbar-color: rgba(255, 154, 68, 0.3) transparent;
+  overflow: auto;
+      margin-top: 5px;
+}
+.no-results{
+      text-align: center;
+    opacity: 0.8;
+}
+/* =====================================================
+   EXPENSE CARD STYLES (Replicated from add-expenses)
+   ===================================================== */
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Expense Card Container */
+.expense-card {
+  /* Give the card a more "Solid" presence */
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px;
+  margin-bottom: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.expense-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-orange);
+  background: var(--glass-bg);
+}
+
+/* Item Wrapper - Grid Layout */
+.item-wrapper {
+  display: grid;
+  /* Proportions: Icon(fixed) | Category(Flexible) | Amount(Flexible) | Edit(fixed) */
+  grid-template-columns: 46px minmax(100px, 1.4fr) minmax(50px, 1fr) 44px;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 1. ICON SECTION: Solid & Vibrant */
+.icon-section {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px var(--btn-primary-shadow);
+  padding: 1px 3px;
+}
+
+.avatar-text {
+  color: white;
+  font-weight: 800;
+  font-size: 1.16rem;
+  letter-spacing: -1px;
+}
+
+.avatar-text small {
+  font-size: 0.9rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* 2. CATEGORY SECTION: Prominent & Bold */
+.definition-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-section {
+  font-weight: 800; /* Extra Bold */
+  font-size: 1.1rem;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.3px;
+}
+
+.mode-section {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.5; /* Dimmed compared to category */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--primary-orange);
+  border-radius: 50%;
+}
+
+/* 3. NUMERICS SECTION: Big Currency */
+.numerics-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.amount-section {
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+.numerics-section > .amount-section {
+  font-weight: 300;
+}
+
+.numerics-section > .amount-section.credit {
+  color: var(--success-color);
+}
+
+.numerics-section > .amount-section.debit {
+  color: var(--error-color);
+}
+
+.date-section {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.4; /* Very light to emphasize the amount */
+}
+
+/* 4. ACTION SECTION: Clean Button */
+.action-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: var(--primary-orange);
+  color: white;
+  border-color: var(--primary-orange);
+}
+
+/* DARK MODE OVERRIDES */
+:root.dark-theme .expense-card {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:root.dark-theme .edit-btn {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Tweak for Expense Card */
+@media (max-width: 767px) {
+  .item-wrapper {
+    grid-template-columns: 46px minmax(55px, 1.3fr) minmax(99px, 1.5fr) 44px;
+    gap: 12px;
+  }
+
+  .category-section {
+    font-size: 0.8rem;
+  }
+ .mode-section{
+   font-size: 9px;
+ }
+  .amount-section {
+    font-size: 0.9rem;
+  }
+
+  .icon-section {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .edit-btn{
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 12px !important;
+  }
+}

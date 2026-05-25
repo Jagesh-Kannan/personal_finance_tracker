@@ -45,9 +45,12 @@ export class StatisticDataBuilder {
    const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
    const expense_diff = currentMonth_insight.financialTotals.totalOutflow - lastMonth_insight.financialTotals.totalOutflow
-   const perc_diff = (expense_diff / (lastMonth_insight.financialTotals.totalOutflow || expense_diff))*100;
 
-    console.log(lastMonth_insight.financialTotals.totalOutflow);
+   const outflow = lastMonth_insight.financialTotals.totalOutflow || 0;
+
+    const perc_diff = (expense_diff === 0 && outflow === 0) 
+      ? 0 
+      : (expense_diff / (outflow || expense_diff)) * 100;
     
      return {
       title: 'Total Expense',
@@ -85,7 +88,11 @@ export class StatisticDataBuilder {
    const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
     const earning_diff = currentMonth_insight.financialTotals.totalInflow- lastMonth_insight.financialTotals.totalInflow
-    const perc_er_diff = (earning_diff / (lastMonth_insight.financialTotals.totalInflow || earning_diff))*100;
+    const inflow = lastMonth_insight.financialTotals.totalInflow || 0;
+
+    const perc_er_diff = (earning_diff === 0 && inflow === 0) 
+      ? 0 
+      : (earning_diff / (inflow || earning_diff)) * 100;
 
     return {
       title: 'Total Earning',
@@ -121,7 +128,11 @@ export class StatisticDataBuilder {
    const lastMonth_insight = this.expenseInsights()[ utcMonth > 0 ? this.current_fullYear+'-'+(utcMonth-1) : this.current_fullYear-1+'-'+11] || this.emptyMonthlyInsights;
 
    const cashflow_diff = currentMonth_insight.financialTotals.netCashFlow- lastMonth_insight.financialTotals.netCashFlow
-   const perc_cashflow_diff = (cashflow_diff / (lastMonth_insight.financialTotals.netCashFlow || cashflow_diff))*100;
+   const cashflow = lastMonth_insight.financialTotals.netCashFlow || 0;
+
+    const perc_cashflow_diff = (cashflow_diff === 0 && cashflow === 0) 
+      ? 0 
+      : (cashflow_diff / (cashflow || cashflow_diff)) * 100;
 
    return {
       title: 'Net Cash Flow',

@@ -1,10 +1,12 @@
 import { Component, computed, effect, signal, Signal } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
-import { getExpenseList } from '../../stateManagement/selector/expense.selector'; // <-- your selectSignal
+import { getExpenseList } from '../../stateManagement/selector/expense.selector'; 
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
 import { StatisticDataBuilder } from '../../logics/statistic-data.builder';
 import { ExpenseService } from '../../service/expense.service';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LucideFunnel } from '@lucide/angular';
+import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 
 
 interface MonthOption {
@@ -14,7 +16,7 @@ interface MonthOption {
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock, FormsModule, ReactiveFormsModule],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
@@ -27,11 +29,16 @@ export class Overview {
   public monthOptions = signal<MonthOption[]>([]);
    monthControl = new FormControl('');
    public selectedMonth = signal<Months>('jan');
+   public overviewFilterForm!:FormGroup;
+   public openFilterForm = signal<boolean>(false);
 
-  constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService) {
+  constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService,
+    private _fb:FormBuilder
+  ) {
      
      effect(() => {
       this.generateMonthDropdown();
+      this.generateOverviewFilterForm();
     });
 
     this.statisticsLoader = this.expenseService.getExpenseLoader;
@@ -39,6 +46,7 @@ export class Overview {
       const expenses = this.expensesList(); 
 
       const selectedMonth = this.selectedMonth();
+      this.updateOverviewMonthFilter(selectedMonth);
       
       if (!expenses || expenses.length === 0) return [];
 
@@ -50,6 +58,7 @@ export class Overview {
       ];
     });
 
+    
 
    
   }
@@ -98,6 +107,45 @@ private getAvailableMonths(){
 
   return [];
 }
+
+private generateOverviewFilterForm(){
+  this.overviewFilterForm = this._fb.group({
+    month: this._fb.group({
+      from: [],
+      to: []
+    }),
+    category:['All'],
+    paymentMode: ['ALL'],
+
+  });
+}
+
+private updateOverviewMonthFilter(month: Months){
+     const year = this.monthOptions().find(option => option.value === month)?.displayName.split(' ')[1];
+     // 1. Map string to 0-indexed month number
+      const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+      const monthIndex = months.indexOf(month.toLowerCase());
+
+      // 2. Get the first day of the month
+      const firstDate = new Date(Date.UTC(Number(year), monthIndex, 1));
+      // 3. Get the last day of the month (passing 0 to the next month's day parameter)
+      const lastDate = new Date(Date.UTC(Number(year), monthIndex + 1, 0));
+
+      this.overviewFilterForm.patchValue({
+        month: {
+          from: firstDate.toISOString().substring(0, 10),
+          to: lastDate.toISOString().substring(0, 10)
+        }
+      });
+      
+}
+
+
+public openOverviewFilter(){
+  this.openFilterForm.set(true);
+}
+
+public get_insights(){}
 
 }
 

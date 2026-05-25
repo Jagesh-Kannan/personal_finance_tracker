@@ -86,7 +86,6 @@
 .select-container {
   position: relative;
   width: 220px; /* Base width for Laptops */
-   margin-right: 23px;
 }
 
 .custom-select {
@@ -232,6 +231,111 @@
     right: 10px;
     width: 5px;
     height: 5px;
+  }
+}
+
+/* ==========================================
+   FILTER BUTTON STYLES
+   ========================================== */
+
+/* Base Filter Button Styles (Laptop & Desktop) */
+.filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   margin-right: 20px;
+}
+
+.filter button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+      padding: 4px 9px;
+    min-width: 39px;
+    height: 38px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--input-bg);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  color: var(--text-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  outline: none;
+}
+
+.filter button:hover {
+  border-color: var(--primary-orange);
+  background: var(--glass-bg);
+  box-shadow: 0 4px 12px rgba(255, 154, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.filter button:focus {
+  background: var(--glass-bg);
+  border-color: var(--secondary-orange);
+  box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.2), 0 4px 12px var(--shadow-color);
+}
+
+.filter button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.filter svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: stroke 0.25s ease;
+}
+
+.filter button:hover svg {
+  stroke: var(--primary-orange);
+}
+
+.filter button:focus svg {
+  stroke: var(--secondary-orange);
+}
+
+/* ==========================================
+   TABLET FILTER BUTTON STYLES (MAX-WIDTH: 1023px)
+   ========================================== */
+@media (max-width: 1023px) {
+  .filter button {
+    padding: 8px 12px;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+
+  .filter svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* ==========================================
+   MOBILE FILTER BUTTON STYLES (MAX-WIDTH: 767px)
+   ========================================== */
+@media (max-width: 767px) {
+  .filter button {
+        padding: 1px 5px;
+        min-width: 32px;
+        height: 31px;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px var(--shadow-color);
+  }
+  .filter{
+    margin-right: 10px;
+  }
+
+  .filter svg {
+    width: 16px;
+    height: 16px;
   }
 }
 

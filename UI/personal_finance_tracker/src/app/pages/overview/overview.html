@@ -4,39 +4,78 @@
       <div class="title-wrapper">
         <h1 class="welcome-title">
           <label for="welcome-title" class="welcome-word">Hello</label>
-          <label for="welcome-title" class="welcome-name">{{this.user_detail().first_name}}</label>
+          <label for="welcome-title" class="welcome-name">{{
+            this.user_detail().first_name
+          }}</label>
         </h1>
-        <p class="welcome-description">Hope you are doing well. Find insights of you expenses below.</p>
+        <p class="welcome-description">
+          Hope you are doing well. Find insights of you expenses below.
+        </p>
       </div>
       <div class="dropdown-wrapper">
-  <label class="custom-label" for="monthSelect">Target Period</label>
-  <div class="select-container">
-    <select id="monthSelect" class="custom-select" [formControl]="monthControl" name="monthSelect">
-      @for (month of monthOptions(); track month.value) {
-        <option [value]="month.value">
-          {{ month.displayName }}
-        </option>
-      }
-    </select>
-    <!-- Custom CSS arrow element to bypass native browser limits -->
-    <div class="select-arrow"></div>
-  </div>
-</div>
-
+        <label class="custom-label" for="monthSelect">Target Period</label>
+        <div class="select-container">
+          <select
+            id="monthSelect"
+            class="custom-select"
+            [formControl]="monthControl"
+            name="monthSelect"
+          >
+            @for (month of monthOptions(); track month.value) {
+              <option [value]="month.value">
+                {{ month.displayName }}
+              </option>
+            }
+          </select>
+          <!-- Custom CSS arrow element to bypass native browser limits -->
+          <div class="select-arrow"></div>
+        </div>
+        <div class="actions">
+          <div class="filter">
+            <button title="Filter" (click)="openOverviewFilter()">
+              <svg lucideFunnel></svg>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="overview-content">
       <div class="overview-content-wrapper">
         <div class="overview-sections">
           <div class="statistics">
             <section class="section-1">
-               <statistic-block [statisticsList]="this.statisticsDetails()" [cardLoader]="this.statisticsLoader()"></statistic-block>
+              <statistic-block
+                [statisticsList]="this.statisticsDetails()"
+                [cardLoader]="this.statisticsLoader()"
+              >
+              </statistic-block>
             </section>
           </div>
-        </div> 
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div  class="dashboard-container">
-      
-    </div>
+<div class="dashboard-container"></div>
+
+
+
+
+
+
+
+
+
+
+<!-- Slide-Up Form Component for Manual Entry -->
+<app-slide-up-form
+  [isOpen]="openFilterForm"
+  [formType]="'overview-filter'"
+  [formGroup]="overviewFilterForm"
+  [titleWord]="'Filter'"
+  [titleName]="'Expenses'"
+  [description]="'Filter your expenses based on the selected criteria.'"
+  [buttonText]="'Render Insights'"
+  (onSubmit)="get_insights()"
+  (onClose)="openFilterForm.set(false)"
+></app-slide-up-form>

@@ -160,3 +160,5 @@ type ExpenseInsightsStatistics = {
 //     dailyBurnRate: number;
 
 type MonthlyExpenseInsights = Record<string, ExpenseInsightsStatistics>;
+
+type FormContentType = 'overview-filter' | 'manual-entry';

@@ -218,128 +218,16 @@
 </div>
 
 
-@if (openExpenseForm()) {
-  <div class="adaptive-overlay" (click)="openExpenseForm.set(false)">
-    <div class="adaptive-content glass-container" (click)="$event.stopPropagation()">
-      <!-- Mobile Handle -->
-      <div class="sheet-grabber mobile-only"></div>
 
-      <div class="adaptive-header">
-        <h2 class="welcome-title">
-          <span class="title-word">Manual</span>
-          <span class="title-name">Entry</span>
-        </h2>
-
-        <button class="close-btn" (click)="openExpenseForm.set(false)">×</button>
-      </div>
-      <p class="welcome-description">Fill in the details to add your expense manually.</p>
-      <div class="adaptive-body">
-        <form class="manual-entry-form" [formGroup]="expenseForm">
-          <!-- Main Row: Name -->
-          <div class="form-row full-width">
-            <label class="required">Expense Name</label>
-            <input
-              type="text"
-              placeholder="e.g. Starbucks Coffee"
-              formControlName="expenseName"
-              name="expenseName"
-            />
-          </div>
-
-          <!-- Second Row: Category & Amount -->
-          <div class="form-grid">
-            <div class="form-row">
-              <label class="required">Category</label>
-              <input
-                type="text"
-                placeholder="e.g. Food"
-                formControlName="expenseCategory"
-                name="expenseCategory"
-              />
-            </div>
-             <div class="form-row">
-              <label class="required">Payment Mode</label>
-              <select formControlName="paymentMode" name="paymentMode">
-                <option value="UPI">UPI</option>
-                <option value="CASH">CASH</option>
-                <option value="CREDIT CARD">CREDIT CARD</option>
-                <option value="DEBIT CARD">DEBIT CARD</option>
-                <option value="WALLET">WALLET</option>
-                <option value="BANK_TRANSFER">BANK TRANSFER</option>
-                <option value="CHEQUE">CHEQUE</option>
-              </select>
-            </div>
-           
-          </div>
-
-          <!-- Third Row: Payment Mode & Type -->
-          <div class="form-grid">
-            <div class="form-row">
-              <label class="required">Amount (INR)</label>
-              <input
-                type="number"
-                placeholder="0.00"
-                formControlName="amount"
-                name="amount"
-              />
-            </div>
-            <div class="form-row">
-              <label class="required">Transaction Type</label>
-              <div class="toggle-group">
-                <button 
-      type="button" 
-      [class.active]="expenseForm.get('mode')?.value === 'DEBITED'" 
-      (click)="expenseForm.get('mode')?.setValue('DEBITED')">
-      Debited
-    </button>
-
-    <button 
-      type="button" 
-      [class.active]="expenseForm.get('mode')?.value === 'CREDITED'" 
-      (click)="expenseForm.get('mode')?.setValue('CREDITED')">
-      Credited
-    </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Fourth Row: Date & Grouping -->
-          <div class="form-grid">
-            <div class="form-row">
-              <label class="required">Date & Time</label>
-              <input
-                type="datetime-local"
-                formControlName="expenseDate"
-                name="expenseDate"
-              />
-            </div>
-            <div class="form-row">
-              <label>Custom Grouping</label>
-              <input
-                type="text"
-                placeholder="e.g. Trip to Goa"
-                formControlName="customGrouping"
-                name="customGrouping"
-              />
-            </div>
-          </div>
-
-          <!-- Fifth Row: Notes -->
-          <div class="form-row full-width">
-            <label>Notes</label>
-            <textarea
-              rows="3"
-              placeholder="Add additional details..."
-              formControlName="notes"
-              name="notes"
-            ></textarea>
-          </div>
-        </form>
-      </div>
-
-      <div class="adaptive-footer">
-        <button class="action-btn-self-entry" (click)="initiate_update_expense()">Update Transaction</button>
-      </div>
-    </div>
-  </div>
-}
+<!-- Slide-Up Form Component for Manual Entry -->
+<app-slide-up-form
+  [isOpen]="openExpenseForm"
+  [formType]="'manual-entry'"
+  [formGroup]="expenseForm"
+  [titleWord]="'Manual'"
+  [titleName]="'Entry'"
+  [description]="'Fill in the details to add your expense manually.'"
+  [buttonText]="'Update Transaction'"
+  (onSubmit)="initiate_update_expense()"
+  (onClose)="openExpenseForm.set(false)"
+></app-slide-up-form>

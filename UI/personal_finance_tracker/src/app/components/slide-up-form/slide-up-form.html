@@ -1,0 +1,257 @@
+@if (isOpen()) {
+  <div class="adaptive-overlay" (click)="handleClose()">
+    <div class="adaptive-content glass-container" (click)="$event.stopPropagation()">
+      <!-- Mobile Handle -->
+      <div class="sheet-grabber mobile-only"></div>
+
+      <div class="adaptive-header">
+        <h2 class="welcome-title">
+          <span class="title-word">{{ titleWord }}</span>
+          <span class="title-name">{{ titleName }}</span>
+        </h2>
+        <button class="close-btn" (click)="handleClose()" title="Close">×</button>
+      </div>
+
+      <p class="welcome-description">{{ description }}</p>
+
+      <div class="adaptive-body">
+        <!-- SWITCH STATEMENT: Different content based on formType -->
+        @switch (getFormType()) {
+          @case ('manual-entry') {
+            <!-- MANUAL ENTRY FORM -->
+            <form class="manual-entry-form" [formGroup]="formGroup">
+              <!-- Main Row: Name -->
+              <div class="form-row full-width">
+                <label class="required">Expense Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Starbucks Coffee"
+                  formControlName="expenseName"
+                  name="expenseName"
+                />
+              </div>
+
+              <!-- Second Row: Category & Payment Mode -->
+              <div class="form-grid">
+                <div class="form-row">
+                  <label class="required">Category</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Food"
+                    formControlName="expenseCategory"
+                    name="expenseCategory"
+                  />
+                </div>
+                <div class="form-row">
+                  <label class="required">Payment Mode</label>
+                  <select formControlName="paymentMode" name="paymentMode">
+                    <option selected disabled>Please select</option>
+                    <option value="UPI">UPI</option>
+                    <option value="CASH">CASH</option>
+                    <option value="CREDIT CARD">CREDIT CARD</option>
+                    <option value="DEBIT CARD">DEBIT CARD</option>
+                    <option value="WALLET">WALLET</option>
+                    <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                    <option value="CHEQUE">CHEQUE</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Third Row: Amount & Transaction Type -->
+              <div class="form-grid">
+                <div class="form-row">
+                  <label class="required">Amount (INR)</label>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    formControlName="amount"
+                    name="amount"
+                  />
+                </div>
+                <div class="form-row">
+                  <label class="required">Transaction Type</label>
+                  <div class="toggle-group">
+                    <button
+                      type="button"
+                      [class.active]="formGroup.get('mode')?.value === 'DEBITED'"
+                      (click)="formGroup.get('mode')?.setValue('DEBITED')"
+                    >
+                      Debited
+                    </button>
+                    <button
+                      type="button"
+                      [class.active]="formGroup.get('mode')?.value === 'CREDITED'"
+                      (click)="formGroup.get('mode')?.setValue('CREDITED')"
+                    >
+                      Credited
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fourth Row: Date & Custom Grouping -->
+              <div class="form-grid">
+                <div class="form-row">
+                  <label class="required">Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    formControlName="expenseDate"
+                    name="expenseDate"
+                  />
+                </div>
+                <div class="form-row">
+                  <label>Custom Grouping</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Trip to Goa"
+                    formControlName="customGrouping"
+                    name="customGrouping"
+                  />
+                </div>
+              </div>
+
+              <!-- Fifth Row: Notes -->
+              <div class="form-row full-width">
+                <label>Notes</label>
+                <textarea
+                  rows="3"
+                  placeholder="Add additional details..."
+                  formControlName="notes"
+                  name="notes"
+                ></textarea>
+              </div>
+            </form>
+          }
+          @case ('overview-filter') {
+            <!-- OVERVIEW FILTER FORM -->
+            <form class="overview-filter-form" [formGroup]="formGroup">
+              <!-- First Row: Date Range (From & To) -->
+              <div class="form-grid" formGroupName="month">
+                <div class="form-row">
+                  <label class="required">From Date</label>
+                  <input
+                    type="date"
+                    placeholder="Start date"
+                    formControlName="from"
+                    name="fromDate"
+                  />
+                </div>
+                <div class="form-row">
+                  <label class="required">To Date</label>
+                  <input
+                    type="date"
+                    placeholder="End date"
+                    formControlName="to"
+                    name="toDate"
+                  />
+                </div>
+              </div>
+
+              <!-- Second Row: Category & Payment Mode -->
+              <div class="form-grid">
+                <div class="form-row">
+                  <label>Category</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Food, Travel"
+                    formControlName="category"
+                    name="category"
+                  />
+                </div>
+                <div class="form-row">
+                  <label>Payment Mode</label>
+                  <select formControlName="paymentMode"  placeholder = "Please select" name="paymentMode">
+                    <option selected disabled>Please select</option>
+                      <option value="ALL">ALL</option>
+                    <option value="UPI">UPI</option>
+                    <option value="CASH">CASH</option>
+                    <option value="CREDIT CARD">CREDIT CARD</option>
+                    <option value="DEBIT CARD">DEBIT CARD</option>
+                    <option value="WALLET">WALLET</option>
+                    <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                    <option value="CHEQUE">CHEQUE</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+
+            <div class="filtered-result-container">
+              <div class="result-title">Overview</div>
+              <div class="result-container">
+                @if( filteredExpenses().length > 0){
+                   <div class="expense-list">
+                @for (expense of filteredExpenses(); track expense._id) {
+                <article class="glass-container expense-card animate-fade-in">
+                  <div class="item-wrapper">
+                    <!-- Section 1: Icon/Ab -->
+                    <div class="icon-section">
+                      <span class="avatar-text">{{expense.customGrouping.trim().charAt(0).toUpperCase()}} <span>{{expense.customGrouping.trim().charAt(2) ? expense.customGrouping.trim().charAt(2).toLowerCase() : ''}}</span></span>
+                    </div>
+
+                    <!-- Section 2: Text Info -->
+                    <div class="definition-section">
+                      <div class="category-section">{{ expense.expenseCategory }}</div>
+                      <div class="mode-section">{{ expense.paymentMode }}</div>
+                    </div>
+
+                    <!-- Section 3: Numerics -->
+                    <div class="numerics-section">
+                      <div
+                        class="amount-section"
+                        [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'"
+                      >
+                        <span class="amount-sign">{{
+                          expense.mode === 'DEBITED' ? '-' : '+'
+                        }}</span>
+                        {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+                      </div>
+                      <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
+                    </div>
+
+                    <!-- Section 4: Action -->
+                    <div class="action-section">
+                      <button class="edit-btn" aria-label="Edit" >
+                        <!-- You can replace this with your Lucide or SVG icon -->
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+                }
+                @else {
+                  <p class="no-results"> No record to show.</p>
+                }
+              </div>
+             
+            </div>
+            
+          }
+          @default{
+            <p> Form not specified</p>
+          }
+        }
+      </div>
+
+      <div class="adaptive-footer">
+        <button
+          class="action-btn-self-entry"
+          (click)="handleSubmit()"
+          [disabled]="isLoading() || (formGroup && !formGroup.valid)"
+        >
+          {{ buttonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

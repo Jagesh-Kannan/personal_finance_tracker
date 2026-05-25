@@ -238,14 +238,14 @@
     /* Adjust popover positioning for mobile */
     .profile-popover {
         right: 6px;
-        bottom: 80px;
+        bottom: 61px;
         top: auto;
     }
 
     .popover-pointer {
-        right: 24px;
-        bottom: 75px;
-        top: auto;
+        right: 33px;
+        bottom: 55px;
+        top: auto; 
     }
 }
 /* ============================================
