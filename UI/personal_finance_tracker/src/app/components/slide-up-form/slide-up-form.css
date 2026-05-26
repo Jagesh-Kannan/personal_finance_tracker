@@ -335,7 +335,7 @@
   }
 
   .adaptive-body {
-    max-height: 65vh;
+    max-height: 59vh;
     overflow-y: auto;
     padding-right: 8px;
     scrollbar-width: thin;
@@ -425,7 +425,7 @@
   }
   
 .expense-list{
-  max-height: 35vh;
+  max-height: 29vh;
    scrollbar-width: thin;
     scrollbar-color: rgba(255, 154, 68, 0.3) transparent;
   overflow: auto;
