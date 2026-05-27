@@ -178,10 +178,10 @@
             <div class="filtered-result-container">
               <div class="result-title">Overview</div>
               <div class="result-container">
-                @if( filteredExpenses().length > 0){
+                @if( formGroup.get('filteredExpenses')?.value?.length > 0){
                    <div class="expense-list">
-                @for (expense of filteredExpenses(); track expense._id) {
-                <article class="glass-container expense-card animate-fade-in">
+                @for (expense of formGroup.get('filteredExpenses')?.value; track expense._id) {
+                <article class="glass-container expense-card animate-fade-in" (click)="toggleExpenseTooltip(expense._id)" [class.show-tooltip]="selectedTooltipExpenseId() === expense._id" #expenseCard>
                   <div class="item-wrapper">
                     <!-- Section 1: Icon/Ab -->
                     <div class="icon-section">
@@ -210,8 +210,9 @@
 
                     <!-- Section 4: Action -->
                     <div class="action-section">
-                      <button class="edit-btn" aria-label="Edit" >
-                        <!-- You can replace this with your Lucide or SVG icon -->
+
+                      @if(expense.isRemoved){
+                         <button class="add-btn action-btn" aria-label="Add" title="Add" (click)="expense.isRemoved = false; $event.stopPropagation()">
                         <svg
                           width="16"
                           height="16"
@@ -219,26 +220,103 @@
                           fill="none"
                           stroke="currentColor"
                           stroke-width="2"
+                          lucidePlus
                         >
-                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                         </svg>
                       </button>
+                      }
+                      @else{
+                       <button class="edit-btn action-btn" aria-label="Edit" title="Remove" (click)="expense.isRemoved = true; $event.stopPropagation()">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          lucideMinus
+                        >
+                        </svg>
+                      </button>
+                      }
+
                     </div>
                   </div>
                 </article>
               }
             </div>
-                }
-                @else {
-                  <p class="no-results"> No record to show.</p>
+            }
+            @else {
+              <p class="no-results"> No record to show.</p>
+            }
+            
+            <!-- Tooltip Portal - Outside scrollable container -->
+            @if(selectedTooltipExpenseId()) {
+              <!-- Backdrop to close tooltip on outside click -->
+              <div class="tooltip-backdrop" (click)="closeTooltip()"></div>
+              
+                  @for (expense of formGroup.get('filteredExpenses')?.value; track expense._id) {
+                    @if(selectedTooltipExpenseId() === expense._id) {
+                      <div class="expense-tooltip-portal" (click)="$event.stopPropagation()">
+                        <div class="expense-tooltip-content">
+                          <button class="tooltip-close-btn" (click)="closeTooltip()" aria-label="Close tooltip">×</button>
+                          
+                          <div class="tooltip-header">
+                            <div class="tooltip-title">{{ expense.expenseCategory }}</div>
+                          </div>
+                          
+                          <div class="tooltip-body">
+                            <div class="tooltip-row">
+                              <span class="tooltip-label">Name</span>
+                              <span class="tooltip-value">{{ expense.expenseName }}</span>
+                            </div>
+                            
+                            <div class="tooltip-row">
+                              <span class="tooltip-label">Amount</span>
+                              <span class="tooltip-value" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
+                                {{ expense.mode === 'DEBITED' ? '-' : '+' }}{{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+                              </span>
+                            </div>
+                            
+                            <div class="tooltip-row">
+                              <span class="tooltip-label">Payment Mode</span>
+                              <span class="tooltip-value">{{ expense.paymentMode }}</span>
+                            </div>
+                            
+                            <!-- <div class="tooltip-row">
+                              <span class="tooltip-label">Transaction Type</span>
+                              <span class="tooltip-value" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
+                                {{ expense.mode }}
+                              </span>
+                            </div>
+                             -->
+                            <div class="tooltip-row">
+                              <span class="tooltip-label">Date</span>
+                              <span class="tooltip-value">{{ expense.expenseDate | date: 'MMM dd, yyyy' }}</span>
+                            </div>
+                            
+                            <div class="tooltip-row">
+                              <span class="tooltip-label">Custom Grouping</span>
+                              <span class="tooltip-value">{{ expense.customGrouping }}</span>
+                            </div>
+                            
+                            @if(expense.notes) {
+                              <div class="tooltip-row">
+                                <span class="tooltip-label">Notes</span>
+                                <span class="tooltip-value">{{ expense.notes }}</span>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  }
                 }
               </div>
-             
             </div>
-            
           }
-          @default{
-            <p> Form not specified</p>
+          @default {
+            <p>Form not specified</p>
           }
         }
       </div>

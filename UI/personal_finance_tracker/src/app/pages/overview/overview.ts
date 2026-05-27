@@ -32,6 +32,11 @@ export class Overview {
    public overviewFilterForm!:FormGroup;
    public openFilterForm = signal<boolean>(false);
 
+  private activeFilter = signal<{ month: Months | null; expenses: ExpenseSchema[] | null }>({
+    month: 'jan', 
+    expenses: null
+  });
+
   constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService,
     private _fb:FormBuilder
   ) {
@@ -42,22 +47,40 @@ export class Overview {
     });
 
     this.statisticsLoader = this.expenseService.getExpenseLoader;
-    this.statisticsDetails = computed(() => {
-      const expenses = this.expensesList(); 
 
-      const selectedMonth = this.selectedMonth();
-      this.updateOverviewMonthFilter(selectedMonth);
+    //------ previous fine working logic ---------
+    // this.statisticsDetails = computed(() => {
+    //   const expenses = this.expensesList(); 
+
+    //   const selectedMonth = this.selectedMonth();
+    //   this.updateOverviewMonthFilter(selectedMonth);
       
-      if (!expenses || expenses.length === 0) return [];
+    //   if (!expenses || expenses.length === 0) return [];
 
+    //   return [
+    //     this.statisticsDataBuilder.getTotalOutFlow(selectedMonth),
+    //     this.statisticsDataBuilder.getTotalInFlow(selectedMonth),
+    //     this.statisticsDataBuilder.getTotalCashFlow(selectedMonth),
+    //     this.statisticsDataBuilder.getMostSpentCategory(selectedMonth),
+    //   ];
+    // });
+
+    //-------  latest new requirement changed logic  -----------
+     this.statisticsDetails = computed(() => {
+
+      const { month, expenses } = this.activeFilter();
+      const currentExpensesList = expenses ?? this.expensesList();
+
+      if(month) this.updateOverviewMonthFilter(month);
+
+      if (!currentExpensesList || currentExpensesList.length === 0) return [];
       return [
-        this.statisticsDataBuilder.getTotalOutFlow(selectedMonth),
-        this.statisticsDataBuilder.getTotalInFlow(selectedMonth),
-        this.statisticsDataBuilder.getTotalCashFlow(selectedMonth),
-        this.statisticsDataBuilder.getMostSpentCategory(selectedMonth),
+        this.statisticsDataBuilder.getTotalOutFlow(month, currentExpensesList),
+        this.statisticsDataBuilder.getTotalInFlow(month, currentExpensesList),
+        this.statisticsDataBuilder.getTotalCashFlow(month, currentExpensesList),
+        this.statisticsDataBuilder.getMostSpentCategory(month, currentExpensesList),
       ];
     });
-
     
 
    
@@ -82,10 +105,11 @@ private generateMonthDropdown() {
   // Pre-select the current month (which is now index 0)
   if (options.length > 0) {
     this.monthControl.setValue(options[0].value);
-    this.selectedMonth.set(options[0].value);
+
+    this.activeFilter.set({month:options[0].value, expenses: null})
     
     this.monthControl.valueChanges.subscribe((value: any) => {
-      this.selectedMonth.set(value);
+      this.activeFilter.set({month:value, expenses: null})
     });
   }
 }
@@ -116,6 +140,7 @@ private generateOverviewFilterForm(){
     }),
     category:['All'],
     paymentMode: ['ALL'],
+    filteredExpenses: FormControl<FilterableExpenseSchema>
 
   });
 }
@@ -145,7 +170,17 @@ public openOverviewFilter(){
   this.openFilterForm.set(true);
 }
 
-public get_insights(){}
+public get_insights(event:any ){
+
+  const incomingExpenses = event.filteredExpenses.filter((d: FilterableExpenseSchema) => !d.isRemoved);
+
+  this.activeFilter.set({
+    month: null,
+    expenses: incomingExpenses
+  });
+
+  this.openFilterForm.set(false);
+}
 
 }
 

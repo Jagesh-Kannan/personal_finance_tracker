@@ -55,7 +55,7 @@ export class AggrigateService {
       }, { totalAmount: 0, transactionCount: 0 } as AggregatedStat);
   }
 
-  public  calculateExpenseInsights(data: ExpenseSchema[] = this.expensesList()): MonthlyExpenseInsights {
+  public  calculateMonthlyExpenseInsights(data: ExpenseSchema[] = this.expensesList()): MonthlyExpenseInsights {
     const monthlyData: MonthlyExpenseInsights = {};
 
     if (!data || data.length === 0) return monthlyData;
@@ -129,6 +129,64 @@ export class AggrigateService {
     return monthlyData;
   }
 
+  public calculateExpenseInsights(data: ExpenseSchema[] = this.expensesList()): ExpenseInsightsStatistics {
+    const insights = this.getEmptyMonthInsight();
+
+    if (!data || data.length === 0) return insights;
+
+    // 1. Aggregate all expenses regardless of month
+    data.forEach(record => {
+      const amount = record.amount;
+
+      // Increment baseline totals
+      insights.behavioral.totalTransactions += 1;
+      
+      // Calculate payment modes frequency
+      insights.distributions.byPaymentMode[record.paymentMode] = 
+        (insights.distributions.byPaymentMode[record.paymentMode] || 0) + 1;
+
+      // 2. Mode-specific calculations (DEBITED vs CREDITED)
+      if (record.mode === 'DEBITED') {
+        insights.financialTotals.totalOutflow += amount;
+
+        // Track highest purchase
+        if (amount > insights.behavioral.highestSinglePurchase) {
+          insights.behavioral.highestSinglePurchase = amount;
+        }
+
+        // Aggregate categories
+        insights.distributions.byCategory[record.expenseCategory] = 
+          (insights.distributions.byCategory[record.expenseCategory] || 0) + amount;
+
+        // Aggregate custom groups
+        if (record.customGrouping) {
+          insights.distributions.byCustomGroup[record.customGrouping] = 
+            (insights.distributions.byCustomGroup[record.customGrouping] || 0) + amount;
+        }
+      } else if (record.mode === 'CREDITED') {
+        insights.financialTotals.totalInflow += amount;
+      }
+    });
+
+    // 3. Calculate final metrics
+    insights.financialTotals.netCashFlow = insights.financialTotals.totalInflow - insights.financialTotals.totalOutflow;
+
+    // Calculate averages strictly against transactions present
+    if (insights.behavioral.totalTransactions > 0) {
+      insights.behavioral.averageTransactionValue = 
+        insights.financialTotals.totalOutflow / insights.behavioral.totalTransactions;
+    }
+
+    // Determine top category
+    const topCat = this.getMaxKeyFromMap(insights.distributions.byCategory);
+    insights.distributions.topCategory = topCat ? { category: topCat, amount: insights.distributions.byCategory[topCat] } : null;
+
+    // Determine preferred payment mode
+    const topPay = this.getMaxKeyFromMap(insights.distributions.byPaymentMode);
+    insights.distributions.preferredPaymentMode = topPay ? { mode: topPay, count: insights.distributions.byPaymentMode[topPay] } : null;
+
+    return insights;
+  }
   // Helper to find key with max value in a hashmap
   private  getMaxKeyFromMap(map: Record<string, number>): string | null {
     const keys = Object.keys(map);

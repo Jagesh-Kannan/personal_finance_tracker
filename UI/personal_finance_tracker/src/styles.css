@@ -37,6 +37,9 @@
   --btn-primary-shadow: rgba(255, 106, 0, 0.4);
   --dialog-bg: #ffffff;
   --dialog-overlay-bg: #7b7b7b4d;
+  
+  /* Cover Slide Gradient for Disabled Cards */
+  --cover-slide-gradient: linear-gradient(90deg, transparent 0%, rgba(150, 150, 150, 0.4) 50%, transparent 100%);
    font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -75,6 +78,9 @@
   --btn-primary-shadow: rgba(211, 84, 0, 0.4);
   --dialog-bg: var(--glass-bg); /* Use glass effect for dialog background */
   --dialog-overlay-bg: rgba(0, 0, 0, 0.6); /* Darker backdrop */
+  
+  /* Cover Slide Gradient for Disabled Cards */
+  --cover-slide-gradient: linear-gradient(90deg, #01010133 0%, rgba(0, 0, 0, 0.5) 50%, #01010133 100%);
    font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
 }
 

@@ -5,10 +5,13 @@ import { getExpenseList } from '../../stateManagement/selector/expense.selector'
 import { Subscription } from 'rxjs';
 import { AbsolutePipe } from '../custom-pipes/mathAbsolute';
 import { SmartCurrencyPipe } from '../custom-pipes/currency-converter';
+import { LucideMinus, LucidePlus } from '@lucide/angular';
+
+
 
 @Component({
   selector: 'app-slide-up-form',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, AbsolutePipe, SmartCurrencyPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AbsolutePipe, SmartCurrencyPipe, LucideMinus, LucidePlus],
   providers: [CurrencyPipe],
   templateUrl: './slide-up-form.html',
   styleUrl: './slide-up-form.css',
@@ -76,8 +79,8 @@ export class SlideUpForm {
   private formSub!: Subscription;
   
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
-
-  public filteredExpenses = signal<ExpenseSchema[]>([]);
+  
+  public selectedTooltipExpenseId = signal<string | null>(null);
 
   constructor() {}
 
@@ -90,9 +93,9 @@ export class SlideUpForm {
         this.formSub.unsubscribe();
       }
       this.formSub = this.formGroup.valueChanges.subscribe(value => {
-        if (this.formType === 'overview-filter')  this.filteredExpenses.set(this.filterExpenseByFormData());    
+        if (this.formType === 'overview-filter')  this.filterExpenseByFormData();    
       });
-      if(this.formType === 'overview-filter' && this.expensesList() && this.expensesList().length > 0) this.filteredExpenses.set(this.filterExpenseByFormData());
+      if(this.formType === 'overview-filter' && this.expensesList() && this.expensesList().length > 0) this.filterExpenseByFormData();
     }
   }
 
@@ -118,20 +121,39 @@ export class SlideUpForm {
    */
   getFormType(): FormContentType {
     return this.formType;
+  }
+  
+  /**
+   * Toggle tooltip visibility for an expense card
+   */
+  toggleExpenseTooltip(expenseId: string): void {
+    this.selectedTooltipExpenseId.set(
+      this.selectedTooltipExpenseId() === expenseId ? null : expenseId
+    );
+  }
+  
+  /**
+   * Close tooltip
+   */
+  closeTooltip(): void {
+    this.selectedTooltipExpenseId.set(null);
   }  
 
-  private filterExpenseByFormData() : ExpenseSchema[]{
-
-    return this.expensesList().filter(expense => {
-                const fromTime = new Date(this.formGroup.value.month.from).getTime();
-                const toTime = new Date(this.formGroup.value.month.to).getTime();
-                const expenseTime = new Date(expense.expenseDate).getTime();
-                return expenseTime >= fromTime && expenseTime <= toTime 
-                && (this.formGroup.value.category.toLowerCase() === 'all' 
-                || expense.expenseCategory.toLowerCase().includes(this.formGroup.value.category.toLowerCase()))
-                && (this.formGroup.value.paymentMode.toLowerCase() === 'all' 
-                || expense.paymentMode.toLowerCase().includes(this.formGroup.value.paymentMode.toLowerCase()));
-             })
+  private filterExpenseByFormData() : void {
+    const filteredData = this.expensesList()
+                        .filter(expense => {
+                          const fromTime = new Date(this.formGroup.value.month.from).getTime();
+                          const toTime = new Date(this.formGroup.value.month.to).getTime();
+                          const expenseTime = new Date(expense.expenseDate).getTime();
+                          return expenseTime >= fromTime && expenseTime <= toTime 
+                          && (this.formGroup.value.category.toLowerCase() === 'all' 
+                          || expense.expenseCategory.toLowerCase().includes(this.formGroup.value.category.toLowerCase()))
+                          && (this.formGroup.value.paymentMode.toLowerCase() === 'all' 
+                          || expense.paymentMode.toLowerCase().includes(this.formGroup.value.paymentMode.toLowerCase()));
+                      })
+                      .map(expense => ({...expense, isRemoved: false} as FilterableExpenseSchema));
+    
+    this.formGroup.get('filteredExpenses')?.setValue(filteredData, { emitEvent: false });
   }
   
   ngOnDestroy() {

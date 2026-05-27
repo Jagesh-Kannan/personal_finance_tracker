@@ -76,6 +76,6 @@
   [titleName]="'Expenses'"
   [description]="'Filter your expenses based on the selected criteria.'"
   [buttonText]="'Render Insights'"
-  (onSubmit)="get_insights()"
+  (onSubmit)="get_insights($event)"
   (onClose)="openFilterForm.set(false)"
 ></app-slide-up-form>

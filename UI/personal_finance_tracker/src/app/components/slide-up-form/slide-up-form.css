@@ -376,6 +376,11 @@
     font-size: 10px;
     margin-bottom: 1rem;
   }
+
+  .action-btn-self-entry{
+    padding: 10px !important;
+    border-radius: 11px !important;
+  }
 }
 
 /* Tablet */
@@ -465,6 +470,8 @@
   margin-bottom: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px var(--shadow-color);
+  cursor: pointer;
+  position: relative;
 }
 
 .expense-card:hover {
@@ -581,32 +588,82 @@
   justify-content: center;
 }
 
-.edit-btn {
+.action-btn{
   width: 40px;
   height: 40px;
   background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  color: var(--text-color);
-  cursor: pointer;
+    border-radius: 14px;
+     cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+   border: 1px solid var(--border-color);
+
 }
 
+.edit-btn {
+  color: var(--error-color);
+}
+.add-btn{
+  color: var(--success-color);
+  
+}
 .edit-btn:hover {
-  background: var(--primary-orange);
+  background: var(--error-color);
   color: white;
-  border-color: var(--primary-orange);
+  border-color: var(--error-color);
 }
-
+.edit-btn:hover {
+  background: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+.add-btn:hover {
+  background: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
 /* DARK MODE OVERRIDES */
 :root.dark-theme .expense-card {
   background: rgba(255, 255, 255, 0.05);
 }
 
-:root.dark-theme .edit-btn {
+.expense-card:has(.add-btn){
+  opacity: 0.5 ;
+  position: relative;
+  overflow: hidden;
+  animation: disabledCardCover 0.7s ease-in-out;
+}
+
+.expense-card:has(.add-btn)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cover-slide-gradient);
+  animation: coverSlideLeft 0.2s ease-in-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes coverSlideLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes disabledCardCover {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+:root.dark-theme .action-btn {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -632,9 +689,232 @@
     height: 32px !important;
   }
 
-  .edit-btn{
+  .action-btn{
     width: 34px !important;
     height: 34px !important;
     border-radius: 12px !important;
+  }
+}
+
+/* =====================================================
+   EXPENSE CARD TOOLTIP (Portal - Fixed Positioning)
+   ===================================================== */
+
+/* =====================================================
+   EXPENSE CARD TOOLTIP (Portal - Fixed Positioning)
+   ===================================================== */
+
+/* Tooltip Backdrop - Click outside to close */
+.tooltip-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1999;
+  background: transparent;
+  cursor: pointer;
+}
+
+.expense-tooltip-portal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 2000;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0px 0px 11px 5px var(--shadow-color);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-width: 320px;
+  max-width: 380px;
+  max-height: 70vh;
+  overflow-y: auto;
+  animation: tooltipPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: auto;
+}
+
+@keyframes tooltipPopIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-50%) scale(1);
+  }
+}
+
+/* Dark mode override */
+:root.dark-theme .expense-tooltip-portal {
+  background: rgba(31, 31, 31, 0.95);
+  border-color: rgba(58, 58, 58, 0.6);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.expense-tooltip-content {
+  position: relative;
+  padding: 20px;
+}
+
+.tooltip-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--text-color);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.tooltip-close-btn:hover {
+  opacity: 1;
+}
+
+.tooltip-header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tooltip-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 20px;
+}
+
+.tooltip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tooltip-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+  opacity: 0.6;
+  flex: 0 0 110px;
+  min-width: 110px;
+}
+
+.tooltip-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color);
+  text-align: right;
+  flex: 1 1 auto;
+  word-break: break-word;
+  padding-left: 8px;
+}
+
+.tooltip-value.debit {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.tooltip-value.credit {
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+/* Scrollbar styling for tooltip */
+.expense-tooltip-portal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.expense-tooltip-portal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.expense-tooltip-portal::-webkit-scrollbar-thumb {
+  background: rgba(255, 154, 68, 0.3);
+  border-radius: 3px;
+}
+
+.expense-tooltip-portal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 154, 68, 0.5);
+}
+
+/* ===== DESKTOP & TABLET (Position slightly lower) ===== */
+@media (min-width: 768px) {
+  .expense-tooltip-portal {
+    top: 40%;
+    max-height: 65vh;
+  }
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 767px) {
+  .expense-tooltip-portal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    min-width: 280px;
+    max-width: 85vw;
+    max-height: 70vh;
+    animation: tooltipPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .tooltip-title {
+    font-size: 15px;
+  }
+
+  .tooltip-label {
+    font-size: 11px;
+    flex: 0 0 100px;
+    min-width: 100px;
+  }
+
+  .tooltip-value {
+    font-size: 12px;
+  }
+
+  .tooltip-row {
+    gap: 8px;
+  }
+
+  .tooltip-body {
+    gap: 10px;
+  }
+}
+
+/* ===== TABLET ===== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .expense-tooltip-portal {
+    top: 40%;
+    min-width: 300px;
+    max-width: 350px;
+    max-height: 65vh;
+  }
+
+  .tooltip-title {
+    font-size: 15px;
+  }
+
+  .tooltip-value {
+    font-size: 12px;
   }
 }

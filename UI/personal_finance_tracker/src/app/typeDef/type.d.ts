@@ -68,6 +68,10 @@ type ExpenseSchema = {
    updatedAt:  string;
 };
 
+type FilterableExpenseSchema = ExpenseSchema &{
+   isRemoved: boolean;
+};
+
 type ExtractedExpenseData = {
     expenseName: string;
     expenseCategory: string;
