@@ -140,7 +140,7 @@ private generateOverviewFilterForm(){
     }),
     category:['All'],
     paymentMode: ['ALL'],
-    filteredExpenses: FormControl<FilterableExpenseSchema>
+    filteredExpenses: [[]]
 
   });
 }

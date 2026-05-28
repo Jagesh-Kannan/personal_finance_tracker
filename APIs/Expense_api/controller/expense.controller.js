@@ -31,6 +31,28 @@ const save_expenses = (req, res, next) => {
     }
 };
 
+const update_expense = catchAsync(async (req, res, next) => {
+
+     req.body.userId = req.user.id; 
+
+    const expenseId = req.body._id || new mongoose.Types.ObjectId();
+
+    const result = await expense_modal.findByIdAndUpdate(
+        expenseId, 
+        req.body, 
+        { 
+          new: true,          
+          upsert: true,      
+          runValidators: true 
+        }
+    );
+
+    res.status(200).json({
+        "status": "success",
+        "message": "Expense updated successfully."
+    });
+});
+
 const getAll_expenses = catchAsync(async (req, res, next) => {
     const expenses = await expense_modal.find({ userId: req.user.id });
     res.status(200).json({
@@ -275,6 +297,7 @@ const buildDeleteFilter = (params) => {
 
 export {
     save_expenses,
+    update_expense,
     getAll_expenses,
     get_expenses,
     delete_expense,

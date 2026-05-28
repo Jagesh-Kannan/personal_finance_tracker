@@ -586,6 +586,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .action-btn{
@@ -780,6 +781,7 @@
 }
 
 .tooltip-header {
+  display: flex;
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
@@ -916,5 +918,128 @@
 
   .tooltip-value {
     font-size: 12px;
+  }
+}
+
+/* =====================================================
+   TOOLTIP EDITABLE INPUTS & UPDATE BUTTON
+   ===================================================== */
+
+.tooltip-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 13px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tooltip-input:focus {
+  outline: none;
+  border-color: var(--primary-orange);
+  background: var(--glass-bg);
+  box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.15);
+}
+
+.tooltip-input:hover {
+  border-color: var(--primary-orange);
+  background: var(--glass-bg);
+}
+
+.tooltip-input::placeholder {
+  color: var(--text-color);
+  opacity: 0.4;
+}
+
+/* Tooltip Footer */
+.tooltip-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 8px;
+}
+
+/* Update Button */
+.update-btn {
+  flex: 1;
+  background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px var(--btn-primary-shadow);
+}
+
+.edit-btn-pencil, .edit-btn-confirm, .edit-btn-loader{
+      inset: unset;
+    outline: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    
+}
+.edit-btn-pencil, .edit-btn-loader{
+  color: var(--primary-orange);
+}
+.edit-btn-confirm > svg{
+  width: 18px;
+  height: 18px;
+  color: var(--primary-orange);
+}
+
+.update-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--btn-primary-shadow);
+  filter: brightness(1.1);
+}
+
+.update-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px var(--btn-primary-shadow);
+}
+
+.update-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Dark Mode Overrides for Tooltip Inputs */
+:root.dark-theme .tooltip-input {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 154, 68, 0.2);
+}
+
+:root.dark-theme .tooltip-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.2);
+}
+
+:root.dark-theme .tooltip-input:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary-orange);
+}
+
+/* Responsive tooltip input styles */
+@media (max-width: 767px) {
+  .tooltip-input {
+    font-size: 12px;
+    padding: 9px 11px;
+  }
+
+  .update-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 11px;
   }
 }

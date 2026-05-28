@@ -13,11 +13,13 @@ export class ExpenseService {
   private getAllExpenseEndpoint = environment.getAllExpenseEndpoint;
   private importExpenseEndpoint = environment.importExpenseEndpoint;
   private createExpenseEndpoint = environment.createExpenseEndpoint;
+  private updateExpenseEndpoint = environment.updateExpenseEndpoint;
 
   public getExpenseLoader = signal<boolean>(false);
   public fileExtractionLoader = signal<boolean>(false);
   public fileExtractionSuccess = signal<boolean | null>(null);
   public createExpenseLoader = signal<boolean>(false);
+  public updateExpenseLoader = signal<boolean>(false);
 
   constructor(private http: HttpClient,private stateDispatchService:StateDispatch) {}
 
@@ -55,6 +57,21 @@ export class ExpenseService {
       }),
     );
   }
+
+  public updateExpense(expense:ExpenseSchema){
+   this.updateExpenseLoader.set(true);
+    return this.http.put(`${this.baseApiUrl}${this.updateExpenseEndpoint}`, expense).pipe(
+      catchError((error) => {
+        const errorMessage =
+          error.error?.message || 'An error occurred while updating the expense. Please try again.';
+        // this.authErrorBanner.showError(errorMessage);
+        throw error;
+      }),
+      finalize(() => {
+        this.updateExpenseLoader.set(false);
+      }),
+    );
+  };
 
   public uploadExpenseFile(file: File) {
     this.fileExtractionSuccess.set(null);

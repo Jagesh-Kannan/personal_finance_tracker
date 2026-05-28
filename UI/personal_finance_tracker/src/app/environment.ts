@@ -20,6 +20,7 @@ export const environment = {
   //------ EXPENSE ENDPOINTS -------
   getAllExpenseEndpoint: 'expense/getAll',
   createExpenseEndpoint: 'expense/create',
+  updateExpenseEndpoint: 'expense/update',
   deleteExpenseEndpoint: 'expense/deleteMultiple',
   importExpenseEndpoint: 'file-extractor'
 };

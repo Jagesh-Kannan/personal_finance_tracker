@@ -1,17 +1,21 @@
-import { Component, Input, Output, EventEmitter, signal, ViewChild, ElementRef, Signal, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, ViewChild, ElementRef, Signal, SimpleChanges, computed } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { getExpenseList } from '../../stateManagement/selector/expense.selector';
 import { Subscription } from 'rxjs';
 import { AbsolutePipe } from '../custom-pipes/mathAbsolute';
 import { SmartCurrencyPipe } from '../custom-pipes/currency-converter';
-import { LucideMinus, LucidePlus } from '@lucide/angular';
+import {LucideMinus, LucidePlus, LucideSave } from '@lucide/angular';
+import { ExpenseService } from '../../service/expense.service';
+import { ButtonLoader } from '../loader/loader';
 
 
 
 @Component({
   selector: 'app-slide-up-form',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, AbsolutePipe, SmartCurrencyPipe, LucideMinus, LucidePlus],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AbsolutePipe, 
+    SmartCurrencyPipe, LucideMinus, LucidePlus, LucideSave,
+    ButtonLoader],
   providers: [CurrencyPipe],
   templateUrl: './slide-up-form.html',
   styleUrl: './slide-up-form.css',
@@ -81,8 +85,13 @@ export class SlideUpForm {
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
   
   public selectedTooltipExpenseId = signal<string | null>(null);
+  public editingExpense = signal<any | null>(null);
 
-  constructor() {}
+  public readonly updateExpenseLoader;
+
+  constructor(private expenseService:ExpenseService) {
+    this.updateExpenseLoader = computed(() => this.expenseService.updateExpenseLoader());
+  }
 
 
 
@@ -137,24 +146,83 @@ export class SlideUpForm {
    */
   closeTooltip(): void {
     this.selectedTooltipExpenseId.set(null);
-  }  
-
-  private filterExpenseByFormData() : void {
-    const filteredData = this.expensesList()
-                        .filter(expense => {
-                          const fromTime = new Date(this.formGroup.value.month.from).getTime();
-                          const toTime = new Date(this.formGroup.value.month.to).getTime();
-                          const expenseTime = new Date(expense.expenseDate).getTime();
-                          return expenseTime >= fromTime && expenseTime <= toTime 
-                          && (this.formGroup.value.category.toLowerCase() === 'all' 
-                          || expense.expenseCategory.toLowerCase().includes(this.formGroup.value.category.toLowerCase()))
-                          && (this.formGroup.value.paymentMode.toLowerCase() === 'all' 
-                          || expense.paymentMode.toLowerCase().includes(this.formGroup.value.paymentMode.toLowerCase()));
-                      })
-                      .map(expense => ({...expense, isRemoved: false} as FilterableExpenseSchema));
-    
-    this.formGroup.get('filteredExpenses')?.setValue(filteredData, { emitEvent: false });
   }
+
+  /**
+   * Begin editing an expense - create a shallow copy for editing
+   */
+  editExpense(expense: any): void {
+    const copy = { ...expense };
+    if (copy.expenseDate) {
+      copy.expenseDate = this.toDateTimeLocalString(copy.expenseDate);
+    }
+    this.editingExpense.set(copy);
+  }
+
+  /**
+   * Check if the given expense is currently being edited
+   */
+  isEditingExpense(expense: any): boolean {
+    return !!(this.editingExpense() && this.editingExpense()._id === expense._id);
+  }
+
+  /**
+   * Update action for the edited expense - currently just logs the updated object
+   */
+  updateExpense(): void {
+    const updated = this.editingExpense();
+    if (!updated) return;
+
+    this.expenseService.updateExpense(updated).subscribe({
+      next: (res: any) => {
+           this.expenseService.getAllExpense().subscribe();
+            this.editingExpense.set(null);
+    this.selectedTooltipExpenseId.set(null);
+      },
+      error: (err:any) =>{
+         this.editingExpense.set(null);
+    this.selectedTooltipExpenseId.set(null);
+      },
+    })
+   
+  }
+
+  private toDateTimeLocalString(value: any): string {
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().slice(0, 16);
+  }
+
+private filterExpenseByFormData(): void {
+
+  const currentFiltered: FilterableExpenseSchema[] = this.formGroup.value['filteredExpenses'] || [];
+
+  const filteredData = this.expensesList()
+    .filter(expense => {
+      const fromTime = new Date(this.formGroup.value.month.from).getTime();
+      const toTime = new Date(this.formGroup.value.month.to).getTime();
+      const expenseTime = new Date(expense.expenseDate).getTime();
+      
+      return expenseTime >= fromTime && expenseTime <= toTime 
+        && (this.formGroup.value.category.toLowerCase() === 'all' 
+        || expense.expenseCategory.toLowerCase().includes(this.formGroup.value.category.toLowerCase()))
+        && (this.formGroup.value.paymentMode.toLowerCase() === 'all' 
+        || expense.paymentMode.toLowerCase().includes(this.formGroup.value.paymentMode.toLowerCase()));
+    })
+    .map(expense => {
+      const existingMatch = currentFiltered.find(item => item._id === expense._id);
+      
+      const wasRemoved = existingMatch ? existingMatch.isRemoved : false;
+
+      return {
+        ...expense,
+        isRemoved: wasRemoved
+      } as FilterableExpenseSchema;
+    });
+
+  this.formGroup.get('filteredExpenses')?.setValue(filteredData, { emitEvent: false });
+}
+
   
   ngOnDestroy() {
     // Always unsubscribe when the component is destroyed

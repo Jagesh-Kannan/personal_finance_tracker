@@ -22,8 +22,10 @@ const db_url = process.env.DB_URL;
 const db_name = process.env.DB_NAME;
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
+
 // Use memory storage for privacy (no files saved to disk)
 app.use(fileUpload({
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit

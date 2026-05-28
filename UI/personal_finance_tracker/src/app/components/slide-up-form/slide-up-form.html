@@ -263,24 +263,75 @@
                           
                           <div class="tooltip-header">
                             <div class="tooltip-title">{{ expense.expenseCategory }}</div>
+                            <div class="action-section">
+                              @if(!isEditingExpense(expense)) {
+                                <button class="edit-btn-pencil" aria-label="Edit" (click)="editExpense(expense)">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                  </svg>
+                                </button>
+                              }
+                              @if(isEditingExpense(expense) && !updateExpenseLoader()) {
+                                <div class="edit-btn-confirm">
+                                  <svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" (click)="updateExpense()" lucideSave>
+                                   
+                                  </svg>
+                                </div>
+                              }
+                              @if(updateExpenseLoader()){
+                                 <button class="edit-btn-loader" [buttonLoader]="updateExpenseLoader()"></button>
+                              }
+                            </div>
                           </div>
                           
                           <div class="tooltip-body">
                             <div class="tooltip-row">
                               <span class="tooltip-label">Name</span>
-                              <span class="tooltip-value">{{ expense.expenseName }}</span>
+                              @if(isEditingExpense(expense)) {
+                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().expenseName" />
+                              }
+                              @else {
+                                <span class="tooltip-value">{{ expense.expenseName }}</span>
+                              }
                             </div>
                             
+                             @if(isEditingExpense(expense)) {
+                               <div class="tooltip-row">
+                              <span class="tooltip-label">Category</span>
+                            
+                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().expenseCategory" />
+                              
+                              
+                            </div>
+                             }
                             <div class="tooltip-row">
                               <span class="tooltip-label">Amount</span>
-                              <span class="tooltip-value" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
-                                {{ expense.mode === 'DEBITED' ? '-' : '+' }}{{ expense.amount | abs | CurrencyFormatter: expense.currency }}
-                              </span>
+                              @if(isEditingExpense(expense)) {
+                                <input type="number" class="tooltip-input" [(ngModel)]="editingExpense().amount" />
+                              }
+                              @else {
+                                <span class="tooltip-value" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
+                                  {{ expense.mode === 'DEBITED' ? '-' : '+' }}{{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+                                </span>
+                              }
                             </div>
                             
                             <div class="tooltip-row">
                               <span class="tooltip-label">Payment Mode</span>
-                              <span class="tooltip-value">{{ expense.paymentMode }}</span>
+                              @if(isEditingExpense(expense)) {
+                                <select class="tooltip-input" [(ngModel)]="editingExpense().paymentMode">
+                                  <option value="UPI">UPI</option>
+                                  <option value="CASH">CASH</option>
+                                  <option value="CREDIT CARD">CREDIT CARD</option>
+                                  <option value="DEBIT CARD">DEBIT CARD</option>
+                                  <option value="WALLET">WALLET</option>
+                                  <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                                  <option value="CHEQUE">CHEQUE</option>
+                                </select>
+                              }
+                              @else {
+                                <span class="tooltip-value">{{ expense.paymentMode }}</span>
+                              }
                             </div>
                             
                             <!-- <div class="tooltip-row">
@@ -291,22 +342,40 @@
                             </div>
                              -->
                             <div class="tooltip-row">
-                              <span class="tooltip-label">Date</span>
-                              <span class="tooltip-value">{{ expense.expenseDate | date: 'MMM dd, yyyy' }}</span>
+                              <span class="tooltip-label">Spent At</span>
+                              @if(isEditingExpense(expense)) {
+                                <input type="datetime-local" class="tooltip-input" [(ngModel)]="editingExpense().expenseDate" />
+                              }
+                              @else {
+                                <span class="tooltip-value">{{ expense.expenseDate | date: 'MMM dd, yyyy' }}</span>
+                              }
                             </div>
                             
                             <div class="tooltip-row">
                               <span class="tooltip-label">Custom Grouping</span>
-                              <span class="tooltip-value">{{ expense.customGrouping }}</span>
+                              @if(isEditingExpense(expense)) {
+                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().customGrouping" />
+                              }
+                              @else {
+                                <span class="tooltip-value">{{ expense.customGrouping }}</span>
+                              }
                             </div>
                             
-                            @if(expense.notes) {
+                            @if(expense.notes || isEditingExpense(expense)) {
                               <div class="tooltip-row">
                                 <span class="tooltip-label">Notes</span>
-                                <span class="tooltip-value">{{ expense.notes }}</span>
+                                @if(isEditingExpense(expense)) {
+                                  <textarea rows="3" class="tooltip-input" [(ngModel)]="editingExpense().notes"></textarea>
+                                }
+                                @else {
+                                  <span class="tooltip-value">{{ expense.notes }}</span>
+                                }
                               </div>
                             }
                           </div>
+
+                    
+
                         </div>
                       </div>
                     }
