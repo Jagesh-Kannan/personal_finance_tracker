@@ -17,6 +17,9 @@ export class StatisticBlock {
   
   public hideLeftArrow = signal<boolean>(false);
   public hideRightArrow = signal<boolean>(false);
+  
+  private scrollTimeout: any;
+  private isMobile = signal<boolean>(this.checkIfMobile());
 
   // Helper method to create skeleton placeholder data
   private createSkeletonCard(): StatisticDetail {
@@ -37,6 +40,32 @@ export class StatisticBlock {
     };
   }
 
+  // Check if device is mobile
+  private checkIfMobile(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  // Snap to nearest card on mobile
+  private snapToNearestCard(element: HTMLElement): void {
+    const cardWidth = 257; // Card width + gap
+    const scrollLeft = element.scrollLeft;
+    const remainder = scrollLeft % cardWidth;
+    
+    if (remainder > cardWidth / 2) {
+      // Snap to next card
+      element.scrollBy({
+        left: cardWidth - remainder,
+        behavior: 'smooth'
+      });
+    } else if (remainder > 0) {
+      // Snap to previous card
+      element.scrollBy({
+        left: -remainder,
+        behavior: 'smooth'
+      });
+    }
+  }
+
   // Computed signal to display skeleton loaders while loading or actual data when loaded
   public displayList = computed(() => {
     return this.cardLoader() 
@@ -51,13 +80,14 @@ export class StatisticBlock {
 
   @HostListener('window:resize')
   onResize() {
+    this.isMobile.set(this.checkIfMobile());
     this.checkContentScrolled(this.scrollList()?.nativeElement);
   }
 
   scrollTo(direction: 'left' | 'right', element: HTMLElement) {
  
     // 320px is a good default (300px card + 20px gap)
-    const scrollAmount = direction === 'left' ? -277 : 277;
+    const scrollAmount = direction === 'left' ? -257 : 257;
     
     element.scrollBy({
       left: scrollAmount,
@@ -65,9 +95,16 @@ export class StatisticBlock {
     });
   }
 
-
-  checkContentScrolled(element:HTMLElement ){
-     this.hideLeftArrow.set(element.scrollLeft > 10);
-     this.hideRightArrow.set((element.scrollWidth-element.clientWidth) > element.scrollLeft+10)
+  checkContentScrolled(element: HTMLElement) {
+    this.hideLeftArrow.set(element.scrollLeft > 10);
+    this.hideRightArrow.set((element.scrollWidth - element.clientWidth) > element.scrollLeft + 10);
+    
+    // On mobile, snap to nearest card after user stops scrolling
+    if (this.isMobile()) {
+      clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = setTimeout(() => {
+        this.snapToNearestCard(element);
+      }, 150); // 150ms delay after scroll ends
+    }
   }
 }

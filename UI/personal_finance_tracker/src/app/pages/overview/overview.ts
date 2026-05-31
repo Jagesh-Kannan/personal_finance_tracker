@@ -138,7 +138,7 @@ private generateOverviewFilterForm(){
       from: [],
       to: []
     }),
-    category:['All'],
+    searchKey:[''],
     paymentMode: ['ALL'],
     filteredExpenses: [[]]
 

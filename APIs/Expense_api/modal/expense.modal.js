@@ -31,6 +31,9 @@ const expense_schema = new mongoose.Schema({
         enum: ['DEBITED','CREDITED'],
         required: true
     },
+    senderOrReceiver: {
+        type: String,
+    },
     expenseDate: {
         type: Date,
         default: Date.now

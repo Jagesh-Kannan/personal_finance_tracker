@@ -68,6 +68,19 @@
                     name="amount"
                   />
                 </div>
+                 <div class="form-row">
+                  <label >Sender / Receiver</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Jhon Doe"
+                    formControlName="senderOrReceiver"
+                    name="senderOrReceiver"
+                  />
+                </div>
+              </div>
+
+              <!-- Fourth Row: Date & Custom Grouping -->
+              <div class="form-grid">
                 <div class="form-row">
                   <label class="required">Transaction Type</label>
                   <div class="toggle-group">
@@ -87,10 +100,6 @@
                     </button>
                   </div>
                 </div>
-              </div>
-
-              <!-- Fourth Row: Date & Custom Grouping -->
-              <div class="form-grid">
                 <div class="form-row">
                   <label class="required">Date & Time</label>
                   <input
@@ -99,7 +108,12 @@
                     name="expenseDate"
                   />
                 </div>
-                <div class="form-row">
+               
+              </div>
+
+              <!-- Fifth Row: Notes -->
+              <div class="form-row full-width">
+                 <div class="form-row">
                   <label>Custom Grouping</label>
                   <input
                     type="text"
@@ -108,10 +122,6 @@
                     name="customGrouping"
                   />
                 </div>
-              </div>
-
-              <!-- Fifth Row: Notes -->
-              <div class="form-row full-width">
                 <label>Notes</label>
                 <textarea
                   rows="3"
@@ -150,12 +160,12 @@
               <!-- Second Row: Category & Payment Mode -->
               <div class="form-grid">
                 <div class="form-row">
-                  <label>Category</label>
+                  <label>Search</label>
                   <input
                     type="text"
                     placeholder="e.g. Food, Travel"
-                    formControlName="category"
-                    name="category"
+                    formControlName="searchKey"
+                    name="searchKey"
                   />
                 </div>
                 <div class="form-row">
@@ -212,7 +222,8 @@
                     <div class="action-section">
 
                       @if(expense.isRemoved){
-                         <button class="add-btn action-btn" aria-label="Add" title="Add" (click)="expense.isRemoved = false; $event.stopPropagation()">
+                         <button class="add-btn action-btn" aria-label="Add" title="Add"
+                          (click)="addOrRemoveExpense(expense, 'add'); $event.stopPropagation(); ">
                         <svg
                           width="16"
                           height="16"
@@ -226,7 +237,7 @@
                       </button>
                       }
                       @else{
-                       <button class="edit-btn action-btn" aria-label="Edit" title="Remove" (click)="expense.isRemoved = true; $event.stopPropagation()">
+                       <button class="edit-btn action-btn" aria-label="Edit" title="Remove" (click)="addOrRemoveExpense(expense, 'remove'); $event.stopPropagation()">
                         <svg
                           width="16"
                           height="16"
@@ -341,6 +352,16 @@
                               </span>
                             </div>
                              -->
+                            <div class="tooltip-row">
+                              <span class="tooltip-label">Sender / Receiver</span>
+                              @if(isEditingExpense(expense)) {
+                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().senderOrReceiver" />
+                              }
+                              @else {
+                                <span class="tooltip-value">{{ expense.senderOrReceiver }}</span>
+                              }
+                            </div>
+
                             <div class="tooltip-row">
                               <span class="tooltip-label">Spent At</span>
                               @if(isEditingExpense(expense)) {

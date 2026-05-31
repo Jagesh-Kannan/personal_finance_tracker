@@ -66,6 +66,7 @@ const get_expenses = catchAsync(async (req, res, next) => {
         id,
         expenseName,
         expenseCategory,
+        senderOrReceiver,
         amount_gt,
         amount_lt,
         amount_gte,
@@ -88,6 +89,9 @@ const get_expenses = catchAsync(async (req, res, next) => {
     }
     if (expenseCategory) {
         filter.expenseCategory = { $regex: expenseCategory, $options: "i" };
+    }
+    if(senderOrReceiver){
+        filter.senderOrReceiver = { $regex: senderOrReceiver, $options: "i" };
     }
     if (customGrouping) {
         filter.customGrouping = { $regex: customGrouping, $options: "i" };

@@ -88,6 +88,7 @@ export class SlideUpForm {
   public editingExpense = signal<any | null>(null);
 
   public readonly updateExpenseLoader;
+  private storeRemovedExpense = signal<FilterableExpenseSchema[]>([]);
 
   constructor(private expenseService:ExpenseService) {
     this.updateExpenseLoader = computed(() => this.expenseService.updateExpenseLoader());
@@ -141,6 +142,22 @@ export class SlideUpForm {
     );
   }
   
+  addOrRemoveExpense(expense: FilterableExpenseSchema, mode: 'add' | 'remove') {
+    if (mode === 'add') {
+      expense.isRemoved = false;
+      // Remove from storeRemovedExpense
+      this.storeRemovedExpense.set(
+        this.storeRemovedExpense().filter(item => item._id !== expense._id)
+      );
+    } else {
+      expense.isRemoved = true;
+      // Add to storeRemovedExpense if not already there
+      const exists = this.storeRemovedExpense().some(item => item._id === expense._id);
+      if (!exists) {
+        this.storeRemovedExpense.set([...this.storeRemovedExpense(), expense]);
+      }
+    }
+  }
   /**
    * Close tooltip
    */
@@ -194,8 +211,7 @@ export class SlideUpForm {
   }
 
 private filterExpenseByFormData(): void {
-
-  const currentFiltered: FilterableExpenseSchema[] = this.formGroup.value['filteredExpenses'] || [];
+  const removedExpenseIds = this.storeRemovedExpense().map(exp => exp._id);
 
   const filteredData = this.expensesList()
     .filter(expense => {
@@ -204,15 +220,17 @@ private filterExpenseByFormData(): void {
       const expenseTime = new Date(expense.expenseDate).getTime();
       
       return expenseTime >= fromTime && expenseTime <= toTime 
-        && (this.formGroup.value.category.toLowerCase() === 'all' 
-        || expense.expenseCategory.toLowerCase().includes(this.formGroup.value.category.toLowerCase()))
+        && (this.formGroup.value.searchKey.toLowerCase() === '' 
+        || expense.expenseCategory.toLowerCase().includes(this.formGroup.value.searchKey.toLowerCase())
+        || expense.customGrouping.toLowerCase().includes(this.formGroup.value.searchKey.toLowerCase())
+        || expense.mode.toLowerCase().includes(this.formGroup.value.searchKey.toLowerCase())
+        || expense.senderOrReceiver.toLowerCase().includes(this.formGroup.value.searchKey.toLowerCase())
+      )
         && (this.formGroup.value.paymentMode.toLowerCase() === 'all' 
         || expense.paymentMode.toLowerCase().includes(this.formGroup.value.paymentMode.toLowerCase()));
     })
     .map(expense => {
-      const existingMatch = currentFiltered.find(item => item._id === expense._id);
-      
-      const wasRemoved = existingMatch ? existingMatch.isRemoved : false;
+      const wasRemoved = removedExpenseIds.includes(expense._id);
 
       return {
         ...expense,
@@ -229,6 +247,7 @@ private filterExpenseByFormData(): void {
     if (this.formSub) {
       this.formSub.unsubscribe();
     }
+    this.storeRemovedExpense.set([])
   }
 }
 

@@ -28,7 +28,17 @@
 }
 
 /* Hide Mobile Elements on Desktop */
-.menu-toggle, .mobile-header {
+.menu-toggle {
+  display: none;
+}
+
+/* Desktop Header */
+.desktop-header {
+  display: flex;
+}
+
+/* Mobile Header - Hidden by default */
+.mobile-header {
   display: none;
 }
 
@@ -105,30 +115,67 @@
    MOBILE VIEW MEDIA QUERIES
    ============================================ */
 @media (max-width: 754px) {
-  /* Hide desktop elements on mobile */
-  .header-center {
+  /* Hide desktop header and show mobile header */
+  .desktop-header {
     display: none;
   }
 
-  .main-header {
-        padding: 0.5rem 1rem;
-        padding-bottom: 0.5rem;
-    }
-
-  .header-right {
-    gap: 8px;
+  .icon-btn{
+    padding: 5px;
+  }
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: none !important;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
   }
 
-  .app-name {
+  .mobile-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mobile-user-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    transition: background 0.2s ease;
+  }
+
+  .mobile-user-icon:hover {
+    background: var(--input-bg);
+  }
+
+  .mobile-app-name {
     font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-color);
+  }
+
+  .mobile-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .bottom-nav {
     display: flex !important;
-  }
-
-  .user-profile{
-    display: none;
   }
 }
 
@@ -237,15 +284,16 @@
 @media (max-width: 754px) {
     /* Adjust popover positioning for mobile */
     .profile-popover {
-        right: 6px;
-        bottom: 61px;
-        top: auto;
+        top: 54px;
+        left: 7px;
     }
 
     .popover-pointer {
-        right: 33px;
-        bottom: 55px;
-        top: auto; 
+               left: 30px;
+        /* right: 33px; */
+        /* bottom: 55px; */
+        /* top: auto; */
+        top: 49px;
     }
 }
 /* ============================================

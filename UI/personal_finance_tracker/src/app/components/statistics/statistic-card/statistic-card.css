@@ -7,7 +7,7 @@
 .statistic-card-container > .statistic-card-wrapper{
   background: var(--glass-bg);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 24px;
   font-family:inherit;
   box-shadow: 0 4px 6px -1px var(--shadow-color);
@@ -91,14 +91,14 @@
 @media (max-width: 767px) {
   .statistic-card-container{
    
-    min-width: 270px;
+    min-width: 250px;
 }
 
 .card-header > .head.wrapper{
   margin-bottom: 5px;
 }
 .statistic-card-container > .statistic-card-wrapper{
-  padding: 14px 14px 6px 14px;
+  padding: 12px 12px 5px 12px;
 }
 .card-header .card-title > h3{
   font-size: 0.9rem;
@@ -108,10 +108,10 @@
     font-size: 10px;
 }
 .card-header .card-note > .note-content > .note-description{
-    font-size: 10px;
+    font-size: 9px;
 }
 .card-body .value{
-    font-size: 1.7rem;
+    font-size: 1.5rem;
 }
 .card-footer > .footer.wrapper{
     gap: 5px;

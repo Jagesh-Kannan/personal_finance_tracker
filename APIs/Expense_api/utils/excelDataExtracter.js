@@ -36,6 +36,7 @@ export const extractExcelData = (fileBuffer) => {
             expenseDate: parseExcelDate(row['__EMPTY_3']), // Assumes this helper exists
             notes: remark,
             currency: 'INR',
+            senderOrReceiver: receiverName,
             customGrouping: receiverName
         };
     }).filter(item => item !== null);

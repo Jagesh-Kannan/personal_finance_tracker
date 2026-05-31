@@ -1,4 +1,5 @@
-<header class="main-header">
+<!-- Desktop Header -->
+<header class="main-header desktop-header">
   <div class="header-left">
     <div class="logo-box">
       <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
@@ -33,6 +34,24 @@
   </div>
 </header>
 
+<!-- Mobile Header -->
+<header class="main-header mobile-header">
+  <div class="mobile-header-left">
+    <button class="mobile-user-icon" (click)="isProfileOpen.set(!isProfileOpen())">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+        <path d="M20 21C20 18.2386 16.4183 16 12 16C7.58172 16 4 18.2386 4 21" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+    <span class="mobile-app-name">Fumos</span>
+  </div>
+  <div class="mobile-header-right">
+    <button class="icon-btn notification">
+      <span class="badge"></span>🔔
+    </button>
+  </div>
+</header>
+
 <!-- Bottom Navigation (Mobile Only) -->
 <nav class="bottom-nav">
   <!-- Overview -->
@@ -57,12 +76,6 @@
   <button class="bottom-nav-item" [attr.aria-label]="'History'">
     <svg class="bottom-nav-icon" [lucideIcon]="historyIcon"></svg>
     <span class="bottom-nav-label">History</span>
-  </button>
-
-  <!-- Profile -->
-  <button class="bottom-nav-item" [attr.aria-label]="'Profile'" (click)="toggleProfileFromBottom()">
-    <svg class="bottom-nav-icon" [lucideIcon]="userIcon"></svg>
-    <span class="bottom-nav-label">Profile</span>
   </button>
 </nav>
 

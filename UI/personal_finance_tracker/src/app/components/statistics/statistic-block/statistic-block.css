@@ -25,6 +25,19 @@
   display: none;
 }
 
+/* Mobile snap scrolling */
+@media (max-width: 767px) {
+  .statistics-block-wrapper {
+    scroll-snap-type: x mandatory;
+  }
+  
+  statistic-card {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    flex-shrink: 0;
+  }
+}
+
 /* The Toggler/Gradient Container */
 .statistic-content .toggler {
   position: absolute;
@@ -70,7 +83,7 @@
 /* Mobile only */
 @media (max-width: 767px) {
   .statistics-block-wrapper{
-    padding: 20px 40px;
+    padding: 12px 40px;
 
   }
 }
