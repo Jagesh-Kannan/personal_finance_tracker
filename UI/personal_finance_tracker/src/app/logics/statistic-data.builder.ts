@@ -130,7 +130,7 @@ export class StatisticDataBuilder {
     const outflow = lastMonth_insight.financialTotals.totalOutflow || 0;
 
     const perc_diff =
-      expense_diff === 0 && outflow === 0 ? 0 : (expense_diff / (outflow || expense_diff)) * 100;
+      expense_diff === 0 && outflow === 0  ? 0 : (expense_diff / (outflow || expense_diff)) * 100;
 
     return {
       title: 'Total Expense',
@@ -155,10 +155,10 @@ export class StatisticDataBuilder {
       },
       footer: [
         {
-          value: expense_diff.toString(),
+          value: outflow === 0 ? '0' : expense_diff.toString(),
           direction: expense_diff > 0 ? 'increase' : 'decrease',
           sign: expense_diff > 0 ? 'negative' : 'positive',
-          description: 'then last month',
+          description: outflow === 0 ? 'no previous record' : 'then last month',
         },
       ],
     };
@@ -199,10 +199,10 @@ export class StatisticDataBuilder {
       },
       footer: [
         {
-          value: earning_diff.toString(),
+          value: inflow === 0 ? '0' : earning_diff.toString(),
           direction: perc_er_diff > 0 ? 'increase' : 'decrease',
           sign: perc_er_diff > 0 ? 'positive' : 'negative',
-          description: 'then last month',
+          description: inflow === 0 ? 'no previous record' : 'then last month',
         },
       ],
     };
@@ -248,10 +248,10 @@ export class StatisticDataBuilder {
       },
       footer: [
         {
-          value: cashflow_diff.toString(),
+          value: cashflow === 0 ? '0' :cashflow_diff.toString(),
           direction: perc_cashflow_diff > 0 ? 'increase' : 'decrease',
           sign: cashflow_diff > 0 ? 'positive' : 'negative',
-          description: ' then last month',
+          description: cashflow === 0 ? 'no previous record' : ' then last month',
         },
       ],
     };

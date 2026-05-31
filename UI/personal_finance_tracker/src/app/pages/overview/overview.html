@@ -20,6 +20,7 @@
             class="custom-select"
             [formControl]="monthControl"
             name="monthSelect"
+            [attr.data-custom-range]="customMonthRangeDisplay()"
           >
             @for (month of monthOptions(); track month.value) {
               <option [value]="month.value">
@@ -29,6 +30,9 @@
           </select>
           <!-- Custom CSS arrow element to bypass native browser limits -->
           <div class="select-arrow"></div>
+          @if(customMonthRangeDisplay()) {
+            <div class="custom-range-display">{{ customMonthRangeDisplay() }}</div>
+          }
         </div>
         <div class="actions">
           <div class="filter">

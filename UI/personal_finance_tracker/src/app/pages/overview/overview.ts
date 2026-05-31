@@ -31,6 +31,7 @@ export class Overview {
    public selectedMonth = signal<Months>('jan');
    public overviewFilterForm!:FormGroup;
    public openFilterForm = signal<boolean>(false);
+   public customMonthRangeDisplay = signal<string>('');
 
   private activeFilter = signal<{ month: Months | null; expenses: ExpenseSchema[] | null }>({
     month: 'jan', 
@@ -109,6 +110,7 @@ private generateMonthDropdown() {
     this.activeFilter.set({month:options[0].value, expenses: null})
     
     this.monthControl.valueChanges.subscribe((value: any) => {
+      this.customMonthRangeDisplay.set(''); // Clear custom range when predefined month is selected
       this.activeFilter.set({month:value, expenses: null})
     });
   }
@@ -173,6 +175,19 @@ public openOverviewFilter(){
 public get_insights(event:any ){
 
   const incomingExpenses = event.filteredExpenses.filter((d: FilterableExpenseSchema) => !d.isRemoved);
+
+  // If month data is provided, display the month range in the text box
+  if (event.month && event.month.from && event.month.to) {
+    const fromDate = new Date(event.month.from);
+    const toDate = new Date(event.month.to);
+    
+    const fromMonth = fromDate.toLocaleString('default', { month: 'short' });
+    const toMonth = toDate.toLocaleString('default', { month: 'short' });
+    
+    const monthRangeDisplay = fromMonth === toMonth ? fromMonth : `${fromMonth} - ${toMonth}`;
+    
+    this.customMonthRangeDisplay.set(monthRangeDisplay);
+  }
 
   this.activeFilter.set({
     month: null,
