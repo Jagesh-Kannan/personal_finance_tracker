@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { environment } from '../environment';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, Observable, tap } from 'rxjs';
-import { AuthErrorBannerService } from './auth-error-banner.service';
+import { AuthBannerService } from './auth-banner.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,14 +20,14 @@ export class UserService {
   public resetPasswordLoader = signal<boolean>(false);
   public userInfoLoader = signal<boolean>(false);
 
-  constructor(private _http: HttpClient, private authErrorBanner: AuthErrorBannerService) { }
+  constructor(private _http: HttpClient, private authBanner: AuthBannerService) { }
 
   public register(data: RegisterDetails) {
     this.registerLoader.set(true)
     return this._http.post(`${this.baseApiUrl}${this.signupEndpoint}`, data).pipe(
         catchError((error) => {
                 const errorMessage = error.error?.message || 'An error occurred during registration. Please try again.';
-                this.authErrorBanner.showError(errorMessage);
+                this.authBanner.showError(errorMessage);
                 throw error;
               }),
             finalize(() => {
@@ -41,12 +41,12 @@ export class UserService {
     return this._http.post(`${this.baseApiUrl}${this.forgotPasswordEndpoint}`, data).pipe(
       tap((response: any) => {
         if (response && response.status === 'success') {
-          this.authErrorBanner.showSuccess(response.message);
+          this.authBanner.showSuccess(response.message);
         }
       }),
         catchError((error) => {
                 const errorMessage = error.error?.message || 'An error occurred during forgot password request. Please try again.';
-                this.authErrorBanner.showError(errorMessage);
+                this.authBanner.showError(errorMessage);
                 throw error;
               }),
             finalize(() => {
@@ -60,7 +60,7 @@ export class UserService {
     return this._http.post(`${this.baseApiUrl}${this.resetPasswordEndpoint}${token}`, data).pipe(
         catchError((error) => {
                 const errorMessage = error.error?.message || 'An error occurred during password reset. Please try again.';
-                this.authErrorBanner.showError(errorMessage);
+                this.authBanner.showError(errorMessage);
                 throw error;
               }),
             finalize(() => {
@@ -74,7 +74,7 @@ export class UserService {
     return this._http.get(`${this.baseApiUrl}${this.userInfoEndpoint}`).pipe(
         catchError((error) => {
                 const errorMessage = error.error?.message || 'An error occurred while fetching user info. Please try again.';
-                this.authErrorBanner.showError(errorMessage);
+                this.authBanner.showError(errorMessage);
                 throw error;
               }),
             finalize(() => {

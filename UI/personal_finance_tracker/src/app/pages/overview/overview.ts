@@ -7,6 +7,7 @@ import { ExpenseService } from '../../service/expense.service';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideFunnel } from '@lucide/angular';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
+import { ToasterService } from '../../service/toaster.service';
 
 
 interface MonthOption {
@@ -39,7 +40,7 @@ export class Overview {
   });
 
   constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService,
-    private _fb:FormBuilder
+    private _fb:FormBuilder, private toasterService: ToasterService,
   ) {
      
      effect(() => {

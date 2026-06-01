@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { StateDispatch } from './service/state-dispatch';
+import { ToasterComponent } from './components/notify-banner/toaster.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToasterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

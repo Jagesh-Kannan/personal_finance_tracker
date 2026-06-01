@@ -10,7 +10,7 @@ export interface ErrorBanner {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthErrorBannerService {
+export class AuthBannerService {
   private errorBannerSignal = signal<ErrorBanner>({
     message: '',
     type: 'info',
@@ -19,7 +19,7 @@ export class AuthErrorBannerService {
 
   readonly errorBanner = this.errorBannerSignal.asReadonly();
 
-  showError(message: string, duration?: number ) {
+  showError(message: string, duration: number = 3000 ) {
     this.errorBannerSignal.set({
       message,
       type: 'error',
@@ -31,7 +31,7 @@ export class AuthErrorBannerService {
     }
   }
 
-  showSuccess(message: string, duration?: number ) {
+  showSuccess(message: string, duration: number = 3000) {
     this.errorBannerSignal.set({
       message,
       type: 'success',
@@ -43,7 +43,7 @@ export class AuthErrorBannerService {
     }
   }
 
-  showInfo(message: string, duration?: number ) {
+  showInfo(message: string, duration: number = 3000) {
     this.errorBannerSignal.set({
       message,
       type: 'info',

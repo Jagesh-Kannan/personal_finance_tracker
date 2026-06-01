@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../environment';
 import { catchError, finalize, Observable, tap } from 'rxjs';
-import { AuthErrorBannerService } from './auth-error-banner.service';
+import { AuthBannerService } from './auth-banner.service';
 import { Router } from '@angular/router';
 import { CommonService } from './common-service';
 
@@ -24,7 +24,7 @@ export class AuthService {
 
 
 
-  constructor(private http: HttpClient, private authErrorBanner: AuthErrorBannerService, private router:Router, private commonService:CommonService ) { }
+  constructor(private http: HttpClient, private authBanner: AuthBannerService, private router:Router, private commonService:CommonService ) { }
 
 
   public login(data: LoginDetails):Observable<any> {
@@ -34,7 +34,7 @@ export class AuthService {
   }).pipe(
         catchError((error) => {
           const errorMessage = error.error?.message || 'An error occurred during login. Please try again.';
-          this.authErrorBanner.showError(errorMessage);
+          this.authBanner.showError(errorMessage);
           throw error;
         }),
         finalize(() => {
@@ -48,7 +48,7 @@ export class AuthService {
     return this.http.post(`${this.baseApiUrl}${this.refreshTokenEndpoint}`,{refreshToken}).pipe(
         catchError((error) => {
           const errorMessage = error.error?.message || 'An error occurred during login. Please try again.';
-          this.authErrorBanner.showError(errorMessage);
+          this.authBanner.showError(errorMessage);
           if(error.status === 401){
             this.router.navigate([environment.login_path]);
           }
@@ -65,13 +65,14 @@ export class AuthService {
       return this.http.get(`${this.baseApiUrl}${this.logoutEndpoint}`).pipe(
         tap((res:any)=>{
           if(res.status === 'success'){
+            this.authBanner.showSuccess('Logged out successfully');
             this.commonService.clearSessionData();
             this.router.navigate([environment.login_path]);
           }
         }),
         catchError((error) => {
           const errorMessage = error.error?.message || 'An error occurred during logout. Please try again.';
-          this.authErrorBanner.showError(errorMessage);
+          this.authBanner.showError(errorMessage);
           throw error;
         }),
         finalize(() => {

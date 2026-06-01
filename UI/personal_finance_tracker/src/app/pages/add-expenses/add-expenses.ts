@@ -8,10 +8,8 @@ import { SmartCurrencyPipe } from '../../components/custom-pipes/currency-conver
 import { AbsolutePipe } from '../../components/custom-pipes/mathAbsolute';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonLoader } from '../../components/loader/loader';
-import { error } from 'console';
 import { lastValueFrom } from 'rxjs';
-import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
-import { AuthErrorBannerService } from '../../service/auth-error-banner.service';
+import { AuthNotifyBannerComponent } from '../../components/notify-banner/auth-notify-banner.component';
 import { Router } from '@angular/router';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 
@@ -19,7 +17,7 @@ import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
   selector: 'app-add-expenses',
   imports: [DatePipe, CommonModule, LucidIconModule, LucideImport, LucidePlus, 
     AbsolutePipe, SmartCurrencyPipe, FormsModule, ReactiveFormsModule, ButtonLoader,
-    AuthErrorBannerComponent, SlideUpForm],
+    AuthNotifyBannerComponent, SlideUpForm],
   providers: [CurrencyPipe],
   templateUrl: './add-expenses.html',
   styleUrl: './add-expenses.css',
@@ -45,7 +43,7 @@ export class AddExpenses {
   public extractedData = signal<ExtractedExpenseData[]>([]);
 
 
-  constructor(private expenseService: ExpenseService, private _fb:FormBuilder, private authErrorService:AuthErrorBannerService,
+  constructor(private expenseService: ExpenseService, private _fb:FormBuilder,
     private router:Router
   ) {
     this.fileExtractionLoader = computed(() => this.expenseService.fileExtractionLoader());
@@ -236,7 +234,6 @@ clearFile() {
 
         this.expenseService.createExpense(createExpenseBody).subscribe({
             next: async (res:any) => {
-                this.authErrorService.showSuccess('Expenses added successfully!');
                  await this.getExpenseList();
                  this.router.navigate(['/home']);
             }

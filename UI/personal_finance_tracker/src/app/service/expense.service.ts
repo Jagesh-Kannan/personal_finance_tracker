@@ -3,6 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { environment } from '../environment';
 import { catchError, finalize, tap } from 'rxjs';
 import { StateDispatch } from './state-dispatch';
+import { ToasterService } from './toaster.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class ExpenseService {
   public createExpenseLoader = signal<boolean>(false);
   public updateExpenseLoader = signal<boolean>(false);
 
-  constructor(private http: HttpClient,private stateDispatchService:StateDispatch) {}
+  constructor(private http: HttpClient,private stateDispatchService:StateDispatch, private toasterService: ToasterService) {}
 
   public getAllExpense() {
     this.getExpenseLoader.set(true);
@@ -34,7 +35,7 @@ export class ExpenseService {
       catchError((error) => {
         const errorMessage =
           error.error?.message || 'An error occurred during login. Please try again.';
-        // this.authErrorBanner.showError(errorMessage);
+         this.toasterService.showError(errorMessage);
         throw error;
       }),
       finalize(() => {
@@ -46,10 +47,13 @@ export class ExpenseService {
   public createExpense(expenseData: CreateExpenseBody | CreateExpenseBody[]) {
     this.createExpenseLoader.set(true);
     return this.http.post(`${this.baseApiUrl}${this.createExpenseEndpoint}`, expenseData).pipe(
+      tap((res:any)=>{
+        this.toasterService.showSuccess('Expense created successfully!');
+      }),
       catchError((error) => {
         const errorMessage =
           error.error?.message || 'An error occurred while creating the expense. Please try again.';
-        // this.authErrorBanner.showError(errorMessage);
+         this.toasterService.showError(errorMessage);
         throw error;
       }),
       finalize(() => {
@@ -61,10 +65,13 @@ export class ExpenseService {
   public updateExpense(expense:ExpenseSchema){
    this.updateExpenseLoader.set(true);
     return this.http.put(`${this.baseApiUrl}${this.updateExpenseEndpoint}`, expense).pipe(
+      tap((res:any)=>{
+        this.toasterService.showSuccess('Expense updated successfully!');
+      }),
       catchError((error) => {
         const errorMessage =
           error.error?.message || 'An error occurred while updating the expense. Please try again.';
-        // this.authErrorBanner.showError(errorMessage);
+        this.toasterService.showError(errorMessage);
         throw error;
       }),
       finalize(() => {

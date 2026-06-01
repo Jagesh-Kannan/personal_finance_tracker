@@ -2,10 +2,10 @@
 
 import { Component, inject, computed } from '@angular/core'; // Added computed
 import { CommonModule } from '@angular/common';
-import { AuthErrorBannerService } from '../../service/auth-error-banner.service';
+import { AuthBannerService } from '../../service/auth-banner.service';
 
 @Component({
-  selector: 'app-error-banner',
+  selector: 'app-auth-banner',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -73,8 +73,8 @@ import { AuthErrorBannerService } from '../../service/auth-error-banner.service'
     }
   `]
 })
-export class AuthErrorBannerComponent {
-  private readonly errorBannerService = inject(AuthErrorBannerService);
+export class AuthNotifyBannerComponent {
+  private readonly errorBannerService = inject(AuthBannerService);
   
   // Create a computed signal for easier template access
   readonly bannerState = computed(() => this.errorBannerService.errorBanner());

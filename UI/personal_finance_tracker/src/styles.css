@@ -41,6 +41,8 @@
   /* Cover Slide Gradient for Disabled Cards */
   --cover-slide-gradient: linear-gradient(90deg, transparent 0%, rgba(150, 150, 150, 0.4) 50%, transparent 100%);
    font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
+
+   --toster-bg: #292929;
 }
 
 /* Dark Theme */
@@ -82,6 +84,8 @@
   /* Cover Slide Gradient for Disabled Cards */
   --cover-slide-gradient: linear-gradient(90deg, #01010133 0%, rgba(0, 0, 0, 0.5) 50%, #01010133 100%);
    font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
+
+   --toster-bg: #f2f2f23d;
 }
 
 body {

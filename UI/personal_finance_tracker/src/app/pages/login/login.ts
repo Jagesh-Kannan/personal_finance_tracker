@@ -2,9 +2,9 @@ import { Component, computed, signal, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { UserService } from '../../service/user.service';
-import { AuthErrorBannerService } from '../../service/auth-error-banner.service';
+import { AuthBannerService } from '../../service/auth-banner.service';
 import { LucidIconModule } from '../../components/lucidIcon/lucid-icon/lucid-icon-module';
-import { AuthErrorBannerComponent } from '../../components/error-banner/auth-error-banner.component';
+import { AuthNotifyBannerComponent } from '../../components/notify-banner/auth-notify-banner.component';
 import { LucideEye, LucideEyeClosed, } from '@lucide/angular';
 import { ButtonLoader } from '../../components/loader/loader';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { StateDispatch } from '../../service/state-dispatch';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, LucidIconModule, ButtonLoader, AuthErrorBannerComponent],
+  imports: [FormsModule, LucidIconModule, ButtonLoader, AuthNotifyBannerComponent],
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
@@ -50,7 +50,7 @@ export class Login {
   protected readonly forgotPasswordLoader;
 
 
-  private errorBannerService = inject(AuthErrorBannerService);
+  private authBannerService = inject(AuthBannerService);
 
   constructor(private auth: AuthService, private userService: UserService, private router: Router, private commonService: CommonService,
     private stateDispatchService:StateDispatch
@@ -97,7 +97,8 @@ export class Login {
              localStorage.setItem('last_name', response.data.user.lastName);
 
              this.stateDispatchService.storeUser({email:data.email, first_name: response.data.user.firstName, last_name: response.data.user.lastName});
-
+             
+             this.resetForms();
              this.router.navigate(['/landing']);
           }
         }
@@ -151,7 +152,7 @@ export class Login {
       passwordConfirm: ''
     };
 
-    this.errorBannerService.hideError();
+    this.authBannerService.hideError();
     this.showEmailVerification.set(false);
 
   }
