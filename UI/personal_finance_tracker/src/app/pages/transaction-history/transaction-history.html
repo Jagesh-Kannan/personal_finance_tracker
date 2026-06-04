@@ -135,7 +135,7 @@
       @if (this.storeRemovedExpense().length > 0) {
         <div
           class="popover-item delete-option"
-          (click)="deleteSelectedExpenses(); $event.stopPropagation()"
+          (click)="initiate_delete_expenses('selected'); isDeletePopoverOpen.set(false); $event.stopPropagation()"
           [buttonLoader]="deleteExpenseLoader()"
         >
           <svg
@@ -171,7 +171,7 @@
 
       <div
         class="popover-item delete-option"
-        (click)="deleteAllExpenses(); $event.stopPropagation()"
+        (click)="initiate_delete_expenses('all'); isDeletePopoverOpen.set(false); $event.stopPropagation()"
       >
         <svg
           class="popover-icon"

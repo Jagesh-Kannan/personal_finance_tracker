@@ -35,16 +35,6 @@ export class Header {
     this.logoutLoader = computed(() => this.authService.logoutLoader());
    }
 
-  showConfirmation(){
-    this.dialogService.open({
-  title: 'Confirm Deletion',
-  message: 'Are you sure? This cannot be undone.',
-  actions: [
-    { label: 'Cancel', position: 'left', callback: () => console.log('Cancel clicked') },
-    { label: 'Delete', position: 'right', callback: () => console.log('Delete clicked'), class: 'danger' }
-  ]
-});
-  }
 
   getPasswordChangeConfirmation(){
 

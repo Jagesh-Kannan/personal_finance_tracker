@@ -12,6 +12,8 @@ import { ExpenseService } from '../../service/expense.service';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 import { ToasterService } from '../../service/toaster.service';
 import { GroupListByDatePipe } from '../../components/custom-pipes/group-list-by-date';
+import { ConfirmationDialog } from '../../components/confirmation-dialog/confirmation-dialog';
+import { DialogService } from '../../service/confirmation-dialog.service';
 
 @Component({
   selector: 'app-transaction-history',
@@ -52,6 +54,7 @@ export class TransactionHistory implements OnDestroy {
     private expenseService: ExpenseService,
     private _fb: FormBuilder,
     private toasterService: ToasterService,
+    private dialogService: DialogService
   ) {
     effect(() => {
       const expense = this.expensesList();
@@ -59,7 +62,7 @@ export class TransactionHistory implements OnDestroy {
     });
     this.updateExpenseLoader = computed(() => this.expenseService.updateExpenseLoader());
     this.deleteExpenseLoader = computed(() => this.expenseService.deleteExpenseLoader());
-    
+
     this.generateExpenseForm();
     this.generateOverviewFilterForm();
   }
@@ -222,6 +225,32 @@ export class TransactionHistory implements OnDestroy {
     return await lastValueFrom(this.expenseService.getAllExpense());
   }
 
+  initiate_delete_expenses(type: 'selected' | 'all'){
+    const message = type === 'selected' 
+    ? 'Are you sure you want to delete the selected expenses? This action cannot be undone.' 
+    : 'Are you sure you want to delete ALL expenses? This action cannot be undone.';
+
+    this.dialogService.open({
+      title: 'Confirm Deletion',
+      message: message,
+      actions: [
+        { label: 'Cancel', position: 'left', callback: () => null },
+        { label: 'Delete', position: 'right', callback: () => type === 'selected' ? this.deleteSelectedExpenses() : this.deleteAllExpenses(), class: 'danger' }
+      ]
+    });
+  }
+
+    showDeleteConfirmation(message:string){
+    this.dialogService.open({
+  title: 'Confirm Deletion',
+  message: message,
+  actions: [
+    { label: 'Cancel', position: 'left', callback: () => null },
+    { label: 'Delete', position: 'right', callback: () => console.log('Delete clicked'), class: 'danger' }
+  ]
+});
+  }
+  
   public deleteSelectedExpenses() {
 
 
@@ -265,6 +294,8 @@ export class TransactionHistory implements OnDestroy {
       },
     });
   }
+
+
 
   ngOnDestroy() {
     this.storeRemovedExpense.set([]);
