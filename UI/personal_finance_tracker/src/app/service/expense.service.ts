@@ -15,12 +15,15 @@ export class ExpenseService {
   private importExpenseEndpoint = environment.importExpenseEndpoint;
   private createExpenseEndpoint = environment.createExpenseEndpoint;
   private updateExpenseEndpoint = environment.updateExpenseEndpoint;
+  private deleteExpenseEndpoint = environment.deleteExpenseEndpoint;
+  private deleteAllExpensesEndpoint = environment.deleteAllExpensesEndpoint;
 
   public getExpenseLoader = signal<boolean>(false);
   public fileExtractionLoader = signal<boolean>(false);
   public fileExtractionSuccess = signal<boolean | null>(null);
   public createExpenseLoader = signal<boolean>(false);
   public updateExpenseLoader = signal<boolean>(false);
+  public deleteExpenseLoader = signal<boolean>(false);  
 
   constructor(private http: HttpClient,private stateDispatchService:StateDispatch, private toasterService: ToasterService) {}
 
@@ -48,7 +51,7 @@ export class ExpenseService {
     this.createExpenseLoader.set(true);
     return this.http.post(`${this.baseApiUrl}${this.createExpenseEndpoint}`, expenseData).pipe(
       tap((res:any)=>{
-        this.toasterService.showSuccess('Expense created successfully!');
+        this.toasterService.showSuccess('Expense(s) added successfully!');
       }),
       catchError((error) => {
         const errorMessage =
@@ -79,6 +82,42 @@ export class ExpenseService {
       }),
     );
   };
+
+  public deleteExpenses(expenseIds: string[]) {
+    this.deleteExpenseLoader.set(true);
+    return this.http.post(`${this.baseApiUrl}${this.deleteExpenseEndpoint}`,  expenseIds ).pipe(
+      tap((res:any)=>{
+        this.toasterService.showSuccess('Expense(s) deleted successfully!');
+      }),
+      catchError((error) => {
+        const errorMessage =
+          error.error?.message || 'An error occurred while deleting the expense. Please try again.';
+        this.toasterService.showError(errorMessage);
+        throw error;
+      }),
+      finalize(() => {
+        this.deleteExpenseLoader.set(false);
+      }),
+    );
+  };
+
+  public deleteAllExpenses(){
+     this.deleteExpenseLoader.set(true);
+    return this.http.delete(`${this.baseApiUrl}${this.deleteAllExpensesEndpoint}` ).pipe(
+      tap((res:any)=>{
+        this.toasterService.showSuccess(res.message || 'Expense(s) deleted successfully!');
+      }),
+      catchError((error) => {
+        const errorMessage =
+          error.error?.message || 'An error occurred while deleting the expense. Please try again.';
+        this.toasterService.showError(errorMessage);
+        throw error;
+      }),
+      finalize(() => {
+        this.deleteExpenseLoader.set(false);
+      }),
+    );
+  }
 
   public uploadExpenseFile(file: File) {
     this.fileExtractionSuccess.set(null);

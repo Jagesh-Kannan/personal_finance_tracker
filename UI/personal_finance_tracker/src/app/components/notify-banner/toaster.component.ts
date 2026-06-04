@@ -27,7 +27,7 @@ import {
           class="toaster-item"
           [ngClass]="[toaster.type, 'animate-slide-up']"
           [style.--stagger-delay]="index * 0.1 + 's'"
-          (touchstart)="onTouchStart($event, toaster.id)"
+          (touchstart)="onTouchStart($event, toaster.id); $event.stopPropagation();"
           (touchend)="onTouchEnd($event, toaster.id)"
         >
           <!-- Glass Background -->
@@ -320,6 +320,7 @@ export class ToasterComponent {
 
   onTouchStart(event: TouchEvent, id: string) {
     this.touchStartY = event.changedTouches[0].clientY;
+     event.preventDefault();
   }
 
   onTouchEnd(event: TouchEvent, id: string) {
@@ -329,7 +330,8 @@ export class ToasterComponent {
     const deltaY = touchEndY - this.touchStartY;
 
     // Threshold to avoid accidental taps
-    if (deltaY > 50) {
+    if (deltaY > 10) {
+      
       this.onClose(id);
     }
 

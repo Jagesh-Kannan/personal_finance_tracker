@@ -1,0 +1,221 @@
+<div class="page-container transaction-history-container">
+  <div class="page-container-wrapper transaction-history-wrapper">
+    <div class="title-container">
+      <div class="title-wrapper">
+        <h1 class="welcome-title">
+          <label for="welcome-title" class="welcome-word">your</label>
+          <label for="welcome-title" class="welcome-name">Transactions</label>
+        </h1>
+        <p class="welcome-description">See all your transactions here.</p>
+      </div>
+    </div>
+    <div class="transaction-details-container">
+      <div class="transaction-details-wrapper">
+        <div class="header">
+          <h2>
+            Overview <span class="count">( {{ filteredExpenseList().length }} )</span>
+          </h2>
+          <div class="header-actions">
+            <div class="filter">
+              <button title="Filter" (click)="openExpenseFilter()">
+                <svg lucideFunnel></svg>
+              </button>
+            </div>
+            <div class="delete" style="position: relative">
+              <button title="Delete" (click)="isDeletePopoverOpen.set(!isDeletePopoverOpen())">
+                <svg lucideTrash2></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="transaction-details-content">
+          <div class="extracted-expenses-list">
+            @for (group of filteredExpenseList() | groupListByDate; track group.header) {
+              <!-- Group Header Tag -->
+              <div class="date-group-header">
+                {{ group.header | titlecase}}
+              </div>
+              @for (expense of group.items; track expense._id) {
+                <article class="glass-container expense-card animate-fade-in">
+                  <div
+                    class="item-wrapper"
+                    (click)="enableSelectionMode() ? addOrRemoveExpense(expense) : null"
+                  >
+                    <!-- Section 1: Icon/Ab -->
+                    <div class="icon-section" [ngClass]="{ removed: expense.isRemoved }">
+                      @if (expense.isRemoved) {
+                        <svg lucideCheck class="check-icon"></svg>
+                      } @else {
+                        <span class="avatar-text"
+                          >{{ expense.senderOrReceiver?.trim()?.charAt(0)?.toUpperCase() }}
+                          <span>{{
+                            expense.senderOrReceiver?.trim()?.charAt(2)
+                              ? expense.senderOrReceiver?.trim()?.charAt(1)?.toLowerCase()
+                              : ''
+                          }}</span></span
+                        >
+                      }
+                    </div>
+
+                    <!-- Section 2: Text Info -->
+                    <div class="definition-section">
+                      <div class="category-section">{{ expense.expenseCategory }}</div>
+                      <div class="mode-section">{{ expense.paymentMode }}</div>
+                    </div>
+
+                    <!-- Section 3: Numerics -->
+                    <div class="numerics-section">
+                      <div
+                        class="amount-section"
+                        [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'"
+                      >
+                        <span class="amount-sign">{{
+                          expense.mode === 'DEBITED' ? '-' : '+'
+                        }}</span>
+                        {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+                      </div>
+                      <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
+                    </div>
+
+                    <!-- Section 4: Action -->
+                    <div class="action-section">
+                      @if (enableSelectionMode()) {
+                        <button
+                          class="edit-btn"
+                          aria-label="Edit"
+                          (click)="openEditExpenseForm(expense); $event.stopPropagation()"
+                        >
+                          <!-- You can replace this with your Lucide or SVG icon -->
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            lucideEye
+                          ></svg>
+                        </button>
+                      } @else {
+                        <button
+                          class="edit-btn"
+                          aria-label="Edit"
+                          (click)="openEditExpenseForm(expense); $event.stopPropagation()"
+                        >
+                          <!-- You can replace this with your Lucide or SVG icon -->
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                          </svg>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                </article>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Popover -->
+@if (isDeletePopoverOpen()) {
+  <div class="popover-pointer delete-pointer"></div>
+  <div class="delete-popover">
+    <div class="popover-item-wrapper">
+      @if (this.storeRemovedExpense().length > 0) {
+        <div
+          class="popover-item delete-option"
+          (click)="deleteSelectedExpenses(); $event.stopPropagation()"
+          [buttonLoader]="deleteExpenseLoader()"
+        >
+          <svg
+            class="popover-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            lucideTrash2
+          ></svg>
+          <span>Delete Selected</span>
+        </div>
+      } @else {
+        <div
+          class="popover-item select-option"
+          (click)="
+            enableSelectionMode.set(true); isDeletePopoverOpen.set(false); $event.stopPropagation()
+          "
+        >
+          <svg
+            class="popover-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            lucideListChecks
+          ></svg>
+          <span>Select</span>
+        </div>
+      }
+
+      <div class="popover-divider"></div>
+
+      <div
+        class="popover-item delete-option"
+        (click)="deleteAllExpenses(); $event.stopPropagation()"
+      >
+        <svg
+          class="popover-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="8" y1="12" x2="16" y2="12" />
+        </svg>
+        <span>Delete All</span>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Delete Popover Overlay -->
+@if (isDeletePopoverOpen()) {
+  <div class="popover-overlay" (click)="isDeletePopoverOpen.set(false)"></div>
+}
+
+<!-- Slide-Up Form Component for Manual Entry -->
+<app-slide-up-form
+  [isOpen]="openExpenseForm"
+  [formType]="enableSelectionMode() ? 'view-transaction' : 'manual-entry'"
+  [formGroup]="expenseForm"
+  [titleWord]="enableSelectionMode() ? 'view' : 'modify'"
+  [titleName]="'Expense'"
+  [description]="'Modify/View the details to update your expense manually.'"
+  [buttonText]="'Update Transaction'"
+  (onSubmit)="initiate_update_expense()"
+  (onClose)="openExpenseForm.set(false)"
+></app-slide-up-form>
+
+<!-- Slide-Up Form Component for Expense Filter-->
+<app-slide-up-form
+  [isOpen]="openFilterForm"
+  [formType]="'transaction-filter'"
+  [formGroup]="overviewFilterForm"
+  [titleWord]="'filter'"
+  [titleName]="'Expense'"
+  [description]="'Filter your transactions based on the selected criteria.'"
+  [buttonText]="'Apply'"
+  (onSubmit)="filterExpenseList()"
+  (onClose)="openFilterForm.set(false)"
+></app-slide-up-form>

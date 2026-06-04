@@ -7,7 +7,7 @@ import { environment } from '../../environment';
 import { AuthService } from '../../service/auth.service';
 import { ButtonLoader } from '../loader/loader';
 import { LucidIconModule } from '../lucidIcon/lucid-icon/lucid-icon-module';
-import { LucideLayoutDashboard, LucidePlus, LucideSearch, LucideHistory, LucideUser } from '@lucide/angular';
+import { LucideLayoutDashboard, LucidePlus, LucideSearch, LucideHistory, LucideUser, LucideClipboardList } from '@lucide/angular';
 
 @Component({
   selector: 'app-header',
@@ -28,7 +28,7 @@ export class Header {
   protected readonly searchIcon = LucideSearch;
   protected readonly historyIcon = LucideHistory;
   protected readonly userIcon = LucideUser;
-
+  protected readonly clipboardListIcon = LucideClipboardList;
   constructor(public commonService: CommonService, private dialogService: DialogService, private router: Router, private userService: UserService,
     private authService:AuthService
   ) {

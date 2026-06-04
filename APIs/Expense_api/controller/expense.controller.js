@@ -272,6 +272,15 @@ const delete_multiple_expenses = catchAsync(async (req, res, next) => {
     });
 });
 
+const delete_all_expenses = catchAsync(async (req, res, next) => {
+    const result = await expense_modal.deleteMany({ userId: req.user.id });
+    res.status(200).json({
+        status: "success",
+        message: `${result.deletedCount} expense(s) deleted successfully.`,
+        deletedCount: result.deletedCount
+    });
+});
+
 // Helper function to build filter for delete operation
 const buildDeleteFilter = (params) => {
     const filter = {};
@@ -306,4 +315,5 @@ export {
     get_expenses,
     delete_expense,
     delete_multiple_expenses,
+    delete_all_expenses,
 };

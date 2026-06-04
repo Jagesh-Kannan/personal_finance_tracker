@@ -168,4 +168,4 @@ type ExpenseInsightsStatistics = {
 
 type MonthlyExpenseInsights = Record<string, ExpenseInsightsStatistics>;
 
-type FormContentType = 'overview-filter' | 'manual-entry';
+type FormContentType = 'overview-filter' | 'manual-entry' | 'transaction-filter' | 'view-transaction';

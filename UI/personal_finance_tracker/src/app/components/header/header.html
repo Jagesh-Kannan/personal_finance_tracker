@@ -15,7 +15,7 @@
   <nav class="header-center" [class.mobile-open]="isMenuOpen()">
     <button class="nav-btn" [routerLink]="'overview'" [routerLinkActive]="'active'">Overview</button>
     <button class="nav-btn" [routerLink]="'import'" [routerLinkActive]="'active'">Import/Add Expenses</button>
-    <button class="nav-btn">Tab-2</button>
+    <button class="nav-btn" [routerLink]="'transaction-history'" [routerLinkActive]="'active'">Transactions</button>
     <button class="nav-btn">Tab-3</button>
   </nav>
 
@@ -72,8 +72,13 @@
     <span class="bottom-nav-label">Search</span>
   </button>
 
+  <button class="bottom-nav-item" [routerLink]="'transaction-history'" [routerLinkActive]="'active'" (click)="closeBottomNav()" [attr.aria-label]="'Transaction History'">
+    <svg class="bottom-nav-icon" [lucideIcon]="clipboardListIcon"></svg>
+    <span class="bottom-nav-label">Transactions</span>
+  </button>
+
   <!-- Tab-3 (History) -->
-  <button class="bottom-nav-item" [attr.aria-label]="'History'">
+  <button class="bottom-nav-item" [attr.aria-label]="'History'" >
     <svg class="bottom-nav-icon" [lucideIcon]="historyIcon"></svg>
     <span class="bottom-nav-label">History</span>
   </button>

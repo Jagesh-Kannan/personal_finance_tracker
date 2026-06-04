@@ -21,5 +21,6 @@ export const environment = {
   createExpenseEndpoint: 'expense/create',
   updateExpenseEndpoint: 'expense/update',
   deleteExpenseEndpoint: 'expense/deleteMultiple',
+  deleteAllExpensesEndpoint: 'expense/deleteAll',
   importExpenseEndpoint: 'file-extractor'
 };

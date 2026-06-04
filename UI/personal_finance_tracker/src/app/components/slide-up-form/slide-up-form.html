@@ -17,6 +17,7 @@
       <div class="adaptive-body">
         <!-- SWITCH STATEMENT: Different content based on formType -->
         @switch (getFormType()) {
+          @case('view-transaction')
           @case ('manual-entry') {
             <!-- MANUAL ENTRY FORM -->
             <form class="manual-entry-form" [formGroup]="formGroup">
@@ -27,6 +28,7 @@
                   type="text"
                   placeholder="e.g. Starbucks Coffee"
                   formControlName="expenseName"
+                  [readonly]="readOnlyForm()"
                   name="expenseName"
                 />
               </div>
@@ -39,12 +41,13 @@
                     type="text"
                     placeholder="e.g. Food"
                     formControlName="expenseCategory"
+                     [readonly]="readOnlyForm()"
                     name="expenseCategory"
                   />
                 </div>
                 <div class="form-row">
                   <label class="required">Payment Mode</label>
-                  <select formControlName="paymentMode" name="paymentMode">
+                  <select formControlName="paymentMode" name="paymentMode" [disabled]="readOnlyForm()" [style.pointerEvents]="readOnlyForm() ? 'none' : 'auto'">
                     <option selected disabled>Please select</option>
                     <option value="UPI">UPI</option>
                     <option value="CASH">CASH</option>
@@ -66,6 +69,7 @@
                     placeholder="0.00"
                     formControlName="amount"
                     name="amount"
+                     [readonly]="readOnlyForm()"
                   />
                 </div>
                  <div class="form-row">
@@ -74,6 +78,7 @@
                     type="text"
                     placeholder="e.g. Jhon Doe"
                     formControlName="senderOrReceiver"
+                     [readonly]="readOnlyForm()"
                     name="senderOrReceiver"
                   />
                 </div>
@@ -88,6 +93,7 @@
                       type="button"
                       [class.active]="formGroup.get('mode')?.value === 'DEBITED'"
                       (click)="formGroup.get('mode')?.setValue('DEBITED')"
+                      [disabled]="readOnlyForm()"
                     >
                       Debited
                     </button>
@@ -95,6 +101,7 @@
                       type="button"
                       [class.active]="formGroup.get('mode')?.value === 'CREDITED'"
                       (click)="formGroup.get('mode')?.setValue('CREDITED')"
+                      [disabled]="readOnlyForm()"
                     >
                       Credited
                     </button>
@@ -106,6 +113,7 @@
                     type="datetime-local"
                     formControlName="expenseDate"
                     name="expenseDate"
+                     [readonly]="readOnlyForm()"
                   />
                 </div>
                
@@ -120,6 +128,7 @@
                     placeholder="e.g. Trip to Goa"
                     formControlName="customGrouping"
                     name="customGrouping"
+                     [readonly]="readOnlyForm()"
                   />
                 </div>
                 <label>Notes</label>
@@ -128,6 +137,7 @@
                   placeholder="Add additional details..."
                   formControlName="notes"
                   name="notes"
+                   [readonly]="readOnlyForm()"
                 ></textarea>
               </div>
             </form>
@@ -195,7 +205,7 @@
                   <div class="item-wrapper">
                     <!-- Section 1: Icon/Ab -->
                     <div class="icon-section">
-                      <span class="avatar-text">{{expense.customGrouping.trim().charAt(0).toUpperCase()}} <span>{{expense.customGrouping.trim().charAt(2) ? expense.customGrouping.trim().charAt(2).toLowerCase() : ''}}</span></span>
+                      <span class="avatar-text">{{expense.customGrouping.trim().charAt(0).toUpperCase()}} <span>{{expense.customGrouping.trim().charAt(1) ? expense.customGrouping.trim().charAt(2).toLowerCase() : ''}}</span></span>
                     </div>
 
                     <!-- Section 2: Text Info -->
@@ -405,13 +415,67 @@
               </div>
             </div>
           }
+           @case ('transaction-filter') {
+            <!-- OVERVIEW FILTER FORM -->
+            <form class="overview-filter-form" [formGroup]="formGroup">
+              <!-- First Row: Date Range (From & To) -->
+              <div class="form-grid" formGroupName="month">
+                <div class="form-row">
+                  <label class="required">From Date</label>
+                  <input
+                    type="date"
+                    placeholder="Start date"
+                    formControlName="from"
+                    name="fromDate"
+                  />
+                </div>
+                <div class="form-row">
+                  <label class="required">To Date</label>
+                  <input
+                    type="date"
+                    placeholder="End date"
+                    formControlName="to"
+                    name="toDate"
+                  />
+                </div>
+              </div>
+
+              <!-- Second Row: Category & Payment Mode -->
+              <div class="form-grid">
+                <div class="form-row">
+                  <label>Search</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Food, Travel"
+                    formControlName="searchKey"
+                    name="searchKey"
+                  />
+                </div>
+                <div class="form-row">
+                  <label>Payment Mode</label>
+                  <select formControlName="paymentMode"  placeholder = "Please select" name="paymentMode">
+                    <option selected disabled>Please select</option>
+                      <option value="ALL">ALL</option>
+                    <option value="UPI">UPI</option>
+                    <option value="CASH">CASH</option>
+                    <option value="CREDIT CARD">CREDIT CARD</option>
+                    <option value="DEBIT CARD">DEBIT CARD</option>
+                    <option value="WALLET">WALLET</option>
+                    <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                    <option value="CHEQUE">CHEQUE</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          }
           @default {
             <p>Form not specified</p>
           }
         }
       </div>
 
-      <div class="adaptive-footer">
+      @if(!readOnlyForm()){
+          <div class="adaptive-footer">
         <button
           class="action-btn-self-entry"
           (click)="handleSubmit()"
@@ -420,6 +484,8 @@
           {{ buttonText }}
         </button>
       </div>
+      }
+    
     </div>
   </div>
 }

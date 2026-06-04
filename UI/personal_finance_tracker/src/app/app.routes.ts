@@ -40,6 +40,11 @@ export const routes: Routes = [
                 canActivate: [authGuard],
                 loadComponent: () => import('./pages/add-expenses/add-expenses').then(m => m.AddExpenses),
             },
+            {
+                path: "transaction-history",
+                canActivate: [authGuard],
+                loadComponent: () => import('./pages/transaction-history/transaction-history').then(m => m.TransactionHistory),
+            },
         ]
     },
 ];

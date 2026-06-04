@@ -86,7 +86,7 @@ export class SlideUpForm {
   
   public selectedTooltipExpenseId = signal<string | null>(null);
   public editingExpense = signal<any | null>(null);
-
+  public readOnlyForm = signal<boolean>(false);
   public readonly updateExpenseLoader;
   private storeRemovedExpense = signal<FilterableExpenseSchema[]>([]);
 
@@ -106,6 +106,11 @@ export class SlideUpForm {
         if (this.formType === 'overview-filter')  this.filterExpenseByFormData();    
       });
       if(this.formType === 'overview-filter' && this.expensesList() && this.expensesList().length > 0) this.filterExpenseByFormData();
+    }
+
+    if (changes['formType']){
+       if(changes['formType'].currentValue === "view-transaction") this.readOnlyForm.set(true);
+       else this.readOnlyForm.set(false);
     }
   }
 
