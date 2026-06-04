@@ -29,98 +29,32 @@
           </div>
         </div>
         <div class="transaction-details-content">
-          <div class="extracted-expenses-list">
-            @for (group of filteredExpenseList() | groupListByDate; track group.header) {
-              <!-- Group Header Tag -->
-              <div class="date-group-header">
-                {{ group.header | titlecase}}
-              </div>
-              @for (expense of group.items; track expense._id) {
-                <article class="glass-container expense-card animate-fade-in">
-                  <div
-                    class="item-wrapper"
-                    (click)="enableSelectionMode() ? addOrRemoveExpense(expense) : null"
-                  >
-                    <!-- Section 1: Icon/Ab -->
-                    <div class="icon-section" [ngClass]="{ removed: expense.isRemoved }">
-                      @if (expense.isRemoved) {
-                        <svg lucideCheck class="check-icon"></svg>
-                      } @else {
-                        <span class="avatar-text"
-                          >{{ expense.senderOrReceiver?.trim()?.charAt(0)?.toUpperCase() }}
-                          <span>{{
-                            expense.senderOrReceiver?.trim()?.charAt(2)
-                              ? expense.senderOrReceiver?.trim()?.charAt(1)?.toLowerCase()
-                              : ''
-                          }}</span></span
-                        >
-                      }
-                    </div>
+         <app-expense-list-container [expenses]="filteredExpenseList()" class="extracted-expenses-list">
+          <ng-template let-expense>
+            <app-expense-list-card 
+              [expense]="expense"
+              [avatarText]="expense.senderOrReceiver"
+              (cardClick)="enableSelectionMode() ? addOrRemoveExpense(expense) : null"
+            >
+  
+              <svg avatar-fallback lucideCheck class="check-icon"></svg>
 
-                    <!-- Section 2: Text Info -->
-                    <div class="definition-section">
-                      <div class="category-section">{{ expense.expenseCategory }}</div>
-                      <div class="mode-section">{{ expense.paymentMode }}</div>
-                    </div>
-
-                    <!-- Section 3: Numerics -->
-                    <div class="numerics-section">
-                      <div
-                        class="amount-section"
-                        [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'"
-                      >
-                        <span class="amount-sign">{{
-                          expense.mode === 'DEBITED' ? '-' : '+'
-                        }}</span>
-                        {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
-                      </div>
-                      <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
-                    </div>
-
-                    <!-- Section 4: Action -->
-                    <div class="action-section">
-                      @if (enableSelectionMode()) {
-                        <button
-                          class="edit-btn"
-                          aria-label="Edit"
-                          (click)="openEditExpenseForm(expense); $event.stopPropagation()"
-                        >
-                          <!-- You can replace this with your Lucide or SVG icon -->
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            lucideEye
-                          ></svg>
-                        </button>
-                      } @else {
-                        <button
-                          class="edit-btn"
-                          aria-label="Edit"
-                          (click)="openEditExpenseForm(expense); $event.stopPropagation()"
-                        >
-                          <!-- You can replace this with your Lucide or SVG icon -->
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          >
-                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                          </svg>
-                        </button>
-                      }
-                    </div>
-                  </div>
-                </article>
-              }
-            }
-          </div>
+              <ng-container actions>
+                @if (enableSelectionMode()) {
+                  <button class="edit-btn" (click)="openEditExpenseForm(expense); $event.stopPropagation();">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" lucideEye></svg>
+                  </button>
+                } @else {
+                  <button class="edit-btn" (click)="openEditExpenseForm(expense); $event.stopPropagation();">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                    </svg>
+                  </button>
+                }
+              </ng-container>
+            </app-expense-list-card>
+          </ng-template>
+        </app-expense-list-container>
         </div>
       </div>
     </div>

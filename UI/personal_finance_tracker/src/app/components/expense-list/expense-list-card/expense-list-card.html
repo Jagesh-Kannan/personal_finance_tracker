@@ -1,0 +1,39 @@
+<article class="glass-container expense-card animate-fade-in" [class.show-tooltip]="isTooltipActive">
+      <div class="item-wrapper" (click)="cardClick.emit($event)">
+        
+        <!-- Section 1: Icon/Avatar -->
+        <div class="icon-section" [class.removed]="expense.isRemoved">
+          @if (expense.isRemoved) {
+            <ng-content select="[avatar-fallback]"></ng-content>
+          } @else {
+            <span class="avatar-text">
+              {{ avatarText?.trim()?.charAt(0)?.toUpperCase() }}
+              <span>
+                {{ avatarText?.trim()?.charAt(2) ? avatarText?.trim()?.charAt(1)?.toLowerCase() : '' }}
+              </span>
+            </span>
+          }
+        </div>
+
+        <!-- Section 2: Text Info -->
+        <div class="definition-section">
+          <div class="category-section">{{ expense.expenseCategory }}</div>
+          <div class="mode-section">{{ expense.paymentMode }}</div>
+        </div>
+
+        <!-- Section 3: Numerics -->
+        <div class="numerics-section">
+          <div class="amount-section" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
+            <span class="amount-sign">{{ expense.mode === 'DEBITED' ? '-' : '+' }}</span>
+            {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+          </div>
+          <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
+        </div>
+
+        <!-- Section 4: Action Buttons Slot -->
+        <div class="action-section">
+          <ng-content select="[actions]"></ng-content>
+        </div>
+
+      </div>
+    </article>

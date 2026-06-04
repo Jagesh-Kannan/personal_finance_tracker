@@ -1,8 +1,6 @@
-import { DatePipe, CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, computed, effect, signal, Signal, OnDestroy } from '@angular/core';
 import { LucideFunnel, LucideTrash2, LucideCheck, LucideListChecks, LucideEye } from '@lucide/angular';
-import { SmartCurrencyPipe } from '../../components/custom-pipes/currency-converter';
-import { AbsolutePipe } from '../../components/custom-pipes/mathAbsolute';
 import { ButtonLoader } from '../../components/loader/loader';
 import { LucidIconModule } from '../../components/lucidIcon/lucid-icon/lucid-icon-module';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
@@ -11,26 +9,24 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ExpenseService } from '../../service/expense.service';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 import { ToasterService } from '../../service/toaster.service';
-import { GroupListByDatePipe } from '../../components/custom-pipes/group-list-by-date';
-import { ConfirmationDialog } from '../../components/confirmation-dialog/confirmation-dialog';
 import { DialogService } from '../../service/confirmation-dialog.service';
+import { ExpenseListContainer } from '../../components/expense-list/expense-list-container/expense-list-container';
+import { ExpenseListCard } from '../../components/expense-list/expense-list-card/expense-list-card';
 
 @Component({
   selector: 'app-transaction-history',
   imports: [
     LucideFunnel,
-    DatePipe,
     CommonModule,
     LucidIconModule,
     LucideTrash2,
     LucideCheck,
     LucideListChecks,
     LucideEye,
-    AbsolutePipe,
-    SmartCurrencyPipe,
     ButtonLoader,
     SlideUpForm,
-    GroupListByDatePipe
+    ExpenseListContainer,
+    ExpenseListCard
   ],
   providers: [CurrencyPipe],
   templateUrl: './transaction-history.html',

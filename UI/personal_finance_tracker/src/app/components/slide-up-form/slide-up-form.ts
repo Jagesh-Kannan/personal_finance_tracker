@@ -8,14 +8,16 @@ import { SmartCurrencyPipe } from '../custom-pipes/currency-converter';
 import {LucideMinus, LucidePlus, LucideSave } from '@lucide/angular';
 import { ExpenseService } from '../../service/expense.service';
 import { ButtonLoader } from '../loader/loader';
+import { ExpenseListContainer } from '../expense-list/expense-list-container/expense-list-container';
+import { ExpenseListCard } from '../expense-list/expense-list-card/expense-list-card';
 
 
 
 @Component({
   selector: 'app-slide-up-form',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, AbsolutePipe, 
-    SmartCurrencyPipe, LucideMinus, LucidePlus, LucideSave,
-    ButtonLoader],
+    SmartCurrencyPipe, LucideMinus, LucidePlus, LucideSave, ExpenseListContainer,
+    ExpenseListCard, ButtonLoader],
   providers: [CurrencyPipe],
   templateUrl: './slide-up-form.html',
   styleUrl: './slide-up-form.css',
@@ -241,7 +243,8 @@ private filterExpenseByFormData(): void {
         ...expense,
         isRemoved: wasRemoved
       } as FilterableExpenseSchema;
-    });
+    })
+    .sort((a,b)=> new Date(b.expenseDate).getTime() - new Date(a.expenseDate).getTime());
 
   this.formGroup.get('filteredExpenses')?.setValue(filteredData, { emitEvent: false });
 }

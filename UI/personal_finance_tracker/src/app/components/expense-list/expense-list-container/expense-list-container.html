@@ -1,0 +1,24 @@
+ <div >
+      @for (group of (expenses | groupListByDate); track group.header) {
+        
+        <!-- Group Header Tag -->
+        <div class="date-group-header">
+          {{ group.header | titlecase }}
+        </div>
+
+        <div class="group-items-wrapper">
+          @for (expense of group.items; track expense._id) {
+            <!-- Forward template building tokens down to individual pages dynamically -->
+            <ng-container 
+              *ngTemplateOutlet="itemTemplate; context: { $implicit: expense }">
+            </ng-container>
+          }
+        </div>
+
+        <!-- Group Separator Space -->
+        <div class="group-spacer"></div>
+
+      } @empty {
+        <div class="empty-state-message">No records found matching current criteria.</div>
+      }
+    </div>

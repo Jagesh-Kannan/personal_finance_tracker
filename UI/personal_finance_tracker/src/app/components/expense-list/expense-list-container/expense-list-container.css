@@ -1,0 +1,17 @@
+.date-group-header {
+  font-size: 14px;
+  color: gray;
+  margin: 25px 0px 11px 8px;
+}
+
+.group-spacer {
+  height: 16px;
+  display: block;
+}
+
+.empty-state-message {
+  text-align: center;
+  padding: 32px;
+  color: #a0aec0;
+  font-size: 14px;
+}

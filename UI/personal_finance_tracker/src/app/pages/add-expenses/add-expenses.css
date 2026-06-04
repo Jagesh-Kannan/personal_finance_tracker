@@ -1,6 +1,6 @@
 /* --- PAGE LAYOUT --- */
 .page-container {
-  height: 85vh;
+  height: 88vh;
   display: flex;
   flex-direction: column;
 }
@@ -222,83 +222,8 @@
   .welcome-description { font-size: 14px; } 
 }
 
-.expense-card {
-  /* Give the card a more "Solid" presence */
-  background: var(--input-bg); 
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 8px;
-  margin-bottom: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px var(--shadow-color);
-}
 
-.expense-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--primary-orange);
-  background: var(--glass-bg);
-}
 
-.item-wrapper {
-  display: grid;
-  /* Proportions: Icon(fixed) | Category(Flexible) | Amount(Flexible) | Edit(fixed) */
-  grid-template-columns: 46px minmax(100px, 1.4fr) minmax(50px, 1fr) 44px;
-  align-items: center;
-  gap: 16px;
-}
-
-/* 1. ICON SECTION: Solid & Vibrant */
-.icon-section {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px var(--btn-primary-shadow);
-  padding: 1px 3px;
-}
-
-.avatar-text {
-  color: white;
-  font-weight: 800;
-  font-size: 1.16rem;
-  letter-spacing: -1px;
-}
-
-.avatar-text small {
-  font-size: 0.9rem;
-  font-weight: 400;
-  opacity: 0.9;
-}
-
-/* 2. CATEGORY SECTION: Prominent & Bold */
-.definition-section {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.category-section {
-  font-weight: 800; /* Extra Bold */
-  font-size: 1.1rem;
-  color: var(--text-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: -0.3px;
-}
-
-.mode-section {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-color);
-  opacity: 0.5; /* Dimmed compared to category */
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
 
 .dot {
   width: 6px;
@@ -307,25 +232,7 @@
   border-radius: 50%;
 }
 
-/* 3. NUMERICS SECTION: Big Currency */
-.numerics-section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-}
 
-.amount-section {
-  font-weight: 900;
-  font-size: 1.2rem;
-  color: var(--text-color);
-}
-
-.date-section {
-  font-size: 10px;
-  font-weight: 400;
-  opacity: 0.4; /* Very light to emphasize the amount */
-}
 
 /* 4. ACTION SECTION: Clean Button */
 .edit-btn {
@@ -348,24 +255,11 @@
   border-color: var(--primary-orange);
 }
 
-/* DARK MODE OVERRIDES */
-:root.dark-theme .expense-card {
-  background: rgba(255, 255, 255, 0.05);
-}
 
 :root.dark-theme .edit-btn {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive Tweak */
-@media (max-width: 767px) {
-  .item-wrapper {
-            grid-template-columns: 46px minmax(55px, 1.3fr) minmax(99px, 1.5fr) 44px;
-    gap: 12px;
-  }
-  .category-section { font-size: 1rem; }
-  .amount-section { font-size: 1.1rem; }
-}
 
 .viewEdit-expense-wrapper {
   display: flex;
@@ -441,15 +335,6 @@
   flex-direction: column;
 }
 
-.numerics-section > .amount-section{
-  font-weight: 300;
-}
-.numerics-section > .amount-section.credit{
-   color: var(--success-color)
-}
-.numerics-section > .amount-section.debit{
-   color: var(--error-color)
-}
 
 /* FOOTER CONTAINER */
 .footer {

@@ -1,22 +1,22 @@
 import { Component, computed, ElementRef, signal, viewChild } from '@angular/core';
 import { ExpenseService } from '../../service/expense.service';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { LucidIconModule } from '../../components/lucidIcon/lucid-icon/lucid-icon-module';
 import { LucideImport, LucidePlus } from '@lucide/angular';
-import { SmartCurrencyPipe } from '../../components/custom-pipes/currency-converter';
-import { AbsolutePipe } from '../../components/custom-pipes/mathAbsolute';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonLoader } from '../../components/loader/loader';
 import { lastValueFrom } from 'rxjs';
 import { AuthNotifyBannerComponent } from '../../components/notify-banner/auth-notify-banner.component';
 import { Router } from '@angular/router';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
+import { ExpenseListContainer } from '../../components/expense-list/expense-list-container/expense-list-container';
+import { ExpenseListCard } from '../../components/expense-list/expense-list-card/expense-list-card';
 
 @Component({
   selector: 'app-add-expenses',
-  imports: [DatePipe, CommonModule, LucidIconModule, LucideImport, LucidePlus, 
-    AbsolutePipe, SmartCurrencyPipe, FormsModule, ReactiveFormsModule, ButtonLoader,
+  imports: [CommonModule, LucidIconModule, LucideImport, LucidePlus, 
+    FormsModule, ReactiveFormsModule, ButtonLoader, ExpenseListContainer, ExpenseListCard,
     AuthNotifyBannerComponent, SlideUpForm],
   providers: [CurrencyPipe],
   templateUrl: './add-expenses.html',

@@ -198,79 +198,34 @@
             <div class="filtered-result-container">
               <div class="result-title">Overview</div>
               <div class="result-container">
-                @if( formGroup.get('filteredExpenses')?.value?.length > 0){
+           
                    <div class="expense-list">
-                @for (expense of formGroup.get('filteredExpenses')?.value; track expense._id) {
-                <article class="glass-container expense-card animate-fade-in" (click)="toggleExpenseTooltip(expense._id)" [class.show-tooltip]="selectedTooltipExpenseId() === expense._id" #expenseCard>
-                  <div class="item-wrapper">
-                    <!-- Section 1: Icon/Ab -->
-                    <div class="icon-section">
-                      <span class="avatar-text">{{expense.customGrouping.trim().charAt(0).toUpperCase()}} <span>{{expense.customGrouping.trim().charAt(1) ? expense.customGrouping.trim().charAt(2).toLowerCase() : ''}}</span></span>
-                    </div>
+     <app-expense-list-container [expenses]="formGroup.get('filteredExpenses')?.value">
+  <ng-template let-expense>
+    <app-expense-list-card 
+      [expense]="expense"
+      [avatarText]="expense.customGrouping"
+      [isTooltipActive]="selectedTooltipExpenseId() === expense._id"
+      (cardClick)="toggleExpenseTooltip(expense._id)"
+    >
+      <ng-container actions>
+        @if (expense.isRemoved) {
+          <button class="add-btn action-btn" (click)="addOrRemoveExpense(expense, 'add'); $event.stopPropagation();">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" lucidePlus></svg>
+          </button>
+        } @else {
+          <button class="edit-btn action-btn" (click)="addOrRemoveExpense(expense, 'remove'); $event.stopPropagation();">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" lucideMinus></svg>
+          </button>
+        }
+      </ng-container>
+    </app-expense-list-card>
+  </ng-template>
+</app-expense-list-container>
 
-                    <!-- Section 2: Text Info -->
-                    <div class="definition-section">
-                      <div class="category-section">{{ expense.expenseCategory }}</div>
-                      <div class="mode-section">{{ expense.paymentMode }}</div>
-                    </div>
-
-                    <!-- Section 3: Numerics -->
-                    <div class="numerics-section">
-                      <div
-                        class="amount-section"
-                        [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'"
-                      >
-                        <span class="amount-sign">{{
-                          expense.mode === 'DEBITED' ? '-' : '+'
-                        }}</span>
-                        {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
-                      </div>
-                      <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
-                    </div>
-
-                    <!-- Section 4: Action -->
-                    <div class="action-section">
-
-                      @if(expense.isRemoved){
-                         <button class="add-btn action-btn" aria-label="Add" title="Add"
-                          (click)="addOrRemoveExpense(expense, 'add'); $event.stopPropagation(); ">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          lucidePlus
-                        >
-                        </svg>
-                      </button>
-                      }
-                      @else{
-                       <button class="edit-btn action-btn" aria-label="Edit" title="Remove" (click)="addOrRemoveExpense(expense, 'remove'); $event.stopPropagation()">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          lucideMinus
-                        >
-                        </svg>
-                      </button>
-                      }
-
-                    </div>
-                  </div>
-                </article>
-              }
             </div>
-            }
-            @else {
-              <p class="no-results"> No record to show.</p>
-            }
-            
+           
+        
             <!-- Tooltip Portal - Outside scrollable container -->
             @if(selectedTooltipExpenseId()) {
               <!-- Backdrop to close tooltip on outside click -->
