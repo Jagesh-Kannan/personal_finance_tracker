@@ -8,6 +8,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { LucideFunnel } from '@lucide/angular';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ToasterService } from '../../service/toaster.service';
+import { first } from 'rxjs';
 
 
 interface MonthOption {
@@ -159,9 +160,10 @@ private updateOverviewMonthFilter(month: Months){
       // 3. Get the last day of the month (passing 0 to the next month's day parameter)
       const lastDate = new Date(Date.UTC(Number(year), monthIndex + 1, 0));
 
+      if(firstDate.toString() === 'Invalid Date' || lastDate.toString() === 'Invalid Date') return ;
       this.overviewFilterForm.patchValue({
         month: {
-          from: firstDate.toISOString().substring(0, 10),
+          from: firstDate?.toISOString().substring(0, 10),
           to: lastDate.toISOString().substring(0, 10)
         }
       });

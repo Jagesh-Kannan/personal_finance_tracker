@@ -211,3 +211,17 @@
   (onSubmit)="initiate_update_expense()"
   (onClose)="openExpenseForm.set(false)"
 ></app-slide-up-form>
+
+
+<!-- Slide-Up Form Component for Quick Entry -->
+<app-slide-up-form
+  [isOpen]="openQuickAddForm"
+  [formType]="'quick-entry'"
+  [formGroup]="quickAddForm"
+  [titleWord]="'Quick'"
+  [titleName]="'Entry'"
+  [description]="'Fill in the details to add your expense quickly.'"
+  [buttonText]="'Add Expense'"
+  (onSubmit)="addQuickExpenseSubmit()"
+  (onClose)="openQuickAddForm.set(false)"
+></app-slide-up-form>

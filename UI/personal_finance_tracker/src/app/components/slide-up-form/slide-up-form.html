@@ -1,8 +1,13 @@
 @if (isOpen()) {
   <div class="adaptive-overlay" (click)="handleClose()">
-    <div class="adaptive-content glass-container" (click)="$event.stopPropagation()">
+    <div class="adaptive-content glass-container" [class.slide-down]="isClosing()" (click)="$event.stopPropagation()">
       <!-- Mobile Handle -->
-      <div class="sheet-grabber mobile-only"></div>
+      <div 
+        class="sheet-grabber mobile-only" 
+        (touchstart)="onSheetGrabberTouchStart($event)"
+        (touchmove)="onSheetGrabberTouchMove($event)"
+        (touchend)="onSheetGrabberTouchEnd($event)"
+      ></div>
 
       <div class="adaptive-header">
         <h2 class="welcome-title">
@@ -17,7 +22,7 @@
       <div class="adaptive-body">
         <!-- SWITCH STATEMENT: Different content based on formType -->
         @switch (getFormType()) {
-          @case('view-transaction')
+          @case ('view-transaction')
           @case ('manual-entry') {
             <!-- MANUAL ENTRY FORM -->
             <form class="manual-entry-form" [formGroup]="formGroup">
@@ -41,13 +46,18 @@
                     type="text"
                     placeholder="e.g. Food"
                     formControlName="expenseCategory"
-                     [readonly]="readOnlyForm()"
+                    [readonly]="readOnlyForm()"
                     name="expenseCategory"
                   />
                 </div>
                 <div class="form-row">
                   <label class="required">Payment Mode</label>
-                  <select formControlName="paymentMode" name="paymentMode" [disabled]="readOnlyForm()" [style.pointerEvents]="readOnlyForm() ? 'none' : 'auto'">
+                  <select
+                    formControlName="paymentMode"
+                    name="paymentMode"
+                    [disabled]="readOnlyForm()"
+                    [style.pointerEvents]="readOnlyForm() ? 'none' : 'auto'"
+                  >
                     <option selected disabled>Please select</option>
                     <option value="UPI">UPI</option>
                     <option value="CASH">CASH</option>
@@ -69,16 +79,16 @@
                     placeholder="0.00"
                     formControlName="amount"
                     name="amount"
-                     [readonly]="readOnlyForm()"
+                    [readonly]="readOnlyForm()"
                   />
                 </div>
-                 <div class="form-row">
-                  <label >Sender / Receiver</label>
+                <div class="form-row">
+                  <label>Sender / Receiver</label>
                   <input
                     type="text"
                     placeholder="e.g. Jhon Doe"
                     formControlName="senderOrReceiver"
-                     [readonly]="readOnlyForm()"
+                    [readonly]="readOnlyForm()"
                     name="senderOrReceiver"
                   />
                 </div>
@@ -113,22 +123,21 @@
                     type="datetime-local"
                     formControlName="expenseDate"
                     name="expenseDate"
-                     [readonly]="readOnlyForm()"
+                    [readonly]="readOnlyForm()"
                   />
                 </div>
-               
               </div>
 
               <!-- Fifth Row: Notes -->
               <div class="form-row full-width">
-                 <div class="form-row">
+                <div class="form-row">
                   <label>Custom Grouping</label>
                   <input
                     type="text"
                     placeholder="e.g. Trip to Goa"
                     formControlName="customGrouping"
                     name="customGrouping"
-                     [readonly]="readOnlyForm()"
+                    [readonly]="readOnlyForm()"
                   />
                 </div>
                 <label>Notes</label>
@@ -137,8 +146,156 @@
                   placeholder="Add additional details..."
                   formControlName="notes"
                   name="notes"
-                   [readonly]="readOnlyForm()"
+                  [readonly]="readOnlyForm()"
                 ></textarea>
+              </div>
+            </form>
+          }
+          @case ('quick-entry'){
+            <form class="quick-entry-form" [formGroup]="formGroup">
+              <!-- Main Row: Name -->
+              <div class="form-row full-width">
+                <label class="required">Expense Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Starbucks Coffee"
+                  formControlName="expenseName"
+                  name="expenseName"
+                />
+              </div>
+
+              <!-- Second Row: Category & Payment Mode -->
+              <div class="form-grid">
+                
+                   <div class="form-row">
+                  <label class="required">Amount (INR)</label>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    formControlName="amount"
+                    name="amount"
+                  />
+                </div>
+                
+                <div class="form-row">
+                  <label class="required">Payment Mode</label>
+                  <select
+                    formControlName="paymentMode"
+                    name="paymentMode"
+                  >
+                    <option disabled>Please select</option>
+                    <option value="UPI">UPI</option>
+                    <option value="CASH">CASH</option>
+                    <option value="CREDIT CARD">CREDIT CARD</option>
+                    <option value="DEBIT CARD">DEBIT CARD</option>
+                    <option value="WALLET">WALLET</option>
+                    <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                    <option value="CHEQUE">CHEQUE</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <!-- Fourth Row: Date & Custom Grouping -->
+              <div class="form-grid">
+                <div class="form-row">
+                  <label class="required">Transaction Type</label>
+                  <div class="toggle-group">
+                    <button
+                      type="button"
+                      [class.active]="formGroup.get('mode')?.value === 'DEBITED'"
+                      (click)="formGroup.get('mode')?.setValue('DEBITED')"
+                    >
+                      Debited
+                    </button>
+                    <button
+                      type="button"
+                      [class.active]="formGroup.get('mode')?.value === 'CREDITED'"
+                      (click)="formGroup.get('mode')?.setValue('CREDITED')"
+                    >
+                      Credited
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Additional Section Collapsible -->
+              <div class="additional-section">
+                <button
+                  type="button"
+                  class="additional-toggle"
+                  (click)="isAdditionalExpanded.set(!isAdditionalExpanded())"
+                >
+                  <span class="additional-label">Additional</span>
+                  <svg
+                    class="toggle-arrow"
+                    [class.expanded]="isAdditionalExpanded()"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+
+                @if (isAdditionalExpanded()) {
+                  <!-- Category -->
+                  <div class="form-grid">
+                    <div class="form-row">
+                      <label >Category</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Food"
+                        formControlName="expenseCategory"
+                        name="expenseCategory"
+                      />
+                    </div>
+                    <div class="form-row">
+                      <label>Sender / Receiver</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Jhon Doe"
+                        formControlName="senderOrReceiver"
+                        name="senderOrReceiver"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Date & Time -->
+                  <div class="form-grid">
+                    <div class="form-row">
+                      <label >Date & Time</label>
+                      <input
+                        type="datetime-local"
+                        formControlName="expenseDate"
+                        name="expenseDate"
+                      />
+                    </div>
+                    <div class="form-row">
+                      <label>Custom Grouping</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Trip to Goa"
+                        formControlName="customGrouping"
+                        name="customGrouping"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Notes -->
+                  <div class="form-row full-width">
+                    <label>Notes</label>
+                    <textarea
+                      rows="3"
+                      placeholder="Add additional details..."
+                      formControlName="notes"
+                      name="notes"
+                    ></textarea>
+                  </div>
+                }
               </div>
             </form>
           }
@@ -158,12 +315,7 @@
                 </div>
                 <div class="form-row">
                   <label class="required">To Date</label>
-                  <input
-                    type="date"
-                    placeholder="End date"
-                    formControlName="to"
-                    name="toDate"
-                  />
+                  <input type="date" placeholder="End date" formControlName="to" name="toDate" />
                 </div>
               </div>
 
@@ -180,9 +332,13 @@
                 </div>
                 <div class="form-row">
                   <label>Payment Mode</label>
-                  <select formControlName="paymentMode"  placeholder = "Please select" name="paymentMode">
+                  <select
+                    formControlName="paymentMode"
+                    placeholder="Please select"
+                    name="paymentMode"
+                  >
                     <option selected disabled>Please select</option>
-                      <option value="ALL">ALL</option>
+                    <option value="ALL">ALL</option>
                     <option value="UPI">UPI</option>
                     <option value="CASH">CASH</option>
                     <option value="CREDIT CARD">CREDIT CARD</option>
@@ -198,104 +354,166 @@
             <div class="filtered-result-container">
               <div class="result-title">Overview</div>
               <div class="result-container">
-           
-                   <div class="expense-list">
-     <app-expense-list-container [expenses]="formGroup.get('filteredExpenses')?.value">
-  <ng-template let-expense>
-    <app-expense-list-card 
-      [expense]="expense"
-      [avatarText]="expense.customGrouping"
-      [isTooltipActive]="selectedTooltipExpenseId() === expense._id"
-      (cardClick)="toggleExpenseTooltip(expense._id)"
-    >
-      <ng-container actions>
-        @if (expense.isRemoved) {
-          <button class="add-btn action-btn" (click)="addOrRemoveExpense(expense, 'add'); $event.stopPropagation();">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" lucidePlus></svg>
-          </button>
-        } @else {
-          <button class="edit-btn action-btn" (click)="addOrRemoveExpense(expense, 'remove'); $event.stopPropagation();">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" lucideMinus></svg>
-          </button>
-        }
-      </ng-container>
-    </app-expense-list-card>
-  </ng-template>
-</app-expense-list-container>
+                <div class="expense-list">
+                  <app-expense-list-container [expenses]="formGroup.get('filteredExpenses')?.value">
+                    <ng-template let-expense>
+                      <app-expense-list-card
+                        [expense]="expense"
+                        [avatarText]="expense.customGrouping"
+                        [isTooltipActive]="selectedTooltipExpenseId() === expense._id"
+                        (cardClick)="toggleExpenseTooltip(expense._id)"
+                      >
+                        <ng-container actions>
+                          @if (expense.isRemoved) {
+                            <button
+                              class="add-btn action-btn"
+                              (click)="addOrRemoveExpense(expense, 'add'); $event.stopPropagation()"
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                lucidePlus
+                              ></svg>
+                            </button>
+                          } @else {
+                            <button
+                              class="edit-btn action-btn"
+                              (click)="
+                                addOrRemoveExpense(expense, 'remove'); $event.stopPropagation()
+                              "
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                lucideMinus
+                              ></svg>
+                            </button>
+                          }
+                        </ng-container>
+                      </app-expense-list-card>
+                    </ng-template>
+                  </app-expense-list-container>
+                </div>
 
-            </div>
-           
-        
-            <!-- Tooltip Portal - Outside scrollable container -->
-            @if(selectedTooltipExpenseId()) {
-              <!-- Backdrop to close tooltip on outside click -->
-              <div class="tooltip-backdrop" (click)="closeTooltip()"></div>
-              
+                <!-- Tooltip Portal - Outside scrollable container -->
+                @if (selectedTooltipExpenseId()) {
+                  <!-- Backdrop to close tooltip on outside click -->
+                  <div class="tooltip-backdrop" (click)="closeTooltip()"></div>
+
                   @for (expense of formGroup.get('filteredExpenses')?.value; track expense._id) {
-                    @if(selectedTooltipExpenseId() === expense._id) {
+                    @if (selectedTooltipExpenseId() === expense._id) {
                       <div class="expense-tooltip-portal" (click)="$event.stopPropagation()">
                         <div class="expense-tooltip-content">
-                          <button class="tooltip-close-btn" (click)="closeTooltip()" aria-label="Close tooltip">×</button>
-                          
+                          <button
+                            class="tooltip-close-btn"
+                            (click)="closeTooltip()"
+                            aria-label="Close tooltip"
+                          >
+                            ×
+                          </button>
+
                           <div class="tooltip-header">
                             <div class="tooltip-title">{{ expense.expenseCategory }}</div>
                             <div class="action-section">
-                              @if(!isEditingExpense(expense)) {
-                                <button class="edit-btn-pencil" aria-label="Edit" (click)="editExpense(expense)">
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                              @if (!isEditingExpense(expense)) {
+                                <button
+                                  class="edit-btn-pencil"
+                                  aria-label="Edit"
+                                  (click)="editExpense(expense)"
+                                >
+                                  <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                  >
+                                    <path
+                                      d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
+                                    />
                                   </svg>
                                 </button>
                               }
-                              @if(isEditingExpense(expense) && !updateExpenseLoader()) {
+                              @if (isEditingExpense(expense) && !updateExpenseLoader()) {
                                 <div class="edit-btn-confirm">
-                                  <svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" (click)="updateExpense()" lucideSave>
-                                   
-                                  </svg>
+                                  <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    (click)="updateExpense()"
+                                    lucideSave
+                                  ></svg>
                                 </div>
                               }
-                              @if(updateExpenseLoader()){
-                                 <button class="edit-btn-loader" [buttonLoader]="updateExpenseLoader()"></button>
+                              @if (updateExpenseLoader()) {
+                                <button
+                                  class="edit-btn-loader"
+                                  [buttonLoader]="updateExpenseLoader()"
+                                ></button>
                               }
                             </div>
                           </div>
-                          
+
                           <div class="tooltip-body">
                             <div class="tooltip-row">
                               <span class="tooltip-label">Name</span>
-                              @if(isEditingExpense(expense)) {
-                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().expenseName" />
-                              }
-                              @else {
+                              @if (isEditingExpense(expense)) {
+                                <input
+                                  type="text"
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().expenseName"
+                                />
+                              } @else {
                                 <span class="tooltip-value">{{ expense.expenseName }}</span>
                               }
                             </div>
-                            
-                             @if(isEditingExpense(expense)) {
-                               <div class="tooltip-row">
-                              <span class="tooltip-label">Category</span>
-                            
-                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().expenseCategory" />
-                              
-                              
-                            </div>
-                             }
+
+                            @if (isEditingExpense(expense)) {
+                              <div class="tooltip-row">
+                                <span class="tooltip-label">Category</span>
+
+                                <input
+                                  type="text"
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().expenseCategory"
+                                />
+                              </div>
+                            }
                             <div class="tooltip-row">
                               <span class="tooltip-label">Amount</span>
-                              @if(isEditingExpense(expense)) {
-                                <input type="number" class="tooltip-input" [(ngModel)]="editingExpense().amount" />
-                              }
-                              @else {
-                                <span class="tooltip-value" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
-                                  {{ expense.mode === 'DEBITED' ? '-' : '+' }}{{ expense.amount | abs | CurrencyFormatter: expense.currency }}
+                              @if (isEditingExpense(expense)) {
+                                <input
+                                  type="number"
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().amount"
+                                />
+                              } @else {
+                                <span
+                                  class="tooltip-value"
+                                  [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'"
+                                >
+                                  {{ expense.mode === 'DEBITED' ? '-' : '+'
+                                  }}{{ expense.amount | abs | CurrencyFormatter: expense.currency }}
                                 </span>
                               }
                             </div>
-                            
+
                             <div class="tooltip-row">
                               <span class="tooltip-label">Payment Mode</span>
-                              @if(isEditingExpense(expense)) {
-                                <select class="tooltip-input" [(ngModel)]="editingExpense().paymentMode">
+                              @if (isEditingExpense(expense)) {
+                                <select
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().paymentMode"
+                                >
                                   <option value="UPI">UPI</option>
                                   <option value="CASH">CASH</option>
                                   <option value="CREDIT CARD">CREDIT CARD</option>
@@ -304,12 +522,11 @@
                                   <option value="BANK_TRANSFER">BANK TRANSFER</option>
                                   <option value="CHEQUE">CHEQUE</option>
                                 </select>
-                              }
-                              @else {
+                              } @else {
                                 <span class="tooltip-value">{{ expense.paymentMode }}</span>
                               }
                             </div>
-                            
+
                             <!-- <div class="tooltip-row">
                               <span class="tooltip-label">Transaction Type</span>
                               <span class="tooltip-value" [ngClass]="expense.mode === 'DEBITED' ? 'debit' : 'credit'">
@@ -319,49 +536,60 @@
                              -->
                             <div class="tooltip-row">
                               <span class="tooltip-label">Sender / Receiver</span>
-                              @if(isEditingExpense(expense)) {
-                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().senderOrReceiver" />
-                              }
-                              @else {
+                              @if (isEditingExpense(expense)) {
+                                <input
+                                  type="text"
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().senderOrReceiver"
+                                />
+                              } @else {
                                 <span class="tooltip-value">{{ expense.senderOrReceiver }}</span>
                               }
                             </div>
 
                             <div class="tooltip-row">
                               <span class="tooltip-label">Spent At</span>
-                              @if(isEditingExpense(expense)) {
-                                <input type="datetime-local" class="tooltip-input" [(ngModel)]="editingExpense().expenseDate" />
-                              }
-                              @else {
-                                <span class="tooltip-value">{{ expense.expenseDate | date: 'MMM dd, yyyy' }}</span>
+                              @if (isEditingExpense(expense)) {
+                                <input
+                                  type="datetime-local"
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().expenseDate"
+                                />
+                              } @else {
+                                <span class="tooltip-value">{{
+                                  expense.expenseDate | date: 'MMM dd, yyyy'
+                                }}</span>
                               }
                             </div>
-                            
+
                             <div class="tooltip-row">
                               <span class="tooltip-label">Custom Grouping</span>
-                              @if(isEditingExpense(expense)) {
-                                <input type="text" class="tooltip-input" [(ngModel)]="editingExpense().customGrouping" />
-                              }
-                              @else {
+                              @if (isEditingExpense(expense)) {
+                                <input
+                                  type="text"
+                                  class="tooltip-input"
+                                  [(ngModel)]="editingExpense().customGrouping"
+                                />
+                              } @else {
                                 <span class="tooltip-value">{{ expense.customGrouping }}</span>
                               }
                             </div>
-                            
-                            @if(expense.notes || isEditingExpense(expense)) {
+
+                            @if (expense.notes || isEditingExpense(expense)) {
                               <div class="tooltip-row">
                                 <span class="tooltip-label">Notes</span>
-                                @if(isEditingExpense(expense)) {
-                                  <textarea rows="3" class="tooltip-input" [(ngModel)]="editingExpense().notes"></textarea>
-                                }
-                                @else {
+                                @if (isEditingExpense(expense)) {
+                                  <textarea
+                                    rows="3"
+                                    class="tooltip-input"
+                                    [(ngModel)]="editingExpense().notes"
+                                  ></textarea>
+                                } @else {
                                   <span class="tooltip-value">{{ expense.notes }}</span>
                                 }
                               </div>
                             }
                           </div>
-
-                    
-
                         </div>
                       </div>
                     }
@@ -370,7 +598,7 @@
               </div>
             </div>
           }
-           @case ('transaction-filter') {
+          @case ('transaction-filter') {
             <!-- OVERVIEW FILTER FORM -->
             <form class="overview-filter-form" [formGroup]="formGroup">
               <!-- First Row: Date Range (From & To) -->
@@ -386,12 +614,7 @@
                 </div>
                 <div class="form-row">
                   <label class="required">To Date</label>
-                  <input
-                    type="date"
-                    placeholder="End date"
-                    formControlName="to"
-                    name="toDate"
-                  />
+                  <input type="date" placeholder="End date" formControlName="to" name="toDate" />
                 </div>
               </div>
 
@@ -408,9 +631,13 @@
                 </div>
                 <div class="form-row">
                   <label>Payment Mode</label>
-                  <select formControlName="paymentMode"  placeholder = "Please select" name="paymentMode">
+                  <select
+                    formControlName="paymentMode"
+                    placeholder="Please select"
+                    name="paymentMode"
+                  >
                     <option selected disabled>Please select</option>
-                      <option value="ALL">ALL</option>
+                    <option value="ALL">ALL</option>
                     <option value="UPI">UPI</option>
                     <option value="CASH">CASH</option>
                     <option value="CREDIT CARD">CREDIT CARD</option>
@@ -429,18 +656,17 @@
         }
       </div>
 
-      @if(!readOnlyForm()){
-          <div class="adaptive-footer">
-        <button
-          class="action-btn-self-entry"
-          (click)="handleSubmit()"
-          [disabled]="isLoading() || (formGroup && !formGroup.valid)"
-        >
-          {{ buttonText }}
-        </button>
-      </div>
+      @if (!readOnlyForm()) {
+        <div class="adaptive-footer">
+          <button
+            class="action-btn-self-entry"
+            (click)="handleSubmit()"
+            [disabled]="isLoading() || (formGroup && !formGroup.valid)"
+          >
+            {{ buttonText }}
+          </button>
+        </div>
       }
-    
     </div>
   </div>
 }

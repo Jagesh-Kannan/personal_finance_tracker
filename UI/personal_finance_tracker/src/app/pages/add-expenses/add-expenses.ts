@@ -38,7 +38,10 @@ export class AddExpenses {
   protected readonly fileExtractionSuccess;
   protected readonly createExpenseLoader;
 
-  public expenseForm!:FormGroup 
+  public openQuickAddForm = signal<boolean>(false);
+
+  public expenseForm!:FormGroup;
+  public quickAddForm!:FormGroup;
 
   public extractedData = signal<ExtractedExpenseData[]>([]);
 
@@ -50,6 +53,11 @@ export class AddExpenses {
     this.fileExtractionSuccess = computed(() => this.expenseService.fileExtractionSuccess());
     this.createExpenseLoader = computed(() => this.expenseService.createExpenseLoader());
     this.generateExpenseForm();
+    this.generateQuickAddForm();
+  }
+
+  ngOnInit(){
+    this.addQuickExpense();
   }
 
   // Drag & Drop Handlers
@@ -138,7 +146,7 @@ clearFile() {
         paymentMode: ['', Validators.required],
         mode: ['DEBITED', Validators.required],
         senderOrReceiver:[''],
-        expenseDate: ['', Validators.required],
+        expenseDate: [new Date().toISOString().substring(0, 16), Validators.required],
         notes: [''],
         currency: ['INR', Validators.required],
         customGrouping: ['']
@@ -150,6 +158,36 @@ clearFile() {
       expenseCategory: '',
       amount: '',
       paymentMode: '',
+      mode: 'DEBITED',
+      senderOrReceiver:'',
+      expenseDate: '',
+      notes: '',
+      currency: 'INR',
+      customGrouping: ''
+    });
+  }
+
+  private generateQuickAddForm(){
+     this.quickAddForm = this._fb.group({
+        expenseName: ['', Validators.required],
+        expenseCategory: [''],
+        amount: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+        paymentMode: ['UPI', Validators.required],
+        mode: ['DEBITED', Validators.required],
+        senderOrReceiver:[''],
+        expenseDate: [new Date().toISOString().substring(0, 16),],
+        notes: [''],
+        currency: ['INR', Validators.required],
+        customGrouping: ['']
+    });
+  }
+
+  private resetQuickAddForm(){
+    this.quickAddForm.reset({
+      expenseName: '',
+      expenseCategory: '',
+      amount: '',
+      paymentMode: 'UPI',
       mode: 'DEBITED',
       senderOrReceiver:'',
       expenseDate: '',
@@ -206,6 +244,11 @@ clearFile() {
     this.resetExpenseForm();
   }
 
+  addQuickExpense(){
+    this.openQuickAddForm.set(true);
+
+  }
+
   mannualEntry(updated_expense:ExtractedExpenseData){
      const newExpense: ExtractedExpenseData = {
             ...updated_expense,
@@ -240,6 +283,30 @@ clearFile() {
     });
     }
   }
+
+  addQuickExpenseSubmit(){
+    const quickExpense: CreateExpenseBody = {
+      expenseName: this.quickAddForm.value.expenseName,
+      expenseCategory: this.quickAddForm.value.expenseCategory || this.quickAddForm.value.expenseName,
+      amount: this.quickAddForm.value.amount,
+      paymentMode: this.quickAddForm.value.paymentMode,
+      mode: this.quickAddForm.value.mode,
+      senderOrReceiver: this.quickAddForm.value.senderOrReceiver,
+      expenseDate: this.quickAddForm.value.expenseDate ? new Date(this.quickAddForm.value.expenseDate).toISOString() : new Date().toISOString(),
+      notes: this.quickAddForm.value.notes,
+      currency: this.quickAddForm.value.currency || 'INR',
+      customGrouping: this.quickAddForm.value.customGrouping
+    };
+
+    this.expenseService.createExpense(quickExpense).subscribe({
+      next: async (res:any) =>{
+        this.resetQuickAddForm();
+        this.openQuickAddForm.set(false);
+        await this.getExpenseList();
+      }
+    });
+  }
+
 
   async getExpenseList(){
      return await lastValueFrom(this.expenseService.getAllExpense());

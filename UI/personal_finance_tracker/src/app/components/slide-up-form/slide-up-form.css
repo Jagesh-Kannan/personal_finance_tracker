@@ -14,6 +14,10 @@
   transition: all 0.3s ease;
 }
 
+.adaptive-overlay:has(.adaptive-content.slide-down) {
+  animation: overlayFadeOut 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
 .adaptive-content {
   background: var(--bg-color);
   backdrop-filter: blur(20px);
@@ -91,6 +95,33 @@
   }
 }
 
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes overlayFadeOut {
+  from {
+    backdrop-filter: blur(8px);
+    opacity: 1;
+  }
+  to {
+    backdrop-filter: blur(0px);
+    opacity: 0;
+  }
+}
+
+/* Slide down animation class */
+.adaptive-content.slide-down {
+  animation: slideDown 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
+}
+
 /* =====================================================
    INTERNAL ELEMENTS
    ===================================================== */
@@ -102,6 +133,14 @@
   background: var(--border-color);
   border-radius: 10px;
   margin: 0 auto 1rem;
+  cursor: grab;
+  touch-action: none;
+  transition: all 0.2s ease;
+}
+
+.sheet-grabber:active {
+  cursor: grabbing;
+  opacity: 0.7;
 }
 
 /* Header */
@@ -157,7 +196,7 @@
 /* =====================================================
    FORM LAYOUT
    ===================================================== */
-.manual-entry-form, .overview-filter-form {
+.manual-entry-form, .overview-filter-form, .quick-entry-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -199,7 +238,8 @@
    ===================================================== */
 .manual-entry-form input, .overview-filter-form input,
 .manual-entry-form select, .overview-filter-form select,
-.manual-entry-form textarea, .overview-filter-form textarea {
+.manual-entry-form textarea, .overview-filter-form textarea,
+.quick-entry-form input, .quick-entry-form select, .quick-entry-form textarea {
   width: 100%;
   box-sizing: border-box;
   background: var(--input-bg);
@@ -215,9 +255,15 @@
 }
 
 /* Focus State */
-.manual-entry-form input:focus, .overview-filter-form input:focus,
-.manual-entry-form select:focus, .overview-filter-form select:focus,
-.manual-entry-form textarea:focus, .overview-filter-form textarea:focus {
+.manual-entry-form input:focus, 
+.overview-filter-form input:focus,
+.manual-entry-form select:focus, 
+.overview-filter-form select:focus,
+.manual-entry-form textarea:focus, 
+.overview-filter-form textarea:focus,
+.quick-entry-form input:focus,
+.quick-entry-form select:focus,
+.quick-entry-form textarea:focus {
   outline: none;
   border-color: var(--secondary-orange);
   background: var(--glass-bg);
@@ -230,7 +276,10 @@
 .manual-entry-form textarea:hover,
 .overview-filter-form input:hover,
 .overview-filter-form select:hover,
-.overview-filter-form textarea:hover {
+.overview-filter-form textarea:hover,
+.quick-entry-form input:hover,
+.quick-entry-form select:hover,
+.quick-entry-form textarea:hover {
   border-color: var(--primary-orange);
 }
 
@@ -240,7 +289,10 @@
 .manual-entry-form textarea:disabled,
 .overview-filter-form input:disabled,
 .overview-filter-form select:disabled,
-.overview-filter-form textarea:disabled {
+.overview-filter-form textarea:disabled,
+.quick-entry-form input:disabled,
+.quick-entry-form select:disabled,
+.quick-entry-form textarea:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -279,6 +331,49 @@
   background: var(--btn-primary-bg);
   color: white;
   box-shadow: 0 4px 10px var(--btn-primary-shadow);
+}
+
+/* =====================================================
+   ADDITIONAL SECTION COLLAPSIBLE
+   ===================================================== */
+
+.additional-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--input-bg);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.additional-toggle:hover:not(:disabled) {
+  background: rgba(255, 154, 68, 0.08);
+  border-color: var(--primary-orange);
+}
+
+.additional-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.additional-label {
+  letter-spacing: 0.5px;
+}
+
+.toggle-arrow {
+  transition: transform 0.3s cubic-bezier(0.32, 1, 0.23, 1);
+  color: var(--primary-orange);
+}
+
+.toggle-arrow.expanded {
+  transform: rotate(180deg);
 }
 
 /* =====================================================

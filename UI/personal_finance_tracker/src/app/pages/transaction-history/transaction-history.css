@@ -650,7 +650,7 @@
     top: 189px;
   }
 
-  .delete-option {
+  .delete-option, .select-option {
     font-size: 12px;
     padding: 8px 10px;
   }

@@ -89,8 +89,11 @@ export class SlideUpForm {
   public selectedTooltipExpenseId = signal<string | null>(null);
   public editingExpense = signal<any | null>(null);
   public readOnlyForm = signal<boolean>(false);
+  public isAdditionalExpanded = signal<boolean>(false);
+  public isClosing = signal<boolean>(false);
   public readonly updateExpenseLoader;
   private storeRemovedExpense = signal<FilterableExpenseSchema[]>([]);
+  private touchStartY: number = 0;
 
   constructor(private expenseService:ExpenseService) {
     this.updateExpenseLoader = computed(() => this.expenseService.updateExpenseLoader());
@@ -256,6 +259,47 @@ private filterExpenseByFormData(): void {
       this.formSub.unsubscribe();
     }
     this.storeRemovedExpense.set([])
+  }
+
+  /**
+   * Handle touch start on sheet grabber
+   */
+  onSheetGrabberTouchStart(event: TouchEvent): void {
+    this.touchStartY = event.touches[0].clientY;
+  }
+
+  /**
+   * Handle touch move on sheet grabber
+   */
+  onSheetGrabberTouchMove(event: TouchEvent): void {
+    // Prevent default scrolling while dragging
+    event.preventDefault();
+  }
+
+  /**
+   * Handle touch end on sheet grabber - detect swipe down
+   */
+  onSheetGrabberTouchEnd(event: TouchEvent): void {
+    const touchEndY = event.changedTouches[0].clientY;
+    const swipeDistance = touchEndY - this.touchStartY;
+    const minimumSwipeDistance = 50; // Minimum pixels to trigger close
+
+    // If swiped down more than minimum distance, close the form
+    if (swipeDistance > minimumSwipeDistance) {
+      this.closeWithAnimation();
+    }
+  }
+
+  /**
+   * Close form with slide down animation
+   */
+  private closeWithAnimation(): void {
+    this.isClosing.set(true);
+    // Wait for animation to complete before closing
+    setTimeout(() => {
+      this.isClosing.set(false);
+      this.handleClose();
+    }, 300); // Match animation duration from CSS
   }
 }
 
