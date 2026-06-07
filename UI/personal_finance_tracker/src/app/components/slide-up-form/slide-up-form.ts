@@ -94,6 +94,7 @@ export class SlideUpForm {
   public readonly updateExpenseLoader;
   private storeRemovedExpense = signal<FilterableExpenseSchema[]>([]);
   private touchStartY: number = 0;
+  private touchStartX: number = 0;
 
   constructor(private expenseService:ExpenseService) {
     this.updateExpenseLoader = computed(() => this.expenseService.updateExpenseLoader());
@@ -262,30 +263,36 @@ private filterExpenseByFormData(): void {
   }
 
   /**
-   * Handle touch start on sheet grabber
+   * Handle touch start on form
    */
-  onSheetGrabberTouchStart(event: TouchEvent): void {
+  onFormTouchStart(event: TouchEvent): void {
     this.touchStartY = event.touches[0].clientY;
+    this.touchStartX = event.touches[0].clientX;
   }
 
   /**
-   * Handle touch move on sheet grabber
+   * Handle touch move on form
    */
-  onSheetGrabberTouchMove(event: TouchEvent): void {
-    // Prevent default scrolling while dragging
-    event.preventDefault();
+  onFormTouchMove(event: TouchEvent): void {
+    // Allow natural scrolling behavior
   }
 
   /**
-   * Handle touch end on sheet grabber - detect swipe down
+   * Handle touch end on form - detect swipe down
    */
-  onSheetGrabberTouchEnd(event: TouchEvent): void {
+  onFormTouchEnd(event: TouchEvent): void {
     const touchEndY = event.changedTouches[0].clientY;
-    const swipeDistance = touchEndY - this.touchStartY;
+    const touchEndX = event.changedTouches[0].clientX;
+    const swipeDistanceY = touchEndY - this.touchStartY;
+    const swipeDistanceX = Math.abs(touchEndX - this.touchStartX);
     const minimumSwipeDistance = 50; // Minimum pixels to trigger close
+    const maxHorizontalDrift = 30; // Max horizontal movement allowed
 
-    // If swiped down more than minimum distance, close the form
-    if (swipeDistance > minimumSwipeDistance) {
+    // If swiped down more than minimum distance and not scrolling horizontally, close the form
+    if (
+      swipeDistanceY > minimumSwipeDistance &&
+      swipeDistanceX < maxHorizontalDrift
+    ) {
       this.closeWithAnimation();
     }
   }
