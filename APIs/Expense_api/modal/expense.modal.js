@@ -34,7 +34,7 @@ const expense_schema = new mongoose.Schema({
     senderOrReceiver: {
         type: String,
     },
-    expenseDate: {
+    transactionDate: {
         type: Date,
         default: Date.now
     },

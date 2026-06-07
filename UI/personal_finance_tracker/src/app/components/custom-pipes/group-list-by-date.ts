@@ -23,7 +23,7 @@ export class GroupListByDatePipe implements PipeTransform {
     const order: string[] = [];
 
     collection.forEach(item => {
-      const itemDate = new Date(item.expenseDate);
+      const itemDate = new Date(item.transactionDate);
       itemDate.setHours(0, 0, 0, 0);
 
       let header = '';

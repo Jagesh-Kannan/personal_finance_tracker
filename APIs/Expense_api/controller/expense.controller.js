@@ -75,10 +75,10 @@ const get_expenses = catchAsync(async (req, res, next) => {
         amount_between,
         paymentMode,
         mode,
-        expenseDate_gt,
-        expenseDate_lt,
-        expenseDate_eq,
-        expenseDate_between,
+        transactionDate_gt,
+        transactionDate_lt,
+        transactionDate_eq,
+        transactionDate_between,
         customGrouping
     } = req.query;
 
@@ -119,26 +119,26 @@ const get_expenses = catchAsync(async (req, res, next) => {
         filter.mode = { $in: modes };
     }
 
-    // ExpenseDate filters
-    if (expenseDate_between) {
-        const [start, end] = expenseDate_between.split(",");
+    // TransactionDate filters
+    if (transactionDate_between) {
+        const [start, end] = transactionDate_between.split(",");
         const startDate = new Date(start);
         const endDate = new Date(end);
         if (!isNaN(startDate) && !isNaN(endDate)) {
-            filter.expenseDate = { $gte: startDate, $lte: endDate };
+            filter.transactionDate = { $gte: startDate, $lte: endDate };
         }
     } else {
-        if (expenseDate_gt) {
-            const gtDate = new Date(expenseDate_gt);
-            if (!isNaN(gtDate)) filter.expenseDate = { ...filter.expenseDate, $gt: gtDate };
+        if (transactionDate_gt) {
+            const gtDate = new Date(transactionDate_gt);
+            if (!isNaN(gtDate)) filter.transactionDate = { ...filter.transactionDate, $gt: gtDate };
         }
-        if (expenseDate_lt) {
-            const ltDate = new Date(expenseDate_lt);
-            if (!isNaN(ltDate)) filter.expenseDate = { ...filter.expenseDate, $lt: ltDate };
+        if (transactionDate_lt) {
+            const ltDate = new Date(transactionDate_lt);
+            if (!isNaN(ltDate)) filter.transactionDate = { ...filter.transactionDate, $lt: ltDate };
         }
-        if (expenseDate_eq) {
-            const eqDate = new Date(expenseDate_eq);
-            if (!isNaN(eqDate)) filter.expenseDate = { $eq: eqDate };
+        if (transactionDate_eq) {
+            const eqDate = new Date(transactionDate_eq);
+            if (!isNaN(eqDate)) filter.transactionDate = { $eq: eqDate };
         }
     }
 

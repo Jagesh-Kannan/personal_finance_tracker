@@ -33,7 +33,7 @@ export const extractExcelData = (fileBuffer) => {
             amount,
             paymentMode: getPaymentMode(modeOfTxn), // Assumes this helper exists
             mode,
-            expenseDate: parseExcelDate(row['__EMPTY_3']), // Assumes this helper exists
+            transactionDate: parseExcelDate(row['__EMPTY_3']), // Assumes this helper exists
             notes: remark,
             currency: 'INR',
             senderOrReceiver: receiverName,

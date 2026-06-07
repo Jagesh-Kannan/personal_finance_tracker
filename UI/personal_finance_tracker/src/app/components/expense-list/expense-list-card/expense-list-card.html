@@ -27,7 +27,7 @@
             <span class="amount-sign">{{ expense.mode === 'DEBITED' ? '-' : '+' }}</span>
             {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
           </div>
-          <div class="date-section">{{ expense.expenseDate | date: 'yyyy-MM-dd' }}</div>
+          <div class="date-section">{{ expense.transactionDate | date: 'yyyy-MM-dd' }}</div>
         </div>
 
         <!-- Section 4: Action Buttons Slot -->

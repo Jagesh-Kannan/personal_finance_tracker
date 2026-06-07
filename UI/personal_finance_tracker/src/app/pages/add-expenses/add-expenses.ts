@@ -146,7 +146,7 @@ clearFile() {
         paymentMode: ['', Validators.required],
         mode: ['DEBITED', Validators.required],
         senderOrReceiver:[''],
-        expenseDate: [new Date().toISOString().substring(0, 16), Validators.required],
+        transactionDate: [new Date().toISOString().substring(0, 16), Validators.required],
         notes: [''],
         currency: ['INR', Validators.required],
         customGrouping: ['']
@@ -160,7 +160,7 @@ clearFile() {
       paymentMode: '',
       mode: 'DEBITED',
       senderOrReceiver:'',
-      expenseDate: '',
+      transactionDate: '',
       notes: '',
       currency: 'INR',
       customGrouping: ''
@@ -175,7 +175,7 @@ clearFile() {
         paymentMode: ['UPI', Validators.required],
         mode: ['DEBITED', Validators.required],
         senderOrReceiver:[''],
-        expenseDate: [new Date().toISOString().substring(0, 16),],
+        transactionDate: [new Date().toISOString().substring(0, 16),],
         notes: [''],
         currency: ['INR', Validators.required],
         customGrouping: ['']
@@ -190,7 +190,7 @@ clearFile() {
       paymentMode: 'UPI',
       mode: 'DEBITED',
       senderOrReceiver:'',
-      expenseDate: '',
+      transactionDate: '',
       notes: '',
       currency: 'INR',
       customGrouping: ''
@@ -208,7 +208,7 @@ clearFile() {
       paymentMode: expense.paymentMode,
       mode: expense.mode,
       senderOrReceiver: expense.senderOrReceiver,
-      expenseDate: new Date(expense.expenseDate).toISOString().substring(0, 16), // Format for date input
+      transactionDate: new Date(expense.transactionDate).toISOString().substring(0, 16), // Format for date input
       notes: expense.notes,
       currency: expense.currency,
       customGrouping: expense.customGrouping
@@ -252,7 +252,7 @@ clearFile() {
   mannualEntry(updated_expense:ExtractedExpenseData){
      const newExpense: ExtractedExpenseData = {
             ...updated_expense,
-            expenseDate: new Date(updated_expense.expenseDate).toISOString(),
+            transactionDate: new Date(updated_expense.transactionDate).toISOString(),
         } as ExtractedExpenseData;
         this.extractedData.update(list => [newExpense, ...list]);
 
@@ -269,7 +269,7 @@ clearFile() {
             paymentMode: expense.paymentMode,
             mode: expense.mode,
             senderOrReceiver: expense.senderOrReceiver,
-            expenseDate: new Date(expense.expenseDate).toISOString(),
+            transactionDate: new Date(expense.transactionDate).toISOString(),
             notes: expense.notes,
             currency: expense.currency || 'INR',
             customGrouping: expense.customGrouping
@@ -292,7 +292,7 @@ clearFile() {
       paymentMode: this.quickAddForm.value.paymentMode,
       mode: this.quickAddForm.value.mode,
       senderOrReceiver: this.quickAddForm.value.senderOrReceiver,
-      expenseDate: this.quickAddForm.value.expenseDate ? new Date(this.quickAddForm.value.expenseDate).toISOString() : new Date().toISOString(),
+      transactionDate: this.quickAddForm.value.transactionDate ? new Date(this.quickAddForm.value.transactionDate).toISOString() : new Date().toISOString(),
       notes: this.quickAddForm.value.notes,
       currency: this.quickAddForm.value.currency || 'INR',
       customGrouping: this.quickAddForm.value.customGrouping

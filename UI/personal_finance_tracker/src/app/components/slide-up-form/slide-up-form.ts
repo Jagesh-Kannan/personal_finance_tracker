@@ -181,8 +181,8 @@ export class SlideUpForm {
    */
   editExpense(expense: any): void {
     const copy = { ...expense };
-    if (copy.expenseDate) {
-      copy.expenseDate = this.toDateTimeLocalString(copy.expenseDate);
+    if (copy.transactionDate) {
+      copy.transactionDate = this.toDateTimeLocalString(copy.transactionDate);
     }
     this.editingExpense.set(copy);
   }
@@ -228,7 +228,7 @@ private filterExpenseByFormData(): void {
     .filter(expense => {
       const fromTime = new Date(this.formGroup.value.month.from).getTime();
       const toTime = new Date(this.formGroup.value.month.to).getTime();
-      const expenseTime = new Date(expense.expenseDate).getTime();
+      const expenseTime = new Date(expense.transactionDate).getTime();
       
       return expenseTime >= fromTime && expenseTime <= toTime 
         && (this.formGroup.value.searchKey.toLowerCase() === '' 
@@ -248,7 +248,7 @@ private filterExpenseByFormData(): void {
         isRemoved: wasRemoved
       } as FilterableExpenseSchema;
     })
-    .sort((a,b)=> new Date(b.expenseDate).getTime() - new Date(a.expenseDate).getTime());
+    .sort((a,b)=> new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime());
 
   this.formGroup.get('filteredExpenses')?.setValue(filteredData, { emitEvent: false });
 }

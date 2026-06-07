@@ -73,7 +73,7 @@ export class TransactionHistory implements OnDestroy {
       paymentMode: ['', Validators.required],
       mode: ['DEBITED', Validators.required],
       senderOrReceiver: [''],
-      expenseDate: ['', Validators.required],
+      transactionDate: ['', Validators.required],
       notes: [''],
       currency: ['INR', Validators.required],
       customGrouping: [''],
@@ -90,7 +90,7 @@ export class TransactionHistory implements OnDestroy {
       paymentMode: '',
       mode: 'DEBITED',
       senderOrReceiver: '',
-      expenseDate: '',
+      transactionDate: '',
       notes: '',
       currency: 'INR',
       customGrouping: '',
@@ -111,7 +111,7 @@ export class TransactionHistory implements OnDestroy {
   openEditExpenseForm(expense: ExpenseSchema) {
     this.expenseForm.patchValue({
       ...expense,
-      expenseDate: new Date(expense.expenseDate).toISOString().substring(0, 16),
+      transactionDate: new Date(expense.transactionDate).toISOString().substring(0, 16),
     });
     this.openExpenseForm.set(true);
   }
@@ -169,7 +169,7 @@ export class TransactionHistory implements OnDestroy {
             if (fromVal && toVal) {
               const fromTime = new Date(fromVal).getTime();
               const toTime = new Date(toVal).getTime();
-              const expenseTime = new Date(expense.expenseDate).getTime();
+              const expenseTime = new Date(expense.transactionDate).getTime();
               matchesDate = expenseTime >= fromTime && expenseTime <= toTime;
             }
 
@@ -197,7 +197,7 @@ export class TransactionHistory implements OnDestroy {
               isRemoved: wasRemoved,
             } as FilterableExpenseSchema;
           })  
-         .sort((a,b)=> new Date(b.expenseDate).getTime() - new Date(a.expenseDate).getTime())
+         .sort((a,b)=> new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime())
           ,
       ],
     );

@@ -123,8 +123,8 @@
                   <label class="required">Date & Time</label>
                   <input
                     type="datetime-local"
-                    formControlName="expenseDate"
-                    name="expenseDate"
+                    formControlName="transactionDate"
+                    name="transactionDate"
                     [readonly]="readOnlyForm()"
                   />
                 </div>
@@ -272,8 +272,8 @@
                       <label >Date & Time</label>
                       <input
                         type="datetime-local"
-                        formControlName="expenseDate"
-                        name="expenseDate"
+                        formControlName="transactionDate"
+                        name="transactionDate"
                       />
                     </div>
                     <div class="form-row">
@@ -555,11 +555,11 @@
                                 <input
                                   type="datetime-local"
                                   class="tooltip-input"
-                                  [(ngModel)]="editingExpense().expenseDate"
+                                  [(ngModel)]="editingExpense().transactionDate"
                                 />
                               } @else {
                                 <span class="tooltip-value">{{
-                                  expense.expenseDate | date: 'MMM dd, yyyy'
+                                  expense.transactionDate | date: 'MMM dd, yyyy'
                                 }}</span>
                               }
                             </div>

@@ -60,7 +60,7 @@ type ExpenseSchema = {
   paymentMode: 'CASH','CREDIT CARD','DEBIT CARD','UPI','WALLET','BANK_TRANSFER','CHEQUE'; 
   mode: 'DEBITED' | 'CREDITED';
   senderOrReceiver: string,
-  expenseDate: string;
+  transactionDate: string;
   notes: string;
   currency: string;
   customGrouping: string;
@@ -80,7 +80,7 @@ type ExtractedExpenseData = {
     paymentMode: string;
     mode: 'DEBITED' | 'CREDITED';
     senderOrReceiver: string,
-    expenseDate: string;
+    transactionDate: string;
     notes: string,
     currency: string,
     customGrouping: string
@@ -93,7 +93,7 @@ type CreateExpenseBody = {
       paymentMode: string;
       mode: 'DEBITED' | 'CREDITED';
       senderOrReceiver: string,
-      expenseDate: string;
+      transactionDate: string;
       notes: string,
       currency: 'INR',
       customGrouping: string

@@ -42,7 +42,7 @@ export class AggrigateService {
 
     return data
       .filter(item => {
-        const date = new Date(item.expenseDate);
+        const date = new Date(item.transactionDate);
         const itemMonth = date.toLocaleString('default', { month: 'short' }) as Months;
         
         // Match both month name and specific year
@@ -62,7 +62,7 @@ export class AggrigateService {
 
     data.forEach(record => {
       // 1. Extract clean Year-Month key "YYYY-MM"
-     const recDate = new Date(record.expenseDate);
+     const recDate = new Date(record.transactionDate);
       const year = recDate.getUTCFullYear();
       const _month = String(recDate.getUTCMonth());
       const yearMonth = `${year}-${_month}`;
