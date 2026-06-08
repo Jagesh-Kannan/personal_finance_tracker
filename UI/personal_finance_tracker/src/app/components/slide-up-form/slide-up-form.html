@@ -3,15 +3,22 @@
     <div 
       class="adaptive-content glass-container" 
       [class.slide-down]="isClosing()" 
-      (click)="$event.stopPropagation()"
-      (touchstart)="onFormTouchStart($event)"
-      (touchmove)="onFormTouchMove($event)"
-      (touchend)="onFormTouchEnd($event)"
+ (click)="$event.stopPropagation()"
     >
       <!-- Mobile Handle -->
-      <div class="sheet-grabber mobile-only"></div>
+      <div class="sheet-grabber mobile-only"  
+            (click)="$event.stopPropagation()"
+     
+      (touchstart)="onFormTouchStart($event)"
+      (touchmove)="onFormTouchMove($event)"
+      (touchend)="onFormTouchEnd($event)"></div>
 
-      <div class="adaptive-header">
+      <div class="adaptive-header"  
+            (click)="$event.stopPropagation()"
+     
+      (touchstart)="onFormTouchStart($event)"
+      (touchmove)="onFormTouchMove($event)"
+      (touchend)="onFormTouchEnd($event)">
         <h2 class="welcome-title">
           <span class="title-word">{{ titleWord }}</span>
           <span class="title-name">{{ titleName }}</span>
