@@ -169,3 +169,12 @@ type ExpenseInsightsStatistics = {
 type MonthlyExpenseInsights = Record<string, ExpenseInsightsStatistics>;
 
 type FormContentType = 'overview-filter' | 'manual-entry' | 'transaction-filter' | 'view-transaction' | 'quick-entry';
+
+
+
+// widget types
+
+type widgetDetails = {
+  title: string;
+  
+};

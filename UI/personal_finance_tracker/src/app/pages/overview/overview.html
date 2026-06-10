@@ -83,3 +83,6 @@
   (onSubmit)="get_insights($event)"
   (onClose)="openFilterForm.set(false)"
 ></app-slide-up-form>
+
+
+<app-widget [widgetDetails]=" this.overviewFilterForm.value.filteredExpenses"></app-widget>

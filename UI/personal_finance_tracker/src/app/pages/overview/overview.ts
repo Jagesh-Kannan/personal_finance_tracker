@@ -8,7 +8,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { LucideFunnel } from '@lucide/angular';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ToasterService } from '../../service/toaster.service';
-import { first } from 'rxjs';
+import { Widget } from '../../components/widgets/widget/widget';
 
 
 interface MonthOption {
@@ -18,7 +18,7 @@ interface MonthOption {
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, Widget],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
