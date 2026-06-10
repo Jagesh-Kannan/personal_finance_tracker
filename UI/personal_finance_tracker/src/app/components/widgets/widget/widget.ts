@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, SimpleChanges, viewChild } from '@angular/core';
 import * as echarts from 'echarts';
-import { aggregate } from '@manufac/echarts-simple-transform';
+import { aggregate } from 'echarts-simple-transform';
 
 @Component({
   selector: 'app-widget',
@@ -27,7 +27,7 @@ export class Widget {
   ngAfterViewInit(){
 
     echarts.registerTransform(aggregate as any);
-    this.pieChart = echarts.init(this.pieContainer()?.nativeElement, null, { renderer: 'svg' });
+    this.pieChart = echarts.init(this.pieContainer()?.nativeElement);
 
    
     
