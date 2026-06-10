@@ -27,7 +27,7 @@ export class Widget {
   ngAfterViewInit(){
 
     echarts.registerTransform(aggregate as any);
-    this.pieChart = echarts.init(this.pieContainer()?.nativeElement);
+    this.pieChart = echarts.init(this.pieContainer()?.nativeElement, null, { renderer: 'svg' });
 
    
     
