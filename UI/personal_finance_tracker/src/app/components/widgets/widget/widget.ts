@@ -1,6 +1,5 @@
-import { Component, ElementRef, Input, SimpleChanges, viewChild } from '@angular/core';
+import { Component, ElementRef, Input, SimpleChanges, viewChild, NgZone, inject } from '@angular/core';
 import * as echarts from 'echarts';
-import { aggregate } from '@manufac/echarts-simple-transform';
 
 @Component({
   selector: 'app-widget',
@@ -11,215 +10,126 @@ import { aggregate } from '@manufac/echarts-simple-transform';
 })
 export class Widget {
 
-  @Input() widgetDetails:any;
+  @Input() widgetDetails: any[] = [];
 
   pieContainer = viewChild<ElementRef>('pieContainer');
   private pieChart?: echarts.ECharts;
+  private ngZone = inject(NgZone);
+  private resizeListener?: () => void;
 
-  constructor() {}
-
-
-  ngOnChanges(changes:SimpleChanges){
- console.log(this.widgetDetails);
-    changes['widgetDetails'] && this.updateCharts(this.widgetDetails);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['widgetDetails'] && this.widgetDetails) {
+      // Safely schedule an option update if the chart instance is already ready
+      this.updateCharts(this.widgetDetails);
+    }
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
+    const container = this.pieContainer()?.nativeElement;
+    if (!container) return;
 
-    echarts.registerTransform(aggregate as any);
-    this.pieChart = echarts.init(this.pieContainer()?.nativeElement);
+    // Run ECharts outside Angular's zone to prevent unnecessary change detection cycles (helps performance on mobile)
+    this.ngZone.runOutsideAngular(() => {
+      this.pieChart = echarts.init(container, null, {
+        renderer: 'canvas',
+        devicePixelRatio: Math.min(window.devicePixelRatio, 2) // Cap resolution to prevent OOM memory bloating on high-DPI mobiles
+      });
 
-   
-    
-    this.updateCharts(this.widgetDetails);
-    
+      this.updateCharts(this.widgetDetails);
+
+      // Handle viewport dimension adjustments gracefully on mobile phone layout toggles
+      this.resizeListener = () => this.pieChart?.resize();
+      window.addEventListener('resize', this.resizeListener);
+    });
   }
 
-  updateCharts(data:any[]){
-     if (!this.pieChart) return;
+  updateCharts(data: any[]) {
+    if (!this.pieChart || !data || data.length === 0) return;
 
-    // 6. SHARED DATASET: Use the same array for both
-    const dataset = { source: data };
-
-    // --- FORM 1: BAR CHART ---
-//    this.barChart.setOption({
-//   dataset: [
-//     { 
-//       source: data,
-//        sourceHeader: false,
-//       dimensions: ['expenseName', 'expenseCategory', 'amount', 'paymentMode', 'mode', 'notes', 'currency', 'customGrouping']
-//      },
-//     {
-//       transform: [
-//         {
-//           type: 'ecSimpleTransform:aggregate',
-//           config: {
-//              fromDatasetIndex: 0,
-//             groupBy: 'expenseCategory',
-//             resultDimensions: [
-//               { from: 'expenseCategory', name: 'expenseCategory' },
-//               { from: 'amount', method: 'sum', name: 'totalAmount' }
-//             ]
-//           }
-//         }
-//       ]
-//     }
-//   ],
-//   tooltip: { trigger: 'axis' },
-//   xAxis: { 
-//     type: 'category', 
-//     axisLabel: { 
-//       interval: 0,
-//       rotate: 30
-//     } 
-//   },
-//   yAxis: {},
-//   series: [{
-//     type: 'bar',
-//     datasetIndex: 1,
-//     encode: { x: 'expenseCategory', y: 'totalAmount' }
-//   }]
-// });
-
-if (data.length > 0) {
-  // 2. Automatically extract keys from the first object to use as row 0 headers
-  const dynamicHeaders = Object.keys(data[0]);
-}
-
-// data = [['expenseName', 'expenseCategory', 'amount', 'paymentMode', 'mode', 'notes', 'currency', 'customGrouping'],...data]
-    // --- FORM 2: PIE CHART ---
-    this.pieChart.setOption({
-      dataset: [
-         { 
-      source: data,
-       sourceHeader: true,
-      dimensions: ['expenseName', 'expenseCategory', 'amount', 'paymentMode', 'mode', 'notes', 'currency', 'customGrouping']
-     },
-     
-       {
-      transform: [
-        {
-          type: 'ecSimpleTransform:aggregate',
-          config: {
-            fromDatasetIndex: 0,
-            groupBy: 'paymentMode', // Matches the exact case-sensitive key in your object
-            resultDimensions: [
-              { from: 'paymentMode', name: 'paymentMode' },
-              { from: 'amount', method: 'sum', name: 'totalAmount' }
-            ]
-          }
-        }
-      ],
-    },
-      ],
-  //      grid: {
-  //   top: 40,      // Reserves an explicit pixel buffer zone at the top of the canvas box
-  //   bottom: 40,
-  //   left: 20,
-  //   right: 20,
-  //   containLabel: true // Instructs the renderer to compute text heights within the grid layout
-  // },
-      tooltip: { trigger: 'item' },
-  //    legend: {
-  //   // top: '5%',
-  //   left: 'left',
-  //   orient: 'vertical',
-  //   bottom: '0%',
-  //    itemWidth: 14,        // Width of the color marker shape (Default: 25)
-  //   itemHeight: 14,
-  //   textStyle: {
-  //     fontSize: 9,       // Pixel font size for text descriptions
-  //     fontWeight: '500',  // Font thickness weight control ('normal', 'bold', etc.)
-  //     color: '#4a5568'    // Custom HEX color string matching your UI theme
-  //   }
-  // },
-      series: [{
-        type: 'pie',
-            radius: ['40%', '70%'],
-             center: ['50%', '53%'], 
-      avoidLabelOverlap: false,
-      padAngle: 5,
-      
-    //    label: {
-    //   show: true,
-    //   position: 'outside',       // Options: 'outside' (cleanest), 'inside', 'center'
-    //   formatter: '{c}\n({d}%)',  // Displays Title text on line 1, percentage on line 2
-    //   fontSize: 8,
-    //   fontWeight: '600',
-    //   color: '#4a5568',          // Matches your dark/light UI text layer variables
-    //   bleedMargin: 5,             // Prevents text overflow cutting near canvas edges
-    //     margin: 8,          // Distance margins between labels to avoid collisions
-    //   overflow: 'break',  // Options: 'break', 'truncate', 'none'. Prevents clipping.
-    //   minMargin: 5, 
-    // },
-    
-    /* 3. STYLE THE CONNECTOR POINTER LINES */
-    labelLine: {
-      show: true,
-      length: 15,                // Length of the first pointer section from the slice ring
-      length2: 10,               // Length of the second horizontal connector under the text
-      smooth: true,              // Gives pointer lines a premium curved arc look
-      lineStyle: {
-        width: 1.5,
-        color: '#cbd5e1'         // Soft light gray indicator tracking line
+    // FIX: Aggregate data natively in TypeScript to avoid heavy internal transform engines crashing mobile tabs
+    const aggregatedMap = new Map<string, number>();
+    data.forEach((item: any) => {
+      if (item && item.paymentMode) {
+        const currentSum = aggregatedMap.get(item.paymentMode) || 0;
+        aggregatedMap.set(item.paymentMode, currentSum + Number(item.amount || 0));
       }
-    },
-    
-    /* 4. PREMIUM UI TOUCHES */
-    itemStyle: {
-      borderRadius: 6,           // Rounds the sharp outer corners of the ring slices
-      borderColor: '#fff',       // Adds a clean white separation grid border gap
-      borderWidth: 2
-    },
-        datasetIndex: 1,
-        encode: { itemName: 'paymentMode', value: 'totalAmount' }
-      }],
-  //      media: [
-  //   {
-  //     query: { maxWidth: 640 }, // MOBILE OVERRIDES
-  //     option: {
-  //       series: [{itemStyle: {
-  //       borderRadius: 4
-  //     }, center: ['50%', '40%'] }],
-  // //        legend: {
-  // //   top: '5%',
-  // //   left: 'left',
-  // //   orient: 'vertical',
-  // //   // bottom: '0%',
-  // //    itemWidth: 14,        // Width of the color marker shape (Default: 25)
-  // //   itemHeight: 14,
-  // //   textStyle: {
-  // //     fontSize: 9,       // Pixel font size for text descriptions
-  // //     fontWeight: '500',  // Font thickness weight control ('normal', 'bold', etc.)
-  // //     color: '#4a5568'    // Custom HEX color string matching your UI theme
-  // //   }
-  // // },
-  //     }
-  //   },
-  //   {
-  //     query: { minWidth: 1024 }, // DESKTOP OVERRIDES
-  //     option: {
-  //       series: [{ itemStyle: {
-  //       borderRadius: 4
-  //     }, center: ['40%', '50%'] }],
-  //       // legend: { orient: 'vertical', right: '5%' }
-  //     }
-  //   }
-  // ]
     });
 
+    const cleanAggregatedData = Array.from(aggregatedMap.entries()).map(([key, val]) => ({
+      paymentMode: key,
+      totalAmount: val
+    }));
 
+    // Run UI component bindings inside the proper execution scope
+    this.ngZone.runOutsideAngular(() => {
+      this.pieChart?.setOption({
+        dataset: [
+          {
+            source: cleanAggregatedData // Clean aggregated object array mapping
+            // FIX: Removed 'sourceHeader: true' so objects parse accurately
+          }
+        ],
+        tooltip: { trigger: 'item' },
+        series: [{
+          type: 'pie',
+          radius: ['35%', '60%'], // Optimized responsive radius spectrum for compact mobile dimensions
+          center: ['50%', '50%'], 
+          avoidLabelOverlap: true,
+          padAngle: 4,
+          label: {
+            show: true,
+            position: 'outside',       
+            formatter: '{b}\n{c} ({d}%)', // Shows Mode label along with value metrics clearly
+            fontSize: 10,
+            fontWeight: '600',
+            color: '#4a5568',          
+            overflow: 'break'
+          },
+          labelLine: {
+            show: true,
+            length: 10,                
+            length2: 8,               
+            smooth: true,              
+            lineStyle: {
+              width: 1.5,
+              color: '#cbd5e1'         
+            }
+          },
+          itemStyle: {
+            borderRadius: 5,           
+            borderColor: '#fff',       
+            borderWidth: 2
+          },
+          datasetIndex: 0,
+          encode: { itemName: 'paymentMode', value: 'totalAmount' }
+        }],
+        // Clean responsive breakdown configs handling container layouts smoothly across screens
+        media: [
+          {
+            query: { maxWidth: 640 },
+            option: {
+              series: [{
+                radius: ['30%', '50%'],
+                center: ['50%', '50%'],
+                label: { fontSize: 9 }
+              }]
+            }
+          }
+        ]
+      }, true); // Use 'true' flag to force clear existing configuration state entirely
+    });
   }
 
   ngOnDestroy() {
-    // 7. DISPOSE: Release resources to avoid memory leaks
-    // window.removeEventListener('resize', this.onResize);
-    
-    this.pieChart?.dispose();
+    // Teardown everything cleanly to prevent background memory allocation leaks
+    if (this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
+    if (this.pieChart) {
+      this.pieChart.dispose();
+    }
   }
-
 }
-
 
 
 //  constructor() {
