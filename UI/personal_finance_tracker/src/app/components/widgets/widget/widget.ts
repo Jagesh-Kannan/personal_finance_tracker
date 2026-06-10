@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, SimpleChanges, viewChild } from '@angular/core';
 import * as echarts from 'echarts';
-import { aggregate } from 'echarts-simple-transform';
+import { aggregate } from '@manufac/echarts-simple-transform';
 
 @Component({
   selector: 'app-widget',
@@ -112,13 +112,13 @@ if (data.length > 0) {
       ],
     },
       ],
-       grid: {
-    top: 40,      // Reserves an explicit pixel buffer zone at the top of the canvas box
-    bottom: 40,
-    left: 20,
-    right: 20,
-    containLabel: true // Instructs the renderer to compute text heights within the grid layout
-  },
+  //      grid: {
+  //   top: 40,      // Reserves an explicit pixel buffer zone at the top of the canvas box
+  //   bottom: 40,
+  //   left: 20,
+  //   right: 20,
+  //   containLabel: true // Instructs the renderer to compute text heights within the grid layout
+  // },
       tooltip: { trigger: 'item' },
   //    legend: {
   //   // top: '5%',
@@ -140,18 +140,18 @@ if (data.length > 0) {
       avoidLabelOverlap: false,
       padAngle: 5,
       
-       label: {
-      show: true,
-      position: 'outside',       // Options: 'outside' (cleanest), 'inside', 'center'
-      formatter: '{c}\n({d}%)',  // Displays Title text on line 1, percentage on line 2
-      fontSize: 8,
-      fontWeight: '600',
-      color: '#4a5568',          // Matches your dark/light UI text layer variables
-      bleedMargin: 5,             // Prevents text overflow cutting near canvas edges
-        margin: 8,          // Distance margins between labels to avoid collisions
-      overflow: 'break',  // Options: 'break', 'truncate', 'none'. Prevents clipping.
-      minMargin: 5, 
-    },
+    //    label: {
+    //   show: true,
+    //   position: 'outside',       // Options: 'outside' (cleanest), 'inside', 'center'
+    //   formatter: '{c}\n({d}%)',  // Displays Title text on line 1, percentage on line 2
+    //   fontSize: 8,
+    //   fontWeight: '600',
+    //   color: '#4a5568',          // Matches your dark/light UI text layer variables
+    //   bleedMargin: 5,             // Prevents text overflow cutting near canvas edges
+    //     margin: 8,          // Distance margins between labels to avoid collisions
+    //   overflow: 'break',  // Options: 'break', 'truncate', 'none'. Prevents clipping.
+    //   minMargin: 5, 
+    // },
     
     /* 3. STYLE THE CONNECTOR POINTER LINES */
     labelLine: {
@@ -174,38 +174,38 @@ if (data.length > 0) {
         datasetIndex: 1,
         encode: { itemName: 'paymentMode', value: 'totalAmount' }
       }],
-       media: [
-    {
-      query: { maxWidth: 640 }, // MOBILE OVERRIDES
-      option: {
-        series: [{itemStyle: {
-        borderRadius: 4
-      }, center: ['50%', '40%'] }],
-  //        legend: {
-  //   top: '5%',
-  //   left: 'left',
-  //   orient: 'vertical',
-  //   // bottom: '0%',
-  //    itemWidth: 14,        // Width of the color marker shape (Default: 25)
-  //   itemHeight: 14,
-  //   textStyle: {
-  //     fontSize: 9,       // Pixel font size for text descriptions
-  //     fontWeight: '500',  // Font thickness weight control ('normal', 'bold', etc.)
-  //     color: '#4a5568'    // Custom HEX color string matching your UI theme
+  //      media: [
+  //   {
+  //     query: { maxWidth: 640 }, // MOBILE OVERRIDES
+  //     option: {
+  //       series: [{itemStyle: {
+  //       borderRadius: 4
+  //     }, center: ['50%', '40%'] }],
+  // //        legend: {
+  // //   top: '5%',
+  // //   left: 'left',
+  // //   orient: 'vertical',
+  // //   // bottom: '0%',
+  // //    itemWidth: 14,        // Width of the color marker shape (Default: 25)
+  // //   itemHeight: 14,
+  // //   textStyle: {
+  // //     fontSize: 9,       // Pixel font size for text descriptions
+  // //     fontWeight: '500',  // Font thickness weight control ('normal', 'bold', etc.)
+  // //     color: '#4a5568'    // Custom HEX color string matching your UI theme
+  // //   }
+  // // },
+  //     }
+  //   },
+  //   {
+  //     query: { minWidth: 1024 }, // DESKTOP OVERRIDES
+  //     option: {
+  //       series: [{ itemStyle: {
+  //       borderRadius: 4
+  //     }, center: ['40%', '50%'] }],
+  //       // legend: { orient: 'vertical', right: '5%' }
+  //     }
   //   }
-  // },
-      }
-    },
-    {
-      query: { minWidth: 1024 }, // DESKTOP OVERRIDES
-      option: {
-        series: [{ itemStyle: {
-        borderRadius: 4
-      }, center: ['40%', '50%'] }],
-        // legend: { orient: 'vertical', right: '5%' }
-      }
-    }
-  ]
+  // ]
     });
 
 
