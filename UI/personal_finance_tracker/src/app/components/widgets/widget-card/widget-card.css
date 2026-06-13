@@ -1,0 +1,184 @@
+.statistic-card-container{
+     flex: 0 0 auto; /* Prevents cards from shrinking */
+     min-width: 400px; /* Your requirement */
+}
+
+/* Base Card Styling */
+.statistic-card-container > .statistic-card-wrapper{
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  font-family:inherit;
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  backdrop-filter: blur(10px);
+}
+
+.card-header > .head.wrapper{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.card-header .card-title > h3{
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    font-family: inherit;
+    min-width: 70px;
+}
+.card-header .card-note {
+  display: flex;
+}
+.card-header .card-note > .note-content{
+    display: grid;
+    justify-items: end;
+    min-width: 70px;
+}
+
+.card-header .card-note > .note-content > .note-value{
+    font-size: 12px;
+}
+
+.card-header .card-note > .note-content > .note-value.positive{
+    color: var(--success-color);
+}
+
+.card-header .card-note > .note-content > .note-value.negative{
+    color: var(--error-color);
+}
+
+.card-header .card-note > .note-content >.note-description{
+  font-size: 9px;
+    font-weight: bold;
+}
+.card-body .value{
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 9px;
+    /* margin-left: 10%; */
+    font-family: inherit;
+    letter-spacing: 1px;
+}
+.card-footer .footer-note.note{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.7rem;
+    color: var(--text-color);
+    /* opacity: 0.7; */
+    font-family: inherit
+}
+
+.card-footer .footer-note > .metadata > .sign,
+.card-footer .footer-note > .metadata > .value{
+  font-weight: 600;
+}
+
+.card-footer .footer-note > .metadata > .sign.positive,
+.card-footer .footer-note > .metadata > .value.positive{
+    color: var(--success-color);
+}
+
+.card-footer .footer-note > .metadata > .sign.negative,
+.card-footer .footer-note > .metadata > .value.negative{
+    color: var(--error-color);
+}
+
+/* Mobile only */
+@media (max-width: 767px) {
+  .statistic-card-container{
+   max-width: 250px;
+    min-width: 250px;
+}
+
+.card-header > .head.wrapper{
+  margin-bottom: 5px;
+}
+.statistic-card-container > .statistic-card-wrapper{
+  padding: 12px 12px 5px 12px;
+}
+.card-header .card-title > h3{
+  font-size: 0.9rem;
+    margin: 0 0 6px 0;
+}
+.card-header .card-note > .note-content > .note-value {
+    font-size: 10px;
+}
+.card-header .card-note > .note-content > .note-description{
+    font-size: 9px;
+}
+.card-body .value{
+    font-size: 1.5rem;
+}
+.card-footer > .footer.wrapper{
+    gap: 5px;
+    font-size: 0.675rem;
+}
+.card-footer .footer-note.note .description{
+  font-size: 0.65rem;
+}
+.card-footer > .footer.wrapper .sparkline-container {
+  height: 21px;
+}
+}
+
+/* Tablet only */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .statistic-card-container{
+   
+    min-width: 350px;
+}
+.card-header > .head.wrapper{
+  padding-bottom: 5px;
+}
+.statistic-card-container > .statistic-card-wrapper{
+  padding: 21px 21px 8px 21px;
+}
+.card-header .card-title > h3{
+  font-size: 0.9rem;
+}
+.card-body .value{
+  font-size: 1.8rem;
+}
+.card-footer > .footer.wrapper{
+  font-size: 0.78rem;
+}
+.card-footer .footer-note.note .description{
+  font-size: 0.75rem;
+}
+.card-footer > .footer.wrapper .sparkline-container {
+  height: 25px;
+}
+}
+
+/* Laptop and up */
+@media (min-width: 1024px) {
+    .statistic-card-container{
+   
+    min-width: 400px;
+}
+.card-header > .head.wrapper{
+  padding-bottom: 5px;
+}
+.statistic-card-container > .statistic-card-wrapper{
+  padding: 24px 24px 10px 24px;
+}
+.card-header .card-title > h3{
+  font-size: 1.1rem;
+}
+.card-body .value{
+  font-size: 2rem;
+}
+.card-footer > .footer.wrapper{
+  font-size: 0.875rem;
+}
+.card-footer .footer-note.note .description{
+  font-size: 0.8rem;
+}
+.card-footer > .footer.wrapper .sparkline-container {
+  height: 30px;
+}
+}

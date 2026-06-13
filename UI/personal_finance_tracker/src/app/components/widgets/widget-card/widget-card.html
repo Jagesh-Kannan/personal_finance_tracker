@@ -1,0 +1,30 @@
+<article class="statistic-card-container">
+    <!-- <div class="statistic-card-wrapper" [skeletonLoader]="this.statisticCardLoader()"> -->
+    <div class="statistic-card-wrapper" >
+        <section class="card-header section ">
+            <div class="head wrapper">
+                 <div class="card-title skeleton-loader">
+                     <h3>Title</h3>
+                 </div>
+                <div class="card-note skeleton-loader">
+                    <!-- @for(note of this.statisticData().note || []; track $index){ -->
+                    <div class="note-content">
+                        <label for="card-note" class="note-value" 
+                        >
+                        icon</label>
+                        <label for="card-note" class="note-description">desc</label> 
+                    </div> 
+                <!-- } -->
+                </div>
+            </div>
+        </section>
+        <section class="card-body section">
+              <div class="body wrapper">
+                <div class="value skeleton-loader">
+                    <app-widget [widgetOptions]="widgetOptions()"></app-widget>
+                </div>
+              </div>
+        </section>
+        <section class="card-footer section"></section>
+    </div>
+</article>

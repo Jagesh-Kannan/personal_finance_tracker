@@ -8,7 +8,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { LucideFunnel } from '@lucide/angular';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ToasterService } from '../../service/toaster.service';
-import { Widget } from '../../components/widgets/widget/widget';
+import { WidgetCard } from '../../components/widgets/widget-card/widget-card';
 
 
 interface MonthOption {
@@ -18,7 +18,7 @@ interface MonthOption {
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, Widget],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, WidgetCard],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
@@ -35,6 +35,14 @@ export class Overview {
    public openFilterForm = signal<boolean>(false);
    public customMonthRangeDisplay = signal<string>('');
 
+   public widgetDetails = signal<widgetDetails>({
+     widgetId: '',
+     title: '',
+     description: '',
+     chartType: 'line',
+     chartOptions: []
+   });
+
   private activeFilter = signal<{ month: Months | null; expenses: ExpenseSchema[] | null }>({
     month: 'jan', 
     expenses: null
@@ -49,6 +57,8 @@ export class Overview {
       this.generateOverviewFilterForm();
     });
 
+  
+    
     this.statisticsLoader = this.expenseService.getExpenseLoader;
 
     //------ previous fine working logic ---------
@@ -75,6 +85,8 @@ export class Overview {
       const currentExpensesList = expenses ?? this.expensesList();
 
       if(month) this.updateOverviewMonthFilter(month);
+
+      
 
       if (!currentExpensesList || currentExpensesList.length === 0) return [];
       return [

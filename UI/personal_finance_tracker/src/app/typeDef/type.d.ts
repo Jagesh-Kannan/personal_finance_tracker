@@ -175,6 +175,13 @@ type FormContentType = 'overview-filter' | 'manual-entry' | 'transaction-filter'
 // widget types
 
 type widgetDetails = {
+  widgetId: string;
   title: string;
-  
+  description: string;
+  chartType: 'pie' | 'bar' | 'line';
+  chartOptions: any[]
 };
+
+type widgetOptions = {
+  option: echarts.EChartsOption | null
+}

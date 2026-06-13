@@ -84,5 +84,13 @@
   (onClose)="openFilterForm.set(false)"
 ></app-slide-up-form>
 
+<!-- 
+<app-widget [widgetDetails]=" this.overviewFilterForm.value.filteredExpenses"></app-widget> -->
 
-<app-widget [widgetDetails]=" this.overviewFilterForm.value.filteredExpenses"></app-widget>
+<app-widget-card [widgetDetails]="{
+        widgetId: '334232',
+        title: 'test title',
+        description: 'test decription',
+        chartType: 'pie',
+        chartOptions: this.overviewFilterForm.value.filteredExpenses
+      }"></app-widget-card>
