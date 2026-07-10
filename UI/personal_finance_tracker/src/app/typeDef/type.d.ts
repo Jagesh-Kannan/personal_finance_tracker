@@ -162,11 +162,17 @@ type ExpenseInsightsStatistics = {
     preferredPaymentMode: { mode: string; count: number } | null;
   };
 }
+
+type MonthlyTransactionSplit = {
+  debitedList: ExpenseSchema[];
+  creditedList: ExpenseSchema[];
+}
 //  averageMonthlySpend: number;
 //     peakMonth: { month: string; amount: number } | null;
 //     dailyBurnRate: number;
 
 type MonthlyExpenseInsights = Record<string, ExpenseInsightsStatistics>;
+type MonthlyExpenseLists = Record<string, MonthlyTransactionSplit>;
 
 type FormContentType = 'overview-filter' | 'manual-entry' | 'transaction-filter' | 'view-transaction' | 'quick-entry';
 
@@ -174,14 +180,25 @@ type FormContentType = 'overview-filter' | 'manual-entry' | 'transaction-filter'
 
 // widget types
 
-type widgetDetails = {
+type WidgetDetails = {
   widgetId: string;
   title: string;
   description: string;
-  chartType: 'pie' | 'bar' | 'line';
-  chartOptions: any[]
+  // chartType: 'pie' | 'bar' | 'line';
+  // data: any;
+  chartConfig: ChartConfigParams
 };
 
-type widgetOptions = {
-  option: echarts.EChartsOption | null
-}
+type WidgetOptions = {
+  widgetId: string;
+  option: echarts.EChartsOption | null,
+};
+
+type ChartConfigParams = {
+  chartType: 'pie' | 'bar' | 'line';
+  rawData: any[];
+  groupByKey?: string;
+  valueByKey?: string;
+  currencySymbol?: string;
+  customSeriesProps?: Record<string, any>;
+};

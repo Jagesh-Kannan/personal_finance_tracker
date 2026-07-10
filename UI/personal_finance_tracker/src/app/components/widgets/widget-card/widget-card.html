@@ -1,18 +1,18 @@
-<article class="statistic-card-container">
-    <!-- <div class="statistic-card-wrapper" [skeletonLoader]="this.statisticCardLoader()"> -->
-    <div class="statistic-card-wrapper" >
+<article class="widget-card-container">
+    <!-- <div class="widget-card-wrapper" [skeletonLoader]="this.widgetCardLoader()"> -->
+    <div class="widget-card-wrapper" [skeletonLoader]="this.widgetCardLoader()">
         <section class="card-header section ">
             <div class="head wrapper">
                  <div class="card-title skeleton-loader">
-                     <h3>Title</h3>
+                     <h3>{{ widgetDetails().title }}</h3>
                  </div>
                 <div class="card-note skeleton-loader">
-                    <!-- @for(note of this.statisticData().note || []; track $index){ -->
+                    <!-- @for(note of this.widgetData().note || []; track $index){ -->
                     <div class="note-content">
                         <label for="card-note" class="note-value" 
                         >
-                        icon</label>
-                        <label for="card-note" class="note-description">desc</label> 
+                        </label>
+                        <label for="card-note" class="note-description">{{ widgetDetails().description }}</label> 
                     </div> 
                 <!-- } -->
                 </div>
@@ -21,7 +21,7 @@
         <section class="card-body section">
               <div class="body wrapper">
                 <div class="value skeleton-loader">
-                    <app-widget [widgetOptions]="widgetOptions()"></app-widget>
+                    <app-widget [widgetOptions]="widgetOptions()" [height]="chartHeight()+'px'"></app-widget>
                 </div>
               </div>
         </section>

@@ -6,7 +6,7 @@ import { getExpenseList } from '../stateManagement/selector/expense.selector';
 })
 export class AggrigateService {
 
-  private  expensesList:Signal<ExpenseSchema[]> = getExpenseList();
+  private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
 
   /**
    * Generically groups and aggregates expense data by any provided key.
@@ -31,9 +31,9 @@ export class AggrigateService {
     }, {} as AggregationResult);
   }
 
- /**
-   * Calculates total stats for a strictly typed specific month and year.
-   */
+  /**
+    * Calculates total stats for a strictly typed specific month and year.
+    */
   public aggregateByMonth(
     month: Months,
     year: number,
@@ -44,7 +44,7 @@ export class AggrigateService {
       .filter(item => {
         const date = new Date(item.transactionDate);
         const itemMonth = date.toLocaleString('default', { month: 'short' }) as Months;
-        
+
         // Match both month name and specific year
         return itemMonth.toLocaleLowerCase() === month.toLocaleLowerCase() && date.getFullYear() === year;
       })
@@ -55,14 +55,14 @@ export class AggrigateService {
       }, { totalAmount: 0, transactionCount: 0 } as AggregatedStat);
   }
 
-  public  calculateMonthlyExpenseInsights(data: ExpenseSchema[] = this.expensesList()): MonthlyExpenseInsights {
+  public calculateMonthlyExpenseInsights(data: ExpenseSchema[] = this.expensesList()): MonthlyExpenseInsights {
     const monthlyData: MonthlyExpenseInsights = {};
 
     if (!data || data.length === 0) return monthlyData;
 
     data.forEach(record => {
       // 1. Extract clean Year-Month key "YYYY-MM"
-     const recDate = new Date(record.transactionDate);
+      const recDate = new Date(record.transactionDate);
       const year = recDate.getUTCFullYear();
       const _month = String(recDate.getUTCMonth());
       const yearMonth = `${year}-${_month}`;
@@ -77,9 +77,9 @@ export class AggrigateService {
 
       // 3. Increment baseline totals
       month.behavioral.totalTransactions += 1;
-      
+
       // Calculate payment modes frequency
-      month.distributions.byPaymentMode[record.paymentMode] = 
+      month.distributions.byPaymentMode[record.paymentMode] =
         (month.distributions.byPaymentMode[record.paymentMode] || 0) + 1;
 
       // 4. Mode-specific calculations (DEBITED vs CREDITED)
@@ -92,12 +92,12 @@ export class AggrigateService {
         }
 
         // Aggregate categories
-        month.distributions.byCategory[record.expenseCategory] = 
+        month.distributions.byCategory[record.expenseCategory] =
           (month.distributions.byCategory[record.expenseCategory] || 0) + amount;
 
         // Aggregate custom groups
         if (record.customGrouping) {
-          month.distributions.byCustomGroup[record.customGrouping] = 
+          month.distributions.byCustomGroup[record.customGrouping] =
             (month.distributions.byCustomGroup[record.customGrouping] || 0) + amount;
         }
       } else if (record.mode === 'CREDITED') {
@@ -108,12 +108,12 @@ export class AggrigateService {
     // 5. Final pass to calculate averages and "Tops" for each month
     Object.keys(monthlyData).forEach(key => {
       const month = monthlyData[key];
-      
+
       month.financialTotals.netCashFlow = month.financialTotals.totalInflow - month.financialTotals.totalOutflow;
 
       // Calculate averages strictly against transactions present
       if (month.behavioral.totalTransactions > 0) {
-        month.behavioral.averageTransactionValue = 
+        month.behavioral.averageTransactionValue =
           month.financialTotals.totalOutflow / month.behavioral.totalTransactions;
       }
 
@@ -140,9 +140,9 @@ export class AggrigateService {
 
       // Increment baseline totals
       insights.behavioral.totalTransactions += 1;
-      
+
       // Calculate payment modes frequency
-      insights.distributions.byPaymentMode[record.paymentMode] = 
+      insights.distributions.byPaymentMode[record.paymentMode] =
         (insights.distributions.byPaymentMode[record.paymentMode] || 0) + 1;
 
       // 2. Mode-specific calculations (DEBITED vs CREDITED)
@@ -155,12 +155,12 @@ export class AggrigateService {
         }
 
         // Aggregate categories
-        insights.distributions.byCategory[record.expenseCategory] = 
+        insights.distributions.byCategory[record.expenseCategory] =
           (insights.distributions.byCategory[record.expenseCategory] || 0) + amount;
 
         // Aggregate custom groups
         if (record.customGrouping) {
-          insights.distributions.byCustomGroup[record.customGrouping] = 
+          insights.distributions.byCustomGroup[record.customGrouping] =
             (insights.distributions.byCustomGroup[record.customGrouping] || 0) + amount;
         }
       } else if (record.mode === 'CREDITED') {
@@ -173,7 +173,7 @@ export class AggrigateService {
 
     // Calculate averages strictly against transactions present
     if (insights.behavioral.totalTransactions > 0) {
-      insights.behavioral.averageTransactionValue = 
+      insights.behavioral.averageTransactionValue =
         insights.financialTotals.totalOutflow / insights.behavioral.totalTransactions;
     }
 
@@ -187,8 +187,58 @@ export class AggrigateService {
 
     return insights;
   }
+
+public getWidgetData_Expense(data: ExpenseSchema[]): MonthlyTransactionSplit {
+  const result: MonthlyTransactionSplit = {
+    debitedList: [],
+    creditedList: []
+  };
+
+  if (!data || data.length === 0) return result;
+
+  // Process the provided array and split items by mode
+  data.forEach(record => {
+    if (record.mode === 'DEBITED') {
+      result.debitedList.push(record);
+    } else if (record.mode === 'CREDITED') {
+      result.creditedList.push(record);
+    }
+  });
+
+  return result;
+}
+
+public segregateMonthlyTransactions(data: ExpenseSchema[] = this.expensesList()): MonthlyExpenseLists {
+  const segregatedData: MonthlyExpenseLists = {};
+
+  if (!data || data.length === 0) return segregatedData;
+
+  // 1. Group raw items by month first
+  const groupedByMonth: Record<string, ExpenseSchema[]> = {};
+
+  data.forEach(record => {
+    const recDate = new Date(record.transactionDate);
+    const year = recDate.getUTCFullYear();
+    const _month = String(recDate.getUTCMonth());
+    const yearMonth = `${year}-${_month}`;
+
+    if (!groupedByMonth[yearMonth]) {
+      groupedByMonth[yearMonth] = [];
+    }
+    groupedByMonth[yearMonth].push(record);
+  });
+
+  // 2. Pass each month's array to getWidgetData_Expense to build the final object
+  Object.keys(groupedByMonth).forEach(yearMonth => {
+    segregatedData[yearMonth] = this.getWidgetData_Expense(groupedByMonth[yearMonth]);
+  });
+
+  return segregatedData;
+}
+
+
   // Helper to find key with max value in a hashmap
-  private  getMaxKeyFromMap(map: Record<string, number>): string | null {
+  private getMaxKeyFromMap(map: Record<string, number>): string | null {
     const keys = Object.keys(map);
     if (keys.length === 0) return null;
     return keys.reduce((a, b) => (map[a] > map[b] ? a : b));

@@ -1,10 +1,10 @@
-.statistic-card-container{
+.widget-card-container{
      flex: 0 0 auto; /* Prevents cards from shrinking */
      min-width: 400px; /* Your requirement */
 }
 
 /* Base Card Styling */
-.statistic-card-container > .statistic-card-wrapper{
+.widget-card-container > .widget-card-wrapper{
   background: var(--glass-bg);
   border: 1px solid var(--border-color);
   border-radius: 16px;
@@ -89,7 +89,7 @@
 
 /* Mobile only */
 @media (max-width: 767px) {
-  .statistic-card-container{
+  .widget-card-container{
    max-width: 250px;
     min-width: 250px;
 }
@@ -97,7 +97,7 @@
 .card-header > .head.wrapper{
   margin-bottom: 5px;
 }
-.statistic-card-container > .statistic-card-wrapper{
+.widget-card-container > .widget-card-wrapper{
   padding: 12px 12px 5px 12px;
 }
 .card-header .card-title > h3{
@@ -127,14 +127,14 @@
 
 /* Tablet only */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .statistic-card-container{
-   
+  .widget-card-container{
+   max-width: 350px;
     min-width: 350px;
 }
 .card-header > .head.wrapper{
   padding-bottom: 5px;
 }
-.statistic-card-container > .statistic-card-wrapper{
+.widget-card-container > .widget-card-wrapper{
   padding: 21px 21px 8px 21px;
 }
 .card-header .card-title > h3{
@@ -156,14 +156,14 @@
 
 /* Laptop and up */
 @media (min-width: 1024px) {
-    .statistic-card-container{
-   
+    .widget-card-container{
+   max-width: 400px;
     min-width: 400px;
 }
 .card-header > .head.wrapper{
   padding-bottom: 5px;
 }
-.statistic-card-container > .statistic-card-wrapper{
+.widget-card-container > .widget-card-wrapper{
   padding: 24px 24px 10px 24px;
 }
 .card-header .card-title > h3{

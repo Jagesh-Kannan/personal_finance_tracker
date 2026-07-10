@@ -49,7 +49,7 @@
           <div class="statistics">
             <section class="section-1">
               <statistic-block
-                [statisticsList]="this.statisticsDetails()"
+                [statisticsList]="this.quickInsightDetails().statisticDetail"
                 [cardLoader]="this.statisticsLoader()"
               >
               </statistic-block>
@@ -87,10 +87,8 @@
 <!-- 
 <app-widget [widgetDetails]=" this.overviewFilterForm.value.filteredExpenses"></app-widget> -->
 
-<app-widget-card [widgetDetails]="{
-        widgetId: '334232',
-        title: 'test title',
-        description: 'test decription',
-        chartType: 'pie',
-        chartOptions: this.overviewFilterForm.value.filteredExpenses
-      }"></app-widget-card>
+
+ <app-widget-block 
+    [widgetList]="this.quickInsightDetails().widgetDetails" 
+    [cardLoader]="this.statisticsLoader()">
+  </app-widget-block>

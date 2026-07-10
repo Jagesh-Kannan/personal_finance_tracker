@@ -8,7 +8,8 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { LucideFunnel } from '@lucide/angular';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ToasterService } from '../../service/toaster.service';
-import { WidgetCard } from '../../components/widgets/widget-card/widget-card';
+import { WidgetBlock } from '../../components/widgets/widget-block/widget-block';
+import { statWidgetDataFilterService } from '../../logics/statWidgetDataFilter.logic';
 
 
 interface MonthOption {
@@ -18,7 +19,7 @@ interface MonthOption {
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, WidgetCard],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, WidgetBlock],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
@@ -26,7 +27,7 @@ export class Overview {
 
   public user_detail: Signal<UserState> = getUser();
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
-  public statisticsDetails: Signal<StatisticDetail[]>;
+  public quickInsightDetails: Signal<{statisticDetail:StatisticDetail[], widgetDetails: Omit<WidgetDetails, 'widgetId'>[]}>;
   public readonly statisticsLoader: Signal<boolean>;
   public monthOptions = signal<MonthOption[]>([]);
    monthControl = new FormControl('');
@@ -35,12 +36,14 @@ export class Overview {
    public openFilterForm = signal<boolean>(false);
    public customMonthRangeDisplay = signal<string>('');
 
-   public widgetDetails = signal<widgetDetails>({
+   public widgetDetails = signal<WidgetDetails>({
      widgetId: '',
      title: '',
      description: '',
-     chartType: 'line',
-     chartOptions: []
+     chartConfig: {
+       rawData: [],
+       chartType: 'pie',
+     }
    });
 
   private activeFilter = signal<{ month: Months | null; expenses: ExpenseSchema[] | null }>({
@@ -49,7 +52,7 @@ export class Overview {
   });
 
   constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService,
-    private _fb:FormBuilder, private toasterService: ToasterService,
+    private _fb:FormBuilder, private toasterService: ToasterService, private statWidgetService:statWidgetDataFilterService
   ) {
      
      effect(() => {
@@ -62,7 +65,7 @@ export class Overview {
     this.statisticsLoader = this.expenseService.getExpenseLoader;
 
     //------ previous fine working logic ---------
-    // this.statisticsDetails = computed(() => {
+    // this.quickInsightDetails = computed(() => {
     //   const expenses = this.expensesList(); 
 
     //   const selectedMonth = this.selectedMonth();
@@ -79,22 +82,27 @@ export class Overview {
     // });
 
     //-------  latest new requirement changed logic  -----------
-     this.statisticsDetails = computed(() => {
+     this.quickInsightDetails = computed(() => {
 
       const { month, expenses } = this.activeFilter();
       const currentExpensesList = expenses ?? this.expensesList();
 
       if(month) this.updateOverviewMonthFilter(month);
-
-      
-
-      if (!currentExpensesList || currentExpensesList.length === 0) return [];
-      return [
+    
+      if (!currentExpensesList || currentExpensesList.length === 0) return {statisticDetail: [], widgetDetails: []};
+      return {
+        statisticDetail: 
+       [
         this.statisticsDataBuilder.getTotalOutFlow(month, currentExpensesList),
         this.statisticsDataBuilder.getTotalInFlow(month, currentExpensesList),
         this.statisticsDataBuilder.getTotalCashFlow(month, currentExpensesList),
         this.statisticsDataBuilder.getMostSpentCategory(month, currentExpensesList),
-      ];
+      ],
+      widgetDetails: [
+       this.statWidgetService.getExpense_WidgetDataByMonth(month, 'DEBITED', currentExpensesList),
+       this.statWidgetService.getExpense_WidgetDataByMonth(month, 'CREDITED', currentExpensesList),
+      ] 
+    }
     });
     
 

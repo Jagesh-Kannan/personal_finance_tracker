@@ -1,0 +1,96 @@
+
+
+
+.widgets-block-container {
+   position: relative; /*Essential for absolute togglers */
+}
+
+.widget-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.widgets-block-wrapper {
+  display: flex;
+  gap: 20px;
+  padding: 20px 60px; /* Extra horizontal padding for arrow clearance */
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.widgets-block-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile snap scrolling */
+@media (max-width: 767px) {
+  .widgets-block-wrapper {
+    scroll-snap-type: x mandatory;
+  }
+  
+  app-widget-card {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    flex-shrink: 0;
+  }
+}
+
+/* The Toggler/Gradient Container */
+.widget-content .toggler {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 45px; /* Width of the gradient effect */
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Left side gradient: Background to Transparent */
+.widget-content .toggler.left {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-color) 40%, rgba(255, 255, 255, 0));
+  justify-content: flex-start;
+  padding-left: 12px;
+}
+
+/* Right side gradient: Transparent to Background */
+.widget-content .toggler.right {
+  right: 0;
+ background: linear-gradient(to left, var(--bg-color) 40%, rgba(255, 255, 255, 0));
+  justify-content: flex-end;
+  padding-right: 12px;
+}
+
+/* Styling the arrow text/icon inside */
+.toggler {
+  font-size: 24px;
+  font-weight: bold;
+  color: #a0a0a0;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.toggler:hover {
+  color: var(--text-color);
+}
+
+/* Mobile only */
+@media (max-width: 767px) {
+  .widgets-block-wrapper{
+    padding: 12px 40px;
+
+  }
+}
+
+
+/* Tablet only */
+@media (min-width: 768px) and (max-width: 1023px) {}
+
+/* Laptop and up */
+@media (min-width: 1024px) {}

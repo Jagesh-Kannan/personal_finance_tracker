@@ -1,1 +1,22 @@
-<p>widget-block works!</p>
+<div class="widgets-block-container">
+  <div class="widget-content"> 
+
+    @if(this.hideLeftArrow() && !this.cardLoader()){
+    <div class="toggler left" (click)="scrollTo('left', scrollList)"><</div>
+
+    }
+    <div class="widgets-block-wrapper" #scrollList (scroll)="checkContentScrolled(scrollList)">
+      @for (statisticData of this.displayList(); track $index) {
+       
+<app-widget-card [widgetDetails]="statisticData" [widgetCardLoader]="this.cardLoader()"></app-widget-card>
+      }
+    </div>
+    @if(this.hideRightArrow() && !this.cardLoader()){
+         <div class="toggler right" (click)="scrollTo('right', scrollList)">></div>
+    }
+   
+  </div>
+</div>
+
+
+

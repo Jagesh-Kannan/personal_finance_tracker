@@ -12,7 +12,7 @@ import { aggregate } from '@manufac/echarts-simple-transform';
 export class Widget {
   @ViewChild('chartDom', { static: true }) chartDom!: ElementRef<HTMLDivElement>;
 
-  @Input({ required: true }) widgetOptions!: widgetOptions;
+  @Input({ required: true }) widgetOptions!: WidgetOptions;
   @Input() width: string = '100%';
   @Input() height: string = '120px';
 
@@ -24,8 +24,7 @@ export class Widget {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    
+
     // Dynamically update options if they change in the parent component
     if (changes['widgetOptions'] && !changes['widgetOptions'].firstChange) {
       this.updateChartOptions();
