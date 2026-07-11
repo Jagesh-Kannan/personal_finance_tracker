@@ -6,7 +6,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
         legend: {
             left: 'right',
             orient: 'horizontal',
-            textStyle: { fontWeight: 500, color: '#4a5568' }
+            textStyle: { fontWeight: 500, color: '#8a8c8f' }
         },
         labelLine: {
             show: true,

@@ -22,9 +22,9 @@ export class WidgetCard {
 
   chartHeight = computed(() => {
     const width = this.width();
-    if (width < 640) return 120;
-    if (width < 1024) return 160;
-    return 180;
+    if (width < 640) return 105;
+    if (width < 1024) return 140;
+    return 160;
   });
 
 

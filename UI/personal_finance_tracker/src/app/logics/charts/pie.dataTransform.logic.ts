@@ -32,7 +32,7 @@ export class PieDataFormatterService {
               groupBy: groupByKey || 0,
               resultDimensions: [
                 { from: groupByKey || 0, name: groupByKey || 0 },
-                { from: valueByKey || 1, method: 'sum', name: `total_${valueByKey || 'Uncategorized'}` }
+                { from: valueByKey || 1, method: 'sum', name: `total_${valueByKey || 'Uncategorized'}`}
               ]
             }
           }
@@ -44,7 +44,7 @@ export class PieDataFormatterService {
 
     const labelFormatter = (formatterParams: any) => {
       if (Array.isArray(formatterParams.value)) {
-        const numericVal = formatterParams.value[1]; // Index 1 targets aggregated sum metric cleanly
+        const numericVal =  formatterParams.value[1].toFixed(2); // Index 1 targets aggregated sum metric cleanly
         const percentPrefix = formatterParams.percent ? `${formatterParams.percent}% ` : '';
         return `${currencySymbol}${numericVal}`;
       }
@@ -59,9 +59,13 @@ export class PieDataFormatterService {
         avoidLabelOverlap: true,
         padAngle: 4,
         label: {
-          show: true, position: 'outside', formatter: labelFormatter,
-          fontSize: 6, fontWeight: 600, color: '#4a5568', overflow: 'break'
-        }
+          show: true, 
+          position: 'outside', 
+          formatter: labelFormatter,
+          fontSize: 6, 
+          fontWeight: 600, 
+          overflow: 'break'
+        },
       },
 
     };
