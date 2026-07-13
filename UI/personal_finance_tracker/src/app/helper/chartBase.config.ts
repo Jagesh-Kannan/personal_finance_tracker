@@ -4,6 +4,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     PIE: {
         tooltip: { trigger: 'item' },
         legend: {
+            type: 'scroll',
             left: 'right',
             orient: 'horizontal',
             textStyle: { fontWeight: 500, color: '#8a8c8f' }

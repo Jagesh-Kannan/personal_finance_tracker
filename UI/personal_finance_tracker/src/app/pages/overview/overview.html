@@ -54,6 +54,12 @@
               >
               </statistic-block>
             </section>
+            <section class="section-2">
+              <app-widget-block 
+                  [widgetList]="this.quickInsightDetails().widgetDetails" 
+                  [cardLoader]="this.statisticsLoader()">
+                </app-widget-block>
+            </section>
           </div>
         </div>
       </div>
@@ -84,11 +90,3 @@
   (onClose)="openFilterForm.set(false)"
 ></app-slide-up-form>
 
-<!-- 
-<app-widget [widgetDetails]=" this.overviewFilterForm.value.filteredExpenses"></app-widget> -->
-
-
- <app-widget-block 
-    [widgetList]="this.quickInsightDetails().widgetDetails" 
-    [cardLoader]="this.statisticsLoader()">
-  </app-widget-block>
