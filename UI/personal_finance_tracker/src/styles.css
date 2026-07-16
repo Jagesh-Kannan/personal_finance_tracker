@@ -1,3 +1,6 @@
+@import "gridstack/dist/gridstack.min.css";
+
+
 /* ============================================
    GLOBAL DARK THEME COLOR VARIABLES
    ============================================ */
@@ -214,4 +217,66 @@ label.required::after {
     margin-left: 50px;
   }
 
+}
+
+
+/* Hanging header  */
+
+.hang-header-wrapper{
+  padding-top: 0px !important;
+  overflow: hidden;
+}
+
+.hang-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--accent-color);
+  border-top: none;
+  background-color: var(--accent-color);
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  width: fit-content;
+  padding: 3px 12px;
+  font-size: 11px;
+  color: #fff;
+  position: relative; 
+}
+
+/* Base style for both outward curves */
+.hang-header::before,
+.hang-header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 8px;   /* The radius size of your curve */
+  height: 8px;  /* The radius size of your curve */
+  background-color: transparent;
+  pointer-events: none;
+}
+
+/* Left Outward Curve */
+.hang-header::before {
+  left: -8px; /* Moves it just outside the left border */
+  border-top-right-radius: 8px; /* The inverse curve shape */
+  /* Giant shadow matches your theme color and fills the gap */
+  box-shadow: 4px -4px 0 4px var(--accent-color); 
+}
+
+/* Right Outward Curve */
+.hang-header::after {
+  right: -8px; /* Moves it just outside the right border */
+  border-top-left-radius: 8px; /* The inverse curve shape */
+  /* Giant shadow matches your theme color and fills the gap */
+  box-shadow: -4px -4px 0 4px var(--accent-color); 
+}
+
+@media (min-width: 1024px) {
+
+  .hang-header{
+    font-size: 15px;
+    padding: 5px 15px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
 }

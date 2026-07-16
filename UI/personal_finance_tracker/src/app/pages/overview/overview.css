@@ -1,6 +1,6 @@
 .chart-container {
   width: 100%;
-  height: 400px; /* ECharts needs a specific height to render */
+  height: 410px; /* ECharts needs a specific height to render */
   display: block;
 }
 
@@ -370,5 +370,99 @@
     width: 16px;
     height: 16px;
   }
+}
+
+
+ /* dashboard-stylings */
+
+ .dashboard-container{
+  margin: 20px;
+  box-sizing: border-box;
+ }
+ .dashboard-container > .dashboard-wrapper {
+
+   border: 1px solid var(--border-color);
+   border-radius: 12px;    
+ }
+
+
+ @media (max-width: 767px) {
+     .dashboard-container{
+      margin: 5px;
+    }
+    .dashboard-container > .dashboard-wrapper {
+      padding: 20px;
+    }
+ }
+ @media (min-width: 768px) and (max-width: 1023px){
+     .dashboard-container{
+      margin: 15px;
+    }
+    .dashboard-container > .dashboard-wrapper {
+      padding: 30px;
+    }
+ }
+ @media (min-width: 1024px) {
+   .dashboard-container{
+      margin: 30px;
+    }
+    .dashboard-container > .dashboard-wrapper {
+      padding: 30px;
+    }
+ }
+
+
+
+
+ /* Ensure main content handles stacked overlay depth layout positioning */
+.overview-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 160px); /* Fill remaining viewport area */
+  overflow: hidden;
+}
+
+/* Static section container holding 1 & 2 safely underneath */
+.static-bg-sections {
+  width: 100%;
+  height: auto;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+  z-index: 1;
+}
+
+.static-bg-sections.blurred-underneath {
+  opacity: 0.4;
+  filter: blur(2px);
+  pointer-events: none; /* Block interactions while sheet is full-screen */
+}
+
+/* ==========================================
+   SLIDING BOTTOM SHEET CONTAINER (SECTION 3)
+   ========================================== */
+.sliding-panel-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* height: auto; */
+  z-index: 10;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+/* The actual scrollable viewport interior layer */
+.section-3 {
+  width: 100%;
+  /* height: 100%; */
+  overflow-y: auto; /* Toggled/managed programmatically */
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg-color); /* Ensure it covers behind layers */
+}
+
+
+.dash-content {
+  padding-top: 24px;
+  overflow: auto;
+  margin-top: 15px;
 }
 

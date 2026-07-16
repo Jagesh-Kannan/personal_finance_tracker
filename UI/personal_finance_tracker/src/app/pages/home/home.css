@@ -6,7 +6,7 @@
 /* Add bottom padding on mobile to prevent content from being hidden behind the bottom nav */
 @media (max-width: 754px) {
   .home-container {
-    padding-bottom: 70px;
+    padding-bottom: 60px;
     min-height: auto;
   }
 }

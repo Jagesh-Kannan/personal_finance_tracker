@@ -1,4 +1,4 @@
-import { Component, computed, effect, signal, Signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, signal, Signal, ViewChild } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
 import { getExpenseList } from '../../stateManagement/selector/expense.selector'; 
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
@@ -24,6 +24,30 @@ interface MonthOption {
   styleUrl: './overview.css',
 })
 export class Overview {
+
+    @ViewChild('section3Container') section3Container!: ElementRef<HTMLDivElement>;
+
+
+
+  // NEW PANEL MANAGEMENT STATE SIGNALS
+  public isPanelExpanded = signal<boolean>(false);
+  private currentYOffset = signal<number>(0); // Dynamic dragging pixels value
+  
+  // Computes the instantaneous position transition injection 
+  public panelTransform = computed(() => {
+    if (this.isPanelExpanded()) {
+      return `translateY(0px)`; // Locked securely at full screen top view boundary
+    }
+    // Default desktop/mobile natural idle layout placement calculation
+    // Adjusted automatically dynamically during a user active drag
+    const offset = this.currentYOffset();
+    return offset !== 0 ? `translateY(${offset}px)` : `translateY(71%)`; 
+  });
+
+  // Touch gesture coordinates tracking
+  private touchStartY = 0;
+  private isDragging = false;
+
 
   public user_detail: Signal<UserState> = getUser();
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
@@ -219,6 +243,136 @@ public get_insights(event:any ){
 
   this.openFilterForm.set(false);
 }
+
+
+
+
+ private reachedTopAndStopped = false;
+
+  // ==========================================
+  // MOBILE GESTURE & TOUCH EVENTS OVERLAYS
+  // ==========================================
+  public onTouchStart(event: TouchEvent): void {
+    if (!event.touches || event.touches.length === 0) return;
+    
+    const internalScrollTop = this.section3Container?.nativeElement?.scrollTop || 0;
+
+    // If we are already at the top when the touch STARTS, prepare to allow dragging down
+    if (this.isPanelExpanded() && internalScrollTop <= 0) {
+      this.reachedTopAndStopped = true;
+    } else if (internalScrollTop > 0) {
+      this.reachedTopAndStopped = false;
+    }
+
+    this.touchStartY = event.touches[0].clientY;
+    this.isDragging = true;
+  }
+
+  public onTouchMove(event: TouchEvent): void {
+    if (!this.isDragging || !event.touches || event.touches.length === 0) return;
+
+    const currentY = event.touches[0].clientY;
+    const deltaY = currentY - this.touchStartY; // Positive means pulling finger down
+    const internalScrollTop = this.section3Container?.nativeElement?.scrollTop || 0;
+
+    // Case 1: Panel is closed -> Swiping finger UP -> Pull panel open
+    if (!this.isPanelExpanded() && deltaY < 0) {
+      event.preventDefault(); 
+      this.currentYOffset.set(this.getInitialCollapsedPixels() + deltaY);
+    }
+    
+    // Case 2: Panel is open -> Swiping finger DOWN -> ONLY close if touch started at scrollTop = 0
+    else if (this.isPanelExpanded() && deltaY > 0 && internalScrollTop <= 0 && this.reachedTopAndStopped) {
+      event.preventDefault();
+      this.currentYOffset.set(deltaY);
+    } 
+    
+    // Case 3: If user is actively scrolling content, do not let panel shift position
+    else if (this.isPanelExpanded() && internalScrollTop > 0) {
+      this.currentYOffset.set(0);
+    }
+  }
+
+  public onTouchEnd(event: TouchEvent): void {
+    if (!this.isDragging) return;
+    this.isDragging = false;
+
+    if (!event.changedTouches || event.changedTouches.length === 0) return;
+
+    const endY = event.changedTouches[0].clientY;
+    const totalSwipeDistance = endY - this.touchStartY;
+    const internalScrollTop = this.section3Container?.nativeElement?.scrollTop || 0;
+
+    if (!this.isPanelExpanded() && totalSwipeDistance < -50) {
+      this.snapToTop();
+    } 
+    // Only drop down if threshold passes, scroll is 0, AND touch sequence started at the top boundary
+    else if (this.isPanelExpanded() && totalSwipeDistance > 50 && internalScrollTop <= 0 && this.reachedTopAndStopped) {
+      this.snapToBottom();
+    } 
+    else {
+      this.isPanelExpanded() ? this.snapToTop() : this.snapToBottom();
+    }
+  }
+
+  // ==========================================
+  // DESKTOP INTERACTION WHEEL SCROLL LOGIC
+  // ==========================================
+  public onDesktopWheel(event: WheelEvent): void {
+    const internalScrollTop = this.section3Container?.nativeElement?.scrollTop || 0;
+
+    // Wheel Scroll Down -> Open panel if closed
+    if (!this.isPanelExpanded() && event.deltaY > 0) {
+      event.preventDefault();
+      this.snapToTop();
+    }
+    
+    // Wheel Scroll Up -> ONLY drop panel if content is already resting at 0 BEFORE this wheel tick
+    else if (this.isPanelExpanded() && event.deltaY < 0) {
+      if (internalScrollTop <= 0 && this.reachedTopAndStopped) {
+        event.preventDefault();
+        this.snapToBottom();
+      } else if (internalScrollTop <= 0) {
+        // Content just hit 0. Lock it here and force the user to scroll up one more discrete tick to close.
+        this.reachedTopAndStopped = true;
+      } else {
+        // Content is still scrolling up normally
+        this.reachedTopAndStopped = false;
+      }
+    }
+  }
+
+  // Real-time listener keeps state clean as user reads content
+  public onInternalScroll(event: Event): void {
+    const element = event.target as HTMLDivElement;
+    if (element.scrollTop > 0) {
+      this.reachedTopAndStopped = false; // Actively scrolling content, lock the panel position
+    }
+  }
+
+
+  // Helper calculation layout state triggers
+  private snapToTop(): void {
+    this.isPanelExpanded.set(true);
+    this.currentYOffset.set(0);
+    if (this.section3Container) {
+      this.section3Container.nativeElement.style.overflowY = 'auto'; // Unlock internal scroll
+    }
+  }
+
+  private snapToBottom(): void {
+    this.isPanelExpanded.set(false);
+    this.currentYOffset.set(0);
+    if (this.section3Container) {
+      this.section3Container.nativeElement.scrollTop = 0; // Reset scroll target edge position
+      this.section3Container.nativeElement.style.overflowY = 'hidden'; // Lock internal scroll
+    }
+  }
+
+  private getInitialCollapsedPixels(): number {
+    // Helper estimation mapper matching fallback CSS translate percentage values 
+    return window.innerHeight * 0.65;
+  }
 
 }
 
