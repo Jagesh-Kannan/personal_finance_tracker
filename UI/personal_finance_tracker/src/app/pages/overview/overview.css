@@ -418,7 +418,7 @@
 .overview-content-wrapper {
   position: relative;
   width: 100%;
-  height: calc(100vh - 160px); /* Fill remaining viewport area */
+  height: calc(100vh - 255px); /* Fill remaining viewport area */
   overflow: hidden;
 }
 
