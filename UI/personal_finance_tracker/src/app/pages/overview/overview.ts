@@ -356,6 +356,12 @@ public get_insights(event:any ){
     this.isPanelExpanded.set(true);
     this.currentYOffset.set(0);
     if (this.section3Container) {
+      requestAnimationFrame(() => {
+        window.scrollBy({
+          top: 70,
+          behavior: 'smooth'
+        });
+      });
       this.section3Container.nativeElement.style.overflowY = 'auto'; // Unlock internal scroll
     }
   }
