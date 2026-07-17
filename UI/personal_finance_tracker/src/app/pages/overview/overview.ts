@@ -41,7 +41,7 @@ export class Overview {
     // Default desktop/mobile natural idle layout placement calculation
     // Adjusted automatically dynamically during a user active drag
     const offset = this.currentYOffset();
-    return offset !== 0 ? `translateY(${offset}px)` : `translateY(49%)`; 
+    return offset !== 0 ? `translateY(${offset}px)` : `translateY(69%)`; 
   });
 
   // Touch gesture coordinates tracking
