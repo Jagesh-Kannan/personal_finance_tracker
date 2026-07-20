@@ -1,6 +1,6 @@
 .chart-container {
   width: 100%;
-  height: auto;
+  height: 420px;
   display: block;
 }
 
@@ -227,7 +227,7 @@
 /* ==========================================
    3. MOBILE SCREEN (MAX-WIDTH: 767px)
    ========================================== */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .title-container {
     flex-direction: column; /* Stacks layout elements vertically */
     align-items: flex-start;
@@ -402,7 +402,7 @@
       padding: 20px;
     }
     .overview-content-wrapper {
-      height: calc(100vh - 265px); 
+      height: calc(100dvh - 265px); 
     }
 
     .static-bg-sections.blurred-underneath {
@@ -436,12 +436,12 @@
 
 
  /* Ensure main content handles stacked overlay depth layout positioning */
-.overview-content-wrapper {
+/* .overview-content-wrapper {
   position: relative;
   width: 100%;
-  height: calc(100dvh - 250px);  /* Fill remaining viewport area */
+  height: calc(100dvh - 265px);
   overflow: hidden;
-}
+} */
 
 /* Static section container holding 1 & 2 safely underneath */
 .static-bg-sections {
