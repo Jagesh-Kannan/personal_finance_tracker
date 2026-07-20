@@ -41,7 +41,7 @@ export class Overview {
     // Default desktop/mobile natural idle layout placement calculation
     // Adjusted automatically dynamically during a user active drag
     const offset = this.currentYOffset();
-     return offset !== 0 ? `translateY(${offset}px)` : `translateY(69%)`; 
+    return offset !== 0 ? `translateY(${offset}px)` : this.width() < 768 ? `translateY(69%)` : this.width() < 1024 ? `translateY(35%)` : `translateY(80%)`;
   });
 
   // Touch gesture coordinates tracking
@@ -139,10 +139,6 @@ export class Overview {
    
   }
 
-  // Check if device is mobile
-  private checkIfMobile(): boolean {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
 
 private generateMonthDropdown() {
   const options: MonthOption[] = [];
