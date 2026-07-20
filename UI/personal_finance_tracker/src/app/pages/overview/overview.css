@@ -397,12 +397,6 @@
  }
 
 
-     .overview-content-wrapper {
-      height: calc(100dvh - 265px); 
-    }
-
-
-
  @media (max-width: 767px) {
      .dashboard-container{
       margin: 5px;
@@ -410,6 +404,10 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 20px;
     }
+    .overview-content-wrapper {
+      height: calc(100dvh - 265px); 
+    }
+
     .static-bg-sections.blurred-underneath {
       opacity: 0.4;
       filter: blur(2px);
@@ -435,21 +433,17 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 30px;
     }
-       .overview-content-wrapper {
-      height: auto; 
-    }
  }
 
 
 
 
  /* Ensure main content handles stacked overlay depth layout positioning */
-/* .overview-content-wrapper {
+.overview-content-wrapper {
   position: relative;
   width: 100%;
-  height: calc(100dvh - 265px);
   overflow: hidden;
-} */
+}
 
 /* Static section container holding 1 & 2 safely underneath */
 .static-bg-sections {
