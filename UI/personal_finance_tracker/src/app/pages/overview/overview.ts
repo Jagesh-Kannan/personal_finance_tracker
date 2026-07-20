@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, signal, Signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostListener, signal, Signal, ViewChild } from '@angular/core';
 import { getUser } from '../../stateManagement/selector/user.selector';
 import { getExpenseList } from '../../stateManagement/selector/expense.selector'; 
 import { StatisticBlock } from '../../components/statistics/statistic-block/statistic-block';
@@ -41,13 +41,19 @@ export class Overview {
     // Default desktop/mobile natural idle layout placement calculation
     // Adjusted automatically dynamically during a user active drag
     const offset = this.currentYOffset();
-    return offset !== 0 ? `translateY(${offset}px)` : `translateY(69%)`; 
+    return offset !== 0 ? `translateY(${offset}px)` : this.width() < 768 ? `translateY(69%)` : this.width() < 1024 ? `translateY(35%)` : `translateY(80%)`;
   });
 
   // Touch gesture coordinates tracking
   private touchStartY = 0;
   private isDragging = false;
 
+    // Decorator catches window resize events natively without requiring Zone.js
+  width = signal(typeof window !== 'undefined' ? window.innerWidth : 0);
+  @HostListener('window:resize')
+  onResize() {
+    this.width.set(window.innerWidth);
+  }
 
   public user_detail: Signal<UserState> = getUser();
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();

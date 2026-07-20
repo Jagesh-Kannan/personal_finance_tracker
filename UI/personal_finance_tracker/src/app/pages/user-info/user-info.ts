@@ -1,7 +1,7 @@
 import { Component, computed, signal, WritableSignal } from '@angular/core';
 import { UserService } from '../../service/user.service';
 import { SkeletonLoader } from '../../components/skeleton-loader/skeleton-loader';
-import { Writable } from 'stream';
+
 
 @Component({
   selector: 'app-user-info',
