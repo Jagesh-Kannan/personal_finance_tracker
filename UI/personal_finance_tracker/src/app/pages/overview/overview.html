@@ -1,9 +1,8 @@
 <div class="page-container overview-container"
-     (touchstart)=" this.width() < 1024 ? onTouchStart($event) : null"
-     (touchmove)=" this.width() < 1024 ? onTouchMove($event) : null"
-     (touchend)=" this.width() < 1024 ? onTouchEnd($event) : null"
-     (wheel)=" this.width() < 1024 ? onDesktopWheel($event) : null"
-     >
+     (touchstart)="onTouchStart($event)"
+     (touchmove)="onTouchMove($event)"
+     (touchend)="onTouchEnd($event)"
+     (wheel)="onDesktopWheel($event)">
   
   <div class="page-container-wrapper overview-wrapper">
     <div class="title-container">
