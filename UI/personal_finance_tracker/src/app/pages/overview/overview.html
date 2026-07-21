@@ -62,7 +62,10 @@
                  </div>
                  
                  <!-- Internal Scrollable Content Canvas -->
-                 <div class="dash-content" #section3Container (scroll)="onInternalScroll($event)">
+                 <div class="dash-content" #section3Container 
+                    (touchstart)="$event.stopPropagation()"
+                    (touchmove)="$event.stopPropagation()"
+                    (wheel)="$event.stopPropagation()">
                     <div class="chart-container">
                       <!-- Your actual widgets/charts render cleanly in here -->
                        sdgsfddddddddddd
