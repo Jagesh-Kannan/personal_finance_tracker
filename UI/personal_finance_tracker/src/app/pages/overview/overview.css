@@ -1,6 +1,6 @@
 .chart-container {
   width: 100%;
-  height: 420px; 
+  height: 420px;  /* comp global css attr for mobile swipe alignment issue fix */
   display: block;
 }
 
@@ -405,9 +405,9 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 20px;
     }
-    /* .overview-content-wrapper {
+    .overview-content-wrapper {
       height: calc(100dvh - 265px) !important; 
-    }*/
+    }
 
     .static-bg-sections.blurred-underneath {
       opacity: 0.4;
@@ -446,7 +446,7 @@
 .overview-content-wrapper {
   position: relative;
   width: 100%;
-    height: calc(100vh - 265px);
+  height: calc(100vh - 265px);   /* comp global css attr for mobile swipe alignment issue fix */
   overflow: hidden;
 }
 
