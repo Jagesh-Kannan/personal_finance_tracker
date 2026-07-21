@@ -1,5 +1,6 @@
 .chart-container {
   width: 100%;
+  height: 420px; 
   display: block;
 }
 
@@ -19,9 +20,7 @@
 .welcome-name{
   color: var(--primary-orange);
 }
-.chart-container {
-  height: 420px; 
-}
+
 
 /* Mobile only */
 @media (max-width: 767px) {
@@ -34,9 +33,9 @@
   margin-top: 7px;
 }
 
-.chart-container {
+/* .chart-container {
   height: 420px; 
-}
+} */
 }
 
 /* Tablet only */
