@@ -405,7 +405,7 @@
       padding: 20px;
     }
     .overview-content-wrapper {
-      height: calc(100vh - 265px) !important; 
+      height: calc(100vh - 275px) !important; 
     }
 
     .static-bg-sections.blurred-underneath {
