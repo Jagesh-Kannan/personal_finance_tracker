@@ -272,7 +272,7 @@ public get_insights(event:any ){
     const deltaY = currentY - this.touchStartY; // Positive means pulling finger down
 
     // Case 1: Panel is closed -> Swiping finger UP -> Pull panel open
-    if (!this.isPanelExpanded() && deltaY < 0) {
+    if (!this.isPanelExpanded() && deltaY < -20) {
       event.preventDefault(); 
       this.currentYOffset.set(this.getInitialCollapsedPixels() + deltaY);
     }
@@ -298,7 +298,7 @@ public get_insights(event:any ){
     const endY = event.changedTouches[0].clientY;
     const totalSwipeDistance = endY - this.touchStartY;
 
-    if (!this.isPanelExpanded() && totalSwipeDistance < -50) {
+    if (!this.isPanelExpanded() && totalSwipeDistance < -100) {
       this.snapToTop();
     } 
     // Only drop down if threshold passes, scroll is 0, AND touch sequence started at the top boundary
