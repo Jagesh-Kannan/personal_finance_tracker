@@ -272,7 +272,7 @@ public get_insights(event:any ){
     const deltaY = currentY - this.touchStartY; // Positive means pulling finger down
 
     // Case 1: Panel is closed -> Swiping finger UP -> Pull panel open
-    if (!this.isPanelExpanded() && deltaY < 0) {
+    if (!this.isPanelExpanded() && deltaY < -20) {
       event.preventDefault(); 
       this.currentYOffset.set(this.getInitialCollapsedPixels() + deltaY);
     }
