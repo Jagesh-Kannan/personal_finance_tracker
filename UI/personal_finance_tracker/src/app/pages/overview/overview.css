@@ -45,9 +45,9 @@
    font-size: 14px;
 }
 
-/* .chart-container {
-  height: 630px; 
-} */
+.chart-container {
+  height: 630px !important; 
+}
 }
 
 /* Laptop and up */
@@ -56,9 +56,9 @@
 .welcome-description{
    font-size: 14px;
 }
-/* .chart-container{
-  height: auto;
-} */
+.chart-container{
+  height: auto !important;
+}
 }
 
 
@@ -407,13 +407,13 @@
     }
     /* .overview-content-wrapper {
       height: calc(100dvh - 265px) !important; 
-    }
+    }*/
 
     .static-bg-sections.blurred-underneath {
       opacity: 0.4;
       filter: blur(2px);
       pointer-events: none;
-    } */
+    } 
     
  }
  @media (min-width: 768px) and (max-width: 1023px){
@@ -423,9 +423,9 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 30px;
     }
-    /* .overview-content-wrapper {
-      height: calc(100dvh - 240px); 
-    } */
+    .overview-content-wrapper {
+      height: calc(100dvh - 240px) !important; 
+    }
  }
  @media (min-width: 1024px) {
    .dashboard-container{
@@ -434,6 +434,9 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 30px;
     }
+     .overview-content-wrapper {
+      height: auto !important;
+     }
  }
 
 
@@ -456,11 +459,6 @@
 }
 
 
-.static-bg-sections.blurred-underneath {
-  opacity: 0.4;
-  filter: blur(2px);
-  pointer-events: none; /* Block interactions while sheet is full-screen */
-}
 
 /* ==========================================
    SLIDING BOTTOM SHEET CONTAINER (SECTION 3)
