@@ -33,9 +33,9 @@
   margin-top: 7px;
 }
 
-/* .chart-container {
+.chart-container {
   height: 420px; 
-} */
+}
 }
 
 /* Tablet only */
@@ -45,9 +45,9 @@
    font-size: 14px;
 }
 
-.chart-container {
+/* .chart-container {
   height: 630px; 
-}
+} */
 }
 
 /* Laptop and up */
@@ -56,9 +56,9 @@
 .welcome-description{
    font-size: 14px;
 }
-.chart-container{
+/* .chart-container{
   height: auto;
-}
+} */
 }
 
 
@@ -405,15 +405,15 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 20px;
     }
-    .overview-content-wrapper {
+    /* .overview-content-wrapper {
       height: calc(100dvh - 265px) !important; 
     }
 
     .static-bg-sections.blurred-underneath {
       opacity: 0.4;
       filter: blur(2px);
-      pointer-events: none; /* Block interactions while sheet is full-screen */
-    }
+      pointer-events: none;
+    } */
     
  }
  @media (min-width: 768px) and (max-width: 1023px){
@@ -423,9 +423,9 @@
     .dashboard-container > .dashboard-wrapper {
       padding: 30px;
     }
-    .overview-content-wrapper {
+    /* .overview-content-wrapper {
       height: calc(100dvh - 240px); 
-    }
+    } */
  }
  @media (min-width: 1024px) {
    .dashboard-container{
@@ -443,7 +443,7 @@
 .overview-content-wrapper {
   position: relative;
   width: 100%;
-  height: calc(100vh - 265px); 
+    height: calc(100vh - 265px);
   overflow: hidden;
 }
 
@@ -456,6 +456,11 @@
 }
 
 
+.static-bg-sections.blurred-underneath {
+  opacity: 0.4;
+  filter: blur(2px);
+  pointer-events: none; /* Block interactions while sheet is full-screen */
+}
 
 /* ==========================================
    SLIDING BOTTOM SHEET CONTAINER (SECTION 3)
@@ -484,4 +489,33 @@
   overflow: auto;
   margin-top: 15px;
 }
-/*  */
+
+@media (min-width: 1024px) {
+  /* Neutralize layout wrappers to let the window scroll naturally */
+  .overview-content-wrapper {
+    height: auto;
+    overflow: auto; 
+  }
+
+  .static-bg-sections {
+    margin-bottom: 40px; /* Clean gap space before section 3 appears */
+  }
+
+  /* Force the sliding container back into normal sequence layout position */
+  .sliding-panel-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    transform: none !important; /* CRITICAL: Bypasses the TS transform calculation completely */
+  }
+
+  /* Turn off all internal viewport scrollboxes */
+  .section-3, .dashboard-container, .dashboard-wrapper, .dash-content {
+    height: auto !important;
+    overflow: auto !important;
+  }
+
+  .dash-content {
+    padding-top: 40px; /* Space for the header tab layout */
+  }
+}
