@@ -1,6 +1,6 @@
 .chart-container {
   width: 100%;
-  height: 420px;  /* comp global css attr for mobile swipe alignment issue fix */
+ 
   display: block;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .chart-container {
-  height: 420px; 
+  height: 420px !important; 
 }
 }
 
@@ -424,7 +424,7 @@
       padding: 30px;
     }
     .overview-content-wrapper {
-      height: calc(100dvh - 240px) !important; 
+      height: calc(100vh - 240px) !important; 
     }
  }
  @media (min-width: 1024px) {
@@ -446,7 +446,6 @@
 .overview-content-wrapper {
   position: relative;
   width: 100%;
-  height: calc(100vh - 265px);   /* comp global css attr for mobile swipe alignment issue fix */
   overflow: hidden;
 }
 
@@ -491,7 +490,7 @@
 @media (min-width: 1024px) {
   /* Neutralize layout wrappers to let the window scroll naturally */
   .overview-content-wrapper {
-    height: auto;
+    height: auto !important;
     overflow: auto; 
   }
 
