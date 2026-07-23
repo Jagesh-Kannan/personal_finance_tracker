@@ -10,6 +10,7 @@ import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ToasterService } from '../../service/toaster.service';
 import { WidgetBlock } from '../../components/widgets/widget-block/widget-block';
 import { statWidgetDataFilterService } from '../../logics/statWidgetDataFilter.logic';
+import { WidgetGrid } from '../../components/widgets/widget-grid/widget-grid';
 
 
 interface MonthOption {
@@ -19,7 +20,7 @@ interface MonthOption {
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, WidgetBlock],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, WidgetBlock, WidgetGrid],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })

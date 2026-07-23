@@ -46,6 +46,9 @@
    font-family: 'SN Pro', 'Segoe UI', Roboto, sans-serif;
 
    --toster-bg: #292929;
+
+   --widget-border-radius: 16px; 
+   --widget-box-shadow: 0 4px 6px -1px var(--shadow-color);
 }
 
 /* Dark Theme */

@@ -7,10 +7,10 @@
 .widget-card-container > .widget-card-wrapper{
   background: var(--glass-bg);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: var( --widget-border-radius);
   padding: 24px;
   font-family:inherit;
-  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  box-shadow: var(--widget-box-shadow);
   backdrop-filter: blur(10px);
 }
 

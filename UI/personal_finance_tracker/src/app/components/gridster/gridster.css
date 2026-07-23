@@ -1,0 +1,51 @@
+/* ==========================================
+   GRIDSTACK DASHBOARD CUSTOM STYLES
+   ========================================== */
+
+/* 1. Main Grid Container Styles */
+:host ::ng-deep .grid-stack {
+
+  padding: 12px;
+  border-radius: 12px;
+}
+
+/* 2. Grid Item Styling (The Widget Cards) */
+:host ::ng-deep .grid-stack-item-content {
+  background-color: var(--glass-bg) !important; /* Fixed 'gray' background color */
+  border-radius: var( --widget-border-radius) !important;         /* Rounded borders */
+  border: 1px solid var(--border-color) !important;   /* Darker gray subtle border */
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;                       /* Keeps ECharts contained */
+  display: flex;
+  flex-direction: column;
+  
+  /* Modern clean box shadow */
+  box-shadow: var(--widget-box-shadow) !important;
+  
+  /* Smooth transition effect for a premium feel */
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover effect on cards when not dragging */
+:host ::ng-deep .grid-stack-item:not(.ui-draggable-dragging) .grid-stack-item-content:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 
+              0 4px 6px -2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 3. Dragging Active State Highlight */
+/* While dragging/resizing, add a lift effect to the active item */
+:host ::ng-deep .grid-stack-item.ui-draggable-dragging .grid-stack-item-content,
+:host ::ng-deep .grid-stack-item.ui-resizable-resizing .grid-stack-item-content {
+  opacity: 0.9;
+  transform: scale(1.01);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 4. Available Sections Target Indicator (The Ghost/Placeholder) */
+/* This highlights the target grid cells where the widget can be dropped */
+:host ::ng-deep .grid-stack-placeholder > .placeholder-content {
+  background-color: rgba(66, 153, 225, 0.15) !important; /* Translucent blue highlight */
+  border: 2px dashed #4299e1 !important;                 /* Vibrant dashed boundary line */
+  border-radius: 8px !important;                          /* Matches card roundness */
+}

@@ -66,20 +66,10 @@
                     (touchstart)="$event.stopPropagation()"
                     (touchmove)="$event.stopPropagation()"
                     (wheel)="$event.stopPropagation()">
-                    <div class="chart-container">
-                      <!-- Your actual widgets/charts render cleanly in here -->
-                       sdgsfddddddddddd
-                       d
-              <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-               <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                 <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                  <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                   <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                    <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                     <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-                      <app-widget-block [widgetList]="this.quickInsightDetails().widgetDetails" [cardLoader]="this.statisticsLoader()"></app-widget-block>
-
+                    <div class="c-viz-container">
+                       <div class="c-viz-wrapper">
+                         <app-widget-grid></app-widget-grid>
+                       </div>
                     </div>
                  </div>
 

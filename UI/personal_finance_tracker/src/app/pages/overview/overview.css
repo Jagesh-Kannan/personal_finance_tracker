@@ -1,4 +1,4 @@
-.chart-container {
+.c-viz-container {
   width: 100%;
   display: block;
 }
@@ -32,7 +32,7 @@
   margin-top: 7px;
 }
 
-.chart-container {
+.c-viz-container {
   height: 420px !important; 
 }
 }
@@ -44,7 +44,7 @@
    font-size: 14px;
 }
 
-.chart-container {
+.c-viz-container {
   height: 630px !important; 
 }
 }
@@ -55,7 +55,7 @@
 .welcome-description{
    font-size: 14px;
 }
-.chart-container{
+.c-viz-container{
   height: auto !important;
 }
 }
@@ -393,7 +393,7 @@
  .dashboard-container > .dashboard-wrapper {
 
    border: 1px solid var(--border-color);
-   border-radius: 12px;    
+   border-radius: 26px;    
  }
 
 
