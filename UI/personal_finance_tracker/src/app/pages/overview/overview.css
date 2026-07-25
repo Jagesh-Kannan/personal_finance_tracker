@@ -283,22 +283,20 @@
    ========================================== */
 
 /* Base Filter Button Styles (Laptop & Desktop) */
-.filter {
+.filter, .adj-layout {
   display: flex;
   align-items: center;
   justify-content: center;
-   margin-right: 20px;
+  margin-right: 20px;
 }
 
-.filter button {
+.filter button, .adj-layout button {
   display: flex;
   align-items: center;
   justify-content: center;
-      padding: 4px 9px;
-    min-width: 39px;
-    height: 38px;
+     
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+
   background: var(--input-bg);
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -310,20 +308,33 @@
   outline: none;
 }
 
-.filter button:hover {
+.filter button{
+ padding: 4px 9px;
+    min-width: 39px;
+    height: 38px;
+      border-radius: 12px;
+}
+.adj-layout button{
+ padding: 4px 9px;
+    min-width: 39px;
+    height: 38px;
+      border-radius: 12px;
+}
+
+.filter button:hover, .adj-layout button:hover {
   border-color: var(--primary-orange);
   background: var(--glass-bg);
   box-shadow: 0 4px 12px rgba(255, 154, 68, 0.3);
   transform: translateY(-2px);
 }
 
-.filter button:focus {
+.filter button:focus, .adj-layout button:focus {
   background: var(--glass-bg);
   border-color: var(--secondary-orange);
   box-shadow: 0 0 0 3px rgba(255, 154, 68, 0.2), 0 4px 12px var(--shadow-color);
 }
 
-.filter button:active {
+.filter button:active, .adj-layout button:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px var(--shadow-color);
 }
@@ -336,11 +347,19 @@
   transition: stroke 0.25s ease;
 }
 
-.filter button:hover svg {
+.adj-layout svg{
+    width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: stroke 0.25s ease;
+}
+
+.filter button:hover svg, .adj-layout button:hover svg {
   stroke: var(--primary-orange);
 }
 
-.filter button:focus svg {
+.filter button:focus svg, .adj-layout button:focus svg {
   stroke: var(--secondary-orange);
 }
 
@@ -359,6 +378,19 @@
   .filter svg {
     width: 18px;
     height: 18px;
+  }
+
+    .adj-layout button {
+   padding: 2px 7px;
+        min-width: 23px;
+        height: 23px;
+        border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .adj-layout svg {
+    width: 16px;
+    height: 16px;
   }
 }
 
@@ -380,6 +412,22 @@
   .filter svg {
     width: 16px;
     height: 16px;
+  }
+
+    .adj-layout button {
+            padding: 3px 5px;
+        min-width: 15px;
+        height: 15px;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px var(--shadow-color);
+  }
+  .adj-layout{
+    margin-right: 10px;
+  }
+
+  .adj-layout svg {
+    width: 13px;
+    height: 13px;
   }
 }
 

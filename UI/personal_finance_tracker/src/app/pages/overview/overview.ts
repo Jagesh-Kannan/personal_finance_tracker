@@ -11,6 +11,7 @@ import { ToasterService } from '../../service/toaster.service';
 import { WidgetBlock } from '../../components/widgets/widget-block/widget-block';
 import { statWidgetDataFilterService } from '../../logics/statWidgetDataFilter.logic';
 import { WidgetGrid } from '../../components/widgets/widget-grid/widget-grid';
+import { NgGridStackWidget } from 'gridstack/dist/angular';
 
 
 interface MonthOption {
@@ -359,6 +360,11 @@ public get_insights(event:any ){
   private getInitialCollapsedPixels(): number {
     // Helper estimation mapper matching fallback CSS translate percentage values 
     return window.innerHeight * 0.65;
+  }
+
+  public layoutUpdate(event:NgGridStackWidget[]){
+    console.log(event);
+    
   }
 
 }

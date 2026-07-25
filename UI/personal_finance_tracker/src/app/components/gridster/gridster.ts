@@ -1,6 +1,6 @@
-import { Component, computed, EventEmitter, input, Output, signal, OnInit } from '@angular/core';
-import { GridStackOptions, GridStackNode } from 'gridstack';
-import { GridstackComponent, GridstackItemComponent, NgGridStackWidget } from 'gridstack/dist/angular';
+import { Component, computed, effect, EventEmitter, input, Output, signal, ViewChild, OnInit } from '@angular/core';
+import { GridStack, GridStackOptions } from 'gridstack';
+import { GridstackComponent, GridstackItemComponent, NgGridStackOptions, NgGridStackWidget } from 'gridstack/dist/angular';
 
 @Component({
   selector: 'app-gridster',
@@ -9,32 +9,15 @@ import { GridstackComponent, GridstackItemComponent, NgGridStackWidget } from 'g
   styleUrl: './gridster.css',
 })
 export class Gridster implements OnInit {
+  // Read references to the Gridstack wrapper element tree
+  @ViewChild(GridstackComponent) public gridstackComponent!: GridstackComponent;
 
   public gridConfigInput = input<GridStackOptions>();
+  public gridWidgetOptions = input.required<NgGridStackWidget[]>();
+  private updatedLayout = signal<NgGridStackWidget[]>([]);
   
-  public liveWidgetOptions = signal<NgGridStackWidget[]>([]);
-
-  public gridWidgetOptions = input.required<NgGridStackWidget[], NgGridStackWidget[]>({
-    transform: (value: NgGridStackWidget[]) => {
-      const initializedWidgets = value.map(w => ({
-        ...w,
-        id: w.id || this.generateShortId()
-      }));
-      this.liveWidgetOptions.set(initializedWidgets);
-      return initializedWidgets;
-    }
-  });
-
-  public enable_editing = input.required<boolean, boolean>({
-    transform: (value: boolean): boolean => {
-      this.gridConfigInit.set({
-        ...this.gridConfigInit(),
-        disableDrag: !value,
-        disableResize: !value
-      });
-      return value;
-    }
-  });
+  // 1. Keep this as a pure input property now. No inline transform logic here.
+  public enable_editing = input.required<boolean>();
 
   @Output() public onResizeEnd = new EventEmitter<{ event: Event; el: HTMLElement }>();
   @Output() public onDragEnd = new EventEmitter<{ event: Event; el: HTMLElement }>();
@@ -42,6 +25,7 @@ export class Gridster implements OnInit {
 
   private gridConfigInit = signal<GridStackOptions>({});
 
+  // 2. Keep gridConfig pure (No reactive toggles inside it)
   private gridConfig = computed(() => {
     return {
       ...this.gridConfigInit(),
@@ -49,12 +33,37 @@ export class Gridster implements OnInit {
     };
   });
 
+  // 3. Generates layout data safely without forcing re-renders
   public gridsterOptions = computed(() => {
+    const gridOptions = this.gridConfig();
+    const gridWidgetOptions = this.gridWidgetOptions().map(d => ({
+      ...d,
+      id: d.id || this.generateShortId()
+    }));
+
     return {
-      ...this.gridConfig(),
-      children: this.liveWidgetOptions(),
+      ...gridOptions,
+      children: gridWidgetOptions,
     };
   });
+
+  constructor() {
+    /**
+     * 4. THE FIX: Toggle interactivity through the Gridstack Instance API
+     * instead of resetting the signal configuration block.
+     */
+    effect(() => {
+      const isEditingEnabled = this.enable_editing();
+      
+      // Ensure the Gridstack JS engine is initialized before running
+      const gridInstance: GridStack | undefined = this.gridstackComponent?.grid;
+      
+      if (gridInstance) {
+        // setStatic(true) freezes dragging/resizing. setStatic(false) enables it.
+        gridInstance.setStatic(!isEditingEnabled);
+      }
+    });
+  }
 
   ngOnInit() {
     this.initializeGridConfig();
@@ -65,21 +74,15 @@ export class Gridster implements OnInit {
     return `grid_${random4Digit}`;
   }
 
-  /**
-   * FIXED: Explicitly checks the current state of 'enable_editing()'
-   * so it doesn't stomp over the transform block parameters during initialization.
-   */
   initializeGridConfig() {
-    const isEditingEnabled = this.enable_editing();
-
     this.gridConfigInit.set({
       margin: 5,
       float: true,
       minRow: 1,
       cellHeight: 200,
       columnOpts: { breakpoints: [{ w: 768, c: 1 }] },
-      disableDrag: !isEditingEnabled,
-      disableResize: !isEditingEnabled
+      // Start as static if editing is false on load
+      staticGrid: !this.enable_editing() 
     });
   }
 
@@ -90,20 +93,22 @@ export class Gridster implements OnInit {
 
   onDragEnds(event: { event: Event; el: HTMLElement }) {
     this.updateWidgetCoordinatesInState(event.el);
-    this.onDragEnd.emit(event);  
+    this.onDragEnd.emit(event);
   }
 
-  private updateWidgetCoordinatesInState(element: HTMLElement): void {
+    private updateWidgetCoordinatesInState(element: HTMLElement): void {
+    // Retrieve the unique ID string Gridstack injected onto the DOM node
     const targetId = element.getAttribute('gs-id');
     if (!targetId) return;
 
+    // Parse the live coordinates from the HTML layout node attributes
     const updatedX = parseInt(element.getAttribute('gs-x') || '0', 10);
     const updatedY = parseInt(element.getAttribute('gs-y') || '0', 10);
     const updatedW = parseInt(element.getAttribute('gs-w') || '1', 10);
     const updatedH = parseInt(element.getAttribute('gs-h') || '1', 10);
 
-    const updatedWidgets = this.liveWidgetOptions().map(widget => {
-      if (widget.id === targetId) {
+    // Update the layout model array state immutably
+    const updatedWidgets = this.gridsterOptions().children?.filter(d=>d.id === targetId).map(widget => {
         return {
           ...widget,
           x: updatedX,
@@ -111,11 +116,11 @@ export class Gridster implements OnInit {
           w: updatedW,
           h: updatedH
         };
-      }
-      return widget;
     });
-
-    this.liveWidgetOptions.set(updatedWidgets);
-    this.onLayoutUpdated.emit(updatedWidgets);
+    // Save back to the signal loop so it won't jump back when editing turns off
+    this.updatedLayout.set({...this.updatedLayout(), ...updatedWidgets});
+    
+    // Notify parent component that layout changed
+    this.onLayoutUpdated.emit(this.updatedLayout());
   }
 }

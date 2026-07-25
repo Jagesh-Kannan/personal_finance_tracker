@@ -64,7 +64,7 @@
 
                     <div class="header-action-wrapper">
                       <div class="header-action">
-                         <div class="filter adj-layout"><button title="Adjust layout" (click)="enable_drag_resize.set(!enable_drag_resize())"><svg lucideImageUpscale></svg></button></div>
+                         <div class="adj-layout"><button title="Adjust layout" (click)="enable_drag_resize.set(!enable_drag_resize())"><svg lucideImageUpscale></svg></button></div>
                       </div>
                     </div>
                  </div>
@@ -76,7 +76,7 @@
                     (wheel)="$event.stopPropagation()">
                     <div class="c-viz-container">
                        <div class="c-viz-wrapper">
-                         <app-widget-grid [enable_editing]="enable_drag_resize()"></app-widget-grid>
+                         <app-widget-grid [enable_editing]="enable_drag_resize()" (onLayoutUpdated)="layoutUpdate($event)"></app-widget-grid>
                        </div>
                     </div>
                  </div>
