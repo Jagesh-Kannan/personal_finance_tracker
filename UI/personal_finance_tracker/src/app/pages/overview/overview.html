@@ -56,9 +56,17 @@
               <div class="dashboard-wrapper hang-header-wrapper">
                  
                  <!-- Outward Fillet Header Tab -->
-                 <div class="dash-header hang-header">
-                   <div class="dash-title hang-title">Viz Insights</div>
-                   <div class="drag-indicator-fallback"></div>
+                  <div class="head-title-action-wrapper">
+                    <div class="dash-header hang-header">
+                      <div class="dash-title hang-title">Viz Insights</div>
+                      <div class="drag-indicator-fallback"></div>
+                    </div>
+
+                    <div class="header-action-wrapper">
+                      <div class="header-action">
+                         <div class="filter adj-layout"><button title="Adjust layout" (click)="enable_drag_resize.set(!enable_drag_resize())"><svg lucideImageUpscale></svg></button></div>
+                      </div>
+                    </div>
                  </div>
                  
                  <!-- Internal Scrollable Content Canvas -->
@@ -68,7 +76,7 @@
                     (wheel)="$event.stopPropagation()">
                     <div class="c-viz-container">
                        <div class="c-viz-wrapper">
-                         <app-widget-grid></app-widget-grid>
+                         <app-widget-grid [enable_editing]="enable_drag_resize()"></app-widget-grid>
                        </div>
                     </div>
                  </div>

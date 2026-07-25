@@ -5,7 +5,7 @@ import { StatisticBlock } from '../../components/statistics/statistic-block/stat
 import { StatisticDataBuilder } from '../../logics/statistic-data.builder';
 import { ExpenseService } from '../../service/expense.service';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucideFunnel } from '@lucide/angular';
+import { LucideFunnel, LucideImageUpscale } from '@lucide/angular';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ToasterService } from '../../service/toaster.service';
 import { WidgetBlock } from '../../components/widgets/widget-block/widget-block';
@@ -20,7 +20,7 @@ interface MonthOption {
 
 @Component({
   selector: 'app-overview',
-  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, SlideUpForm, WidgetBlock, WidgetGrid],
+  imports: [StatisticBlock, FormsModule, ReactiveFormsModule, LucideFunnel, LucideImageUpscale, SlideUpForm, WidgetBlock, WidgetGrid],
   templateUrl: './overview.html',
   styleUrl: './overview.css',
 })
@@ -29,6 +29,7 @@ export class Overview {
     @ViewChild('section3Container') section3Container!: ElementRef<HTMLDivElement>;
 
 
+  public enable_drag_resize = signal<boolean>(false);
 
   // NEW PANEL MANAGEMENT STATE SIGNALS
   public isPanelExpanded = signal<boolean>(false);

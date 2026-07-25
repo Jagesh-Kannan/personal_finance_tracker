@@ -45,7 +45,9 @@
 /* 4. Available Sections Target Indicator (The Ghost/Placeholder) */
 /* This highlights the target grid cells where the widget can be dropped */
 :host ::ng-deep .grid-stack-placeholder > .placeholder-content {
-  background-color: rgba(66, 153, 225, 0.15) !important; /* Translucent blue highlight */
-  border: 2px dashed #4299e1 !important;                 /* Vibrant dashed boundary line */
+  background-color: color-mix(in srgb, var(--accent-color) 6%, transparent) !important;
+ /* Translucent blue highlight */
+  border: 2px dashed !important; 
+  border-color:  color-mix(in srgb, var(--primary-orange) 55%, transparent) !important;
   border-radius: 8px !important;                          /* Matches card roundness */
 }
