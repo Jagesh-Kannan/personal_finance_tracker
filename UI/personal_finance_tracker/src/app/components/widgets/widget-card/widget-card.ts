@@ -1,7 +1,8 @@
-import { Component, computed, HostListener, input, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostListener, Input, input, signal, viewChild, ViewChild } from '@angular/core';
 import { Widget } from '../widget/widget';
 import { PieDataFormatterService } from '../../../logics/charts/pie.dataTransform.logic';
 import { SkeletonLoader } from '../../skeleton-loader/skeleton-loader';
+import { BaseWidget } from 'gridstack/dist/angular';
 
 @Component({
   selector: 'app-widget-card',
@@ -9,9 +10,9 @@ import { SkeletonLoader } from '../../skeleton-loader/skeleton-loader';
   templateUrl: './widget-card.html',
   styleUrl: './widget-card.css',
 })
-export class WidgetCard {
+export class WidgetCard extends BaseWidget {
 
-    // Initialize signal with current innerWidth
+  // Initialize signal with current innerWidth
   width = signal(typeof window !== 'undefined' ? window.innerWidth : 0);
 
   // Decorator catches window resize events natively without requiring Zone.js
@@ -20,52 +21,50 @@ export class WidgetCard {
     this.width.set(window.innerWidth);
   }
 
-  chartHeight = computed(() => {
-    const width = this.width();
-    if (width < 640) return 105;
-    if (width < 1024) return 140;
-    return 160;
-  });
+  chartHeight = signal<number>(120);
 
 
 
-public widgetOptions = computed<WidgetOptions>(() => {
-  const chartDetails = this.widgetDetails();
+  public get widgetOptions(): WidgetOptions {
+    const chartDetails = this.widgetDetails;
 
-  if (!chartDetails || !chartDetails.chartConfig) {
-    return { widgetId: '', option: null };
+    if (!chartDetails || !chartDetails.chartConfig) {
+      return { widgetId: '', option: null };
+    }
+
+    const chartOptions = this.pieDataFormatterService.generateOptions({
+      chartType: chartDetails.chartConfig.chartType,
+      rawData: chartDetails.chartConfig.rawData,
+      groupByKey: chartDetails.chartConfig.groupByKey,
+      valueByKey: chartDetails.chartConfig.valueByKey
+    });
+
+    return {
+      widgetId: chartDetails.widgetId,
+      option: chartOptions
+    };
   }
 
-  const chartOptions = this.pieDataFormatterService.generateOptions({
-    chartType: chartDetails.chartConfig.chartType,
-    rawData: chartDetails.chartConfig.rawData,
-    groupByKey: chartDetails.chartConfig.groupByKey,
-    valueByKey: chartDetails.chartConfig.valueByKey
-  });
+  @Input() public widgetDetails!: WidgetDetails;
+  @Input() public widgetCardLoader: boolean = false;
 
-  return {
-    widgetId: chartDetails.widgetId,
-    option: chartOptions
-  };
-});
-
-  public widgetDetails = input.required<WidgetDetails>();
-  public widgetCardLoader = input.required<boolean>();
-
-  constructor(private pieDataFormatterService: PieDataFormatterService){
-
+  constructor(private pieDataFormatterService: PieDataFormatterService) {
+    super();
   }
+  private resizeObserver: ResizeObserver | null = null;
+  private chartDom = viewChild.required<ElementRef>('widgetContainer');
+
 
   //       this.widgetOptions.set({
   //     option:  {
-    
+
   //       dataset: [
   //        { 
   //     source: data,
   //      sourceHeader: true,
   //     dimensions: ['expenseName', 'expenseCategory', 'amount', 'paymentMode', 'mode', 'notes', 'currency', 'customGrouping']
   //    },
-     
+
   //      {
   //     transform: [
   //       {
@@ -146,8 +145,32 @@ public widgetOptions = computed<WidgetOptions>(() => {
   //   }
   //   })
 
-  ngAfterContentInit(){
+  ngAfterViewInit() {
+    const initialDimensions = this.chartDom()?.nativeElement?.getBoundingClientRect();
+    if (initialDimensions.height > 0) {
+      this.chartHeight.set(initialDimensions.height);
+    }
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const freshHeight = Math.round(entry.contentRect.height);
 
+        // Only trigger a state change if the height is truly different
+        if (freshHeight !== this.chartHeight()) {
+          window.requestAnimationFrame(() => {
+            this.chartHeight.set(freshHeight);
+          });
+        }
+      }
+    });
+
+    const targetElement = this.chartDom().nativeElement;
+    if (targetElement) {
+      this.resizeObserver.observe(targetElement);
+    }
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
   }
 }
 

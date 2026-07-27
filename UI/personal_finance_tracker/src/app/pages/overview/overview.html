@@ -76,7 +76,7 @@
                     (wheel)="$event.stopPropagation()">
                     <div class="c-viz-container">
                        <div class="c-viz-wrapper">
-                         <app-widget-grid [enable_editing]="enable_drag_resize()" (onLayoutUpdated)="layoutUpdate($event)"></app-widget-grid>
+                         <app-widget-grid [widgetList]="this.quickInsightDetails().widgetDetails" [enable_editing]="enable_drag_resize()" (onLayoutUpdated)="layoutUpdate($event)"></app-widget-grid>
                        </div>
                     </div>
                  </div>

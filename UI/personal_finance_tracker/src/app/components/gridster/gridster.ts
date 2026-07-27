@@ -80,7 +80,7 @@ export class Gridster implements OnInit {
       float: true,
       minRow: 1,
       cellHeight: 200,
-      columnOpts: { breakpoints: [{ w: 768, c: 1 }] },
+      columnOpts: { breakpoints: [{ w: 768, c: 2 }] },
       // Start as static if editing is false on load
       staticGrid: !this.enable_editing() 
     });

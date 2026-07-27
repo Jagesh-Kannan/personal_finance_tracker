@@ -27,6 +27,12 @@
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
+:host ::ng-deep .grid-stack-item-content > *{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
+  height: 100%;
+}
 /* Hover effect on cards when not dragging */
 :host ::ng-deep .grid-stack-item:not(.ui-draggable-dragging) .grid-stack-item-content:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 

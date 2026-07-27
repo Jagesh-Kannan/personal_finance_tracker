@@ -202,3 +202,12 @@ type ChartConfigParams = {
   currencySymbol?: string;
   customSeriesProps?: Record<string, any>;
 };
+
+type GridWidgetDetails = WidgetDetails & {
+  layout: {
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  }
+};

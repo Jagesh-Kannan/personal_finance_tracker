@@ -31,7 +31,7 @@
     scroll-snap-type: x mandatory;
   }
   
-  app-widget-card {
+  .widget-card-container {
     scroll-snap-align: center;
     scroll-snap-stop: always;
     flex-shrink: 0;
@@ -94,3 +94,51 @@
 
 /* Laptop and up */
 @media (min-width: 1024px) {}
+
+
+.widget-card-container{
+     flex: 0 0 auto; /* Prevents cards from shrinking */
+     min-width: 400px; /* Your requirement */
+}
+
+.widget-card-wrapper{
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var( --widget-border-radius);
+  padding: 24px;
+  font-family:inherit;
+  box-shadow: var(--widget-box-shadow);
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile only */
+@media (max-width: 767px) {
+  .widget-card-container{
+   max-width: 250px;
+    min-width: 250px;
+}
+.widget-card-wrapper{
+  padding: 12px 12px 5px 12px;
+}
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .widget-card-container{
+   max-width: 350px;
+    min-width: 350px;
+}
+.widget-card-wrapper{
+  padding: 21px 21px 8px 21px;
+}
+}
+
+/* Laptop and up */
+@media (min-width: 1024px) {
+    .widget-card-container{
+   max-width: 400px;
+    min-width: 400px;
+}
+.widget-card-wrapper{
+  padding: 24px 24px 10px 24px;
+}
+}

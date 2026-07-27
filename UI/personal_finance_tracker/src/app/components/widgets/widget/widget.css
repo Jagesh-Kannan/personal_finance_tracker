@@ -1,0 +1,6 @@
+/* CRITICAL: Remove the hardcoded 'height: 160px' from your inner ECharts container */
+.value.skeleton-loader app-widget div[id^="wdgt_"] {
+  flex: 1 1 100% !important;
+  height: 100% !important; /* Overrides the fixed pixel inline constraints */
+  min-height: 100px;       /* Safety floor boundary prevent collapses */
+}

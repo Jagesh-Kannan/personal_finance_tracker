@@ -45,7 +45,7 @@ export class Widget {
         window.requestAnimationFrame(() => {
           this.chartInstance?.resize({
             animation: {
-              duration: 300, // Smooth 300ms layout transition when resizing/rotating screen
+              duration: 200, // Smooth 300ms layout transition when resizing/rotating screen
               easing: 'quadraticOut',
             },
           });
