@@ -1,10 +1,11 @@
-import { Component, computed, effect, EventEmitter, input, Output, signal, ViewChild, OnInit } from '@angular/core';
+import { Component, computed, effect, EventEmitter, input, Output, signal, ViewChild, OnInit, viewChild } from '@angular/core';
 import { GridStack, GridStackOptions } from 'gridstack';
 import { GridstackComponent, GridstackItemComponent, NgGridStackOptions, NgGridStackWidget } from 'gridstack/dist/angular';
+import { WidgetCard } from '../widgets/widget-card/widget-card';
 
 @Component({
   selector: 'app-gridster',
-  imports: [GridstackComponent, GridstackItemComponent],
+  imports: [GridstackComponent, GridstackItemComponent, WidgetCard],
   templateUrl: './gridster.html',
   styleUrl: './gridster.css',
 })
@@ -13,7 +14,7 @@ export class Gridster implements OnInit {
   @ViewChild(GridstackComponent) public gridstackComponent!: GridstackComponent;
 
   public gridConfigInput = input<GridStackOptions>();
-  public gridWidgetOptions = input.required<NgGridStackWidget[]>();
+  public gridWidgetOptions = input.required<(NgGridStackWidget & { type: string })[]>();
   private updatedLayout = signal<NgGridStackWidget[]>([]);
   
   // 1. Keep this as a pure input property now. No inline transform logic here.
@@ -26,7 +27,7 @@ export class Gridster implements OnInit {
   private gridConfigInit = signal<GridStackOptions>({});
 
   // 2. Keep gridConfig pure (No reactive toggles inside it)
-  private gridConfig = computed(() => {
+  public gridConfig = computed(() => {
     return {
       ...this.gridConfigInit(),
       ...this.gridConfigInput()
@@ -36,15 +37,18 @@ export class Gridster implements OnInit {
   // 3. Generates layout data safely without forcing re-renders
   public gridsterOptions = computed(() => {
     const gridOptions = this.gridConfig();
-    const gridWidgetOptions = this.gridWidgetOptions().map(d => ({
-      ...d,
-      id: d.id || this.generateShortId()
-    }));
-
     return {
       ...gridOptions,
-      children: gridWidgetOptions,
     };
+  });
+
+  public gridWidgetOptionsComputed = computed(() => {
+    return this.gridWidgetOptions().map(widget => {
+         return {
+          ...widget,
+          id: this.generateShortId()
+         }
+    });
   });
 
   constructor() {
@@ -106,9 +110,9 @@ export class Gridster implements OnInit {
     const updatedY = parseInt(element.getAttribute('gs-y') || '0', 10);
     const updatedW = parseInt(element.getAttribute('gs-w') || '1', 10);
     const updatedH = parseInt(element.getAttribute('gs-h') || '1', 10);
-
+    
     // Update the layout model array state immutably
-    const updatedWidgets = this.gridsterOptions().children?.filter(d=>d.id === targetId).map(widget => {
+    const updatedWidgets = this.gridConfig().children?.filter(d=>d.id === targetId).map(widget => {
         return {
           ...widget,
           x: updatedX,

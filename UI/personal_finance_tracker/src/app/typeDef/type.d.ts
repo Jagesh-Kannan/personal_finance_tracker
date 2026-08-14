@@ -195,7 +195,7 @@ type WidgetOptions = {
 };
 
 type ChartConfigParams = {
-  chartType: 'pie' | 'bar' | 'line';
+  chartType: ChartTypes,
   rawData: any[];
   groupByKey?: string;
   valueByKey?: string;
@@ -211,3 +211,13 @@ type GridWidgetDetails = WidgetDetails & {
     h: number,
   }
 };
+
+type ChartTypes = 'pie' | 'bar' | 'line';
+
+type VizWidgetBaseConfig = {
+  title:string, 
+  chartType:ChartTypes, 
+  description?:string, 
+  groupByKey?:string, 
+  valueByKey?:string
+}

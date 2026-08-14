@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, input, Output, signal, effect } from '@angular/core';
+import { Component, computed, EventEmitter, input, Output, signal, effect, viewChild, untracked } from '@angular/core';
 import { Gridster } from '../../gridster/gridster';
 import { GridstackComponent, NgGridStackWidget } from 'gridstack/dist/angular';
 import { WidgetCard } from '../widget-card/widget-card';
@@ -14,7 +14,8 @@ export class WidgetGrid {
 
   @Output() public onLayoutUpdated = new EventEmitter<NgGridStackWidget[]>();
 
-  public widgetList = input.required<Omit<WidgetDetails, 'widgetId'>[]>();
+  public widgetBaseConfigList = input.required<WidgetDetails[]>();
+  public widgetRawDataList = input<{widgetId:string, rawData:any[]}[]>([]);
   public enable_editing = input.required<boolean>();
 
 
@@ -24,21 +25,20 @@ export class WidgetGrid {
     ]);
   }
 
-  private generateShortId(): string {
-    const random4Digit = Math.floor(1000 + Math.random() * 9000);
-    return `wdgt_${random4Digit}`;
-  }
 
-  public widgetOptions = computed<NgGridStackWidget[]>(() => {
+  public widgetOptions = computed<(NgGridStackWidget & { type: string; })[]>(() => {
 
-    return this.widgetList().map(widget => {
-      const widgetDetails = { ...widget, widgetId: this.generateShortId() };
+    return this.widgetBaseConfigList().map(widget => {
+    
       return {
         // x: 0, 
         // y: 0, 
         // w: 2, 
-        selector: 'app-widget-card',
-        input: { widgetDetails: widgetDetails, widgetCardLoader: false }
+        type: 'widget-card',     
+        input: { 
+          widgetDetails: {...widget, chartConfig: {...widget.chartConfig, rawData: this.widgetRawDataList().find(d => d.widgetId === widget.widgetId)?.rawData || [] }}, 
+          widgetCardLoader: false
+         },
       };
     })
 

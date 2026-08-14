@@ -1,3 +1,4 @@
 1 - generate a nike name for the user , and provide a option to edit their nick name at the over view page wellcome message
 2 - impliment skeliton loader for expense list card
 3 - impliment type of grouping or type of aggrigation dropdown option in notes section in widget card - 2nd slide cards.
+4 - during viz rendering  at initialization call the config method, but incase of month changes just pass the updated data.

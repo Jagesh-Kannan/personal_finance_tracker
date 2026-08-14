@@ -208,8 +208,8 @@ public getWidgetData_Expense(data: ExpenseSchema[]): MonthlyTransactionSplit {
   return result;
 }
 
-public segregateMonthlyTransactions(data: ExpenseSchema[] = this.expensesList()): MonthlyExpenseLists {
-  const segregatedData: MonthlyExpenseLists = {};
+public segregateMonthlyTransactions(data: ExpenseSchema[] = this.expensesList()): Record<string, ExpenseSchema[]> {
+  const segregatedData: Record<string, ExpenseSchema[]> = {};
 
   if (!data || data.length === 0) return segregatedData;
 
@@ -229,11 +229,13 @@ public segregateMonthlyTransactions(data: ExpenseSchema[] = this.expensesList())
   });
 
   // 2. Pass each month's array to getWidgetData_Expense to build the final object
-  Object.keys(groupedByMonth).forEach(yearMonth => {
-    segregatedData[yearMonth] = this.getWidgetData_Expense(groupedByMonth[yearMonth]);
-  });
+  // Object.keys(groupedByMonth).forEach(yearMonth => {
+  //   segregatedData[yearMonth] = this.getWidgetData_Expense(groupedByMonth[yearMonth]);
+  // });
 
-  return segregatedData;
+  // return segregatedData;
+
+  return groupedByMonth
 }
 
 

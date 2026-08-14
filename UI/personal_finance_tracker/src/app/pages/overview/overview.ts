@@ -12,6 +12,8 @@ import { WidgetBlock } from '../../components/widgets/widget-block/widget-block'
 import { statWidgetDataFilterService } from '../../logics/statWidgetDataFilter.logic';
 import { WidgetGrid } from '../../components/widgets/widget-grid/widget-grid';
 import { NgGridStackWidget } from 'gridstack/dist/angular';
+import { widgetCardsConfig } from '../../helper/vizInsight.config';
+import { VizInsightsService } from '../../logics/vizInsights.logic';
 
 
 interface MonthOption {
@@ -27,7 +29,7 @@ interface MonthOption {
 })
 export class Overview {
 
-    @ViewChild('section3Container') section3Container!: ElementRef<HTMLDivElement>;
+  @ViewChild('section3Container') section3Container!: ElementRef<HTMLDivElement>;
 
 
   public enable_drag_resize = signal<boolean>(false);
@@ -61,6 +63,7 @@ export class Overview {
   public user_detail: Signal<UserState> = getUser();
   private expensesList: Signal<ExpenseSchema[]> = getExpenseList();
   public quickInsightDetails: Signal<{statisticDetail:StatisticDetail[], widgetDetails: Omit<WidgetDetails, 'widgetId'>[]}>;
+  public insightRawData: Signal<{widgetId:string, rawData:any[]}[]>;
   public readonly statisticsLoader: Signal<boolean>;
   public monthOptions = signal<MonthOption[]>([]);
    monthControl = new FormControl('');
@@ -69,15 +72,9 @@ export class Overview {
    public openFilterForm = signal<boolean>(false);
    public customMonthRangeDisplay = signal<string>('');
 
-   public widgetDetails = signal<WidgetDetails>({
-     widgetId: '',
-     title: '',
-     description: '',
-     chartConfig: {
-       rawData: [],
-       chartType: 'pie',
-     }
-   });
+   private widgetCardsConfig = signal<VizWidgetBaseConfig[]>(widgetCardsConfig);
+   public widgetCardDataConfig = signal<WidgetDetails[]>([]);
+
 
   private activeFilter = signal<{ month: Months | null; expenses: ExpenseSchema[] | null }>({
     month: 'jan', 
@@ -85,12 +82,20 @@ export class Overview {
   });
 
   constructor(private statisticsDataBuilder: StatisticDataBuilder, private expenseService: ExpenseService,
-    private _fb:FormBuilder, private toasterService: ToasterService, private statWidgetService:statWidgetDataFilterService
+    private _fb:FormBuilder, private toasterService: ToasterService, private statWidgetService:statWidgetDataFilterService,
+    private vizInsightDataService:VizInsightsService
   ) {
      
-     effect(() => {
+    effect(() => {
       this.generateMonthDropdown();
       this.generateOverviewFilterForm();
+    });
+
+    effect(()=>{
+      const widgetCardsConfig = this.widgetCardsConfig();
+      this.widgetCardDataConfig.set(
+        this.vizInsightDataService.generate_vizInsightWidget_baseConfig(widgetCardsConfig)
+      );
     });
 
   
@@ -139,8 +144,15 @@ export class Overview {
     });
     
 
-   
-  }
+    this.insightRawData = computed(() => {
+       const { month, expenses } = this.activeFilter();
+      const currentExpensesList = expenses ?? this.expensesList();
+      const requiredRawData = month ? this.vizInsightDataService.getMonthly_insightData(month, currentExpensesList) : currentExpensesList;
+      return this.widgetCardDataConfig().map(widget => this.vizInsightDataService.generate_insightWidget_rawData(widget.widgetId, requiredRawData));
+    });
+
+         
+        }
 
 
 private generateMonthDropdown() {

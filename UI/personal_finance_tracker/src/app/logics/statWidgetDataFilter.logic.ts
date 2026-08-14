@@ -27,7 +27,7 @@ export class statWidgetDataFilterService {
   ]);
 
     public expense_details: Signal<ExpenseSchema[]> = getExpenseList();
-    private expenseSplitByMonth: Signal<MonthlyExpenseLists>;
+    private expenseSplitByMonth: Signal<Record<string, ExpenseSchema[]>>;
 
 
   private readonly current_fullYear = new Date().getUTCFullYear();
@@ -51,7 +51,8 @@ export class statWidgetDataFilterService {
     if (month) {
       const utcMonth: number =  this.monthMap.get(month) || 0 ;
       const currentExpenseList = this.expenseSplitByMonth()[this.current_fullYear + '-' + utcMonth];
-       return  this.statisticWidgetDataListBuilder(mode, currentExpenseList);
+      const segrigatedExpenseList = this.aggrigateService.getWidgetData_Expense(currentExpenseList);
+      return  this.statisticWidgetDataListBuilder(mode, segrigatedExpenseList);
     } else {
       const currentExpense_widList = this.aggrigateService.getWidgetData_Expense(expenses || []);
       return this.statisticWidgetDataListBuilder(mode, currentExpense_widList);

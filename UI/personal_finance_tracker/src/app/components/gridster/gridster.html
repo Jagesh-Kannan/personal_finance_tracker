@@ -1,7 +1,26 @@
 <div class="gridster-container">
-    <div class="gridster-wrapper">
-        <gridstack [options]="gridsterOptions()" (dragStopCB)="onDragEnds($event)" (resizeStopCB)="onResizeEnds($event)" >
-          <div empty-content>No content to show ! </div>
-        </gridstack>
-    </div>
+  <div class="gridster-wrapper">
+    <gridstack
+      [options]="this.gridConfig()"
+      (dragStopCB)="onDragEnds($event)"
+      (resizeStopCB)="onResizeEnds($event)"
+    >
+      @for (widget of gridWidgetOptionsComputed(); track $index) {
+        <gridstack-item [options]="widget">
+          @switch (widget.type) {
+            @case ('widget-card') {
+              @if (widget && widget.input) {
+                <app-widget-card
+                  [widgetDetails]="widget.input['widgetDetails']"
+                  [widgetCardLoader]="widget.input['widgetCardLoader']"
+                ></app-widget-card>
+              }
+            }
+          }
+        </gridstack-item>
+      } @empty {
+        <div empty-content>No content to show !</div>
+      }
+    </gridstack>
+  </div>
 </div>

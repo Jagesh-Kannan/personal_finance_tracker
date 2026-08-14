@@ -76,7 +76,8 @@
                     (wheel)="$event.stopPropagation()">
                     <div class="c-viz-container">
                        <div class="c-viz-wrapper">
-                         <app-widget-grid [widgetList]="this.quickInsightDetails().widgetDetails" [enable_editing]="enable_drag_resize()" (onLayoutUpdated)="layoutUpdate($event)"></app-widget-grid>
+                         <!-- this widget grid accepts list of grids to be rendered insisde grid view along with their configurations -->
+                         <app-widget-grid [widgetBaseConfigList]="this.widgetCardDataConfig()" [widgetRawDataList]="this.insightRawData()" [enable_editing]="enable_drag_resize()" (onLayoutUpdated)="layoutUpdate($event)"></app-widget-grid>
                        </div>
                     </div>
                  </div>

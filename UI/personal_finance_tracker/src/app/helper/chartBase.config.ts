@@ -2,7 +2,11 @@ import { EChartsOption } from 'echarts';
 
 export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     PIE: {
-        tooltip: { trigger: 'item' },
+        tooltip: { 
+            trigger: 'item',
+            appendToBody: true,
+            extraCssText: 'z-index: 9999;' 
+         },
         legend: {
             type: 'scroll',
             left: 'right',
@@ -26,7 +30,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
                 query: { maxWidth: 640 },
                 option: {
                     legend:{
-                        bottom: '-4%',
+                        bottom: '-5',
                         itemWidth: 10,
                         itemHeight: 10,
                         textStyle:{
