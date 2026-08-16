@@ -1,8 +1,8 @@
 import { Component, computed, effect, ElementRef, HostListener, Input, input, signal, viewChild, ViewChild } from '@angular/core';
 import { Widget } from '../widget/widget';
-import { PieDataFormatterService } from '../../../logics/charts/pie.dataTransform.logic';
 import { SkeletonLoader } from '../../skeleton-loader/skeleton-loader';
 import { BaseWidget } from 'gridstack/dist/angular';
+import { ChartOptionGeneratorService } from '../../../logics/charts/chartOptionGenerator.logic';
 
 @Component({
   selector: 'app-widget-card',
@@ -32,13 +32,10 @@ export class WidgetCard extends BaseWidget {
       return { widgetId: '', option: null };
     }
 
-    const chartOptions = this.pieDataFormatterService.generateOptions({
-      chartType: chartDetails.chartConfig.chartType,
-      rawData: chartDetails.chartConfig.rawData,
-      groupByKey: chartDetails.chartConfig.groupByKey,
-      valueByKey: chartDetails.chartConfig.valueByKey
-    });
+    const chartOptions = this.chartOptionGeneratorService.generateOptions(chartDetails.chartConfig);
 
+    // console.log('dddddddddddddd', chartOptions);
+    
     return {
       widgetId: chartDetails.widgetId,
       option: chartOptions
@@ -48,7 +45,7 @@ export class WidgetCard extends BaseWidget {
   @Input() public widgetDetails!: WidgetDetails;
   @Input() public widgetCardLoader: boolean = false;
 
-  constructor(private pieDataFormatterService: PieDataFormatterService) {
+  constructor(private chartOptionGeneratorService: ChartOptionGeneratorService) {
     super();
   }
   private resizeObserver: ResizeObserver | null = null;

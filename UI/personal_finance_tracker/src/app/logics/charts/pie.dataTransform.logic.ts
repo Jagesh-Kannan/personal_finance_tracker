@@ -8,11 +8,14 @@ import { CHART_BASE_CONFIGS } from '../../helper/chartBase.config';
 })
 export class PieDataFormatterService {
 
+  private  defaultGroupingKey = 'expenseCategory';
+  private defaultValueKey = 'amount';
+
   generateOptions(params: ChartConfigParams): EChartsOption {
-    
+ 
     const { 
-      chartType, rawData, groupByKey, 
-      valueByKey, currencySymbol = '₹', customSeriesProps = {} 
+      chartType, rawData, groupByKey = this.defaultGroupingKey, 
+      valueByKey = this.defaultValueKey, currencySymbol = '₹', customSeriesProps = {} 
     } = params;
 
      const autoDimensions = rawData && rawData.length > 0 
@@ -51,28 +54,9 @@ export class PieDataFormatterService {
       return '';
     };
 
-    const seriesDefaults: Record<string, any> = {
-      pie: {
-        type: 'pie',
-        radius: ['35%', '60%'],
-        center: ['50%', '50%'],
-        avoidLabelOverlap: true,
-        padAngle: 4,
-        label: {
-          show: true, 
-          position: 'outside', 
-          formatter: labelFormatter,
-          fontSize: 6, 
-          fontWeight: 600, 
-          overflow: 'break'
-        },
-      },
-
-    };
-
     const completedSeries = {
-      ...seriesDefaults[chartType],
-      ...baseConfig.series?.[0],
+       ...baseConfig,
+      label: {...baseConfig.label, formatter: labelFormatter},
       ...customSeriesProps,
       datasetIndex: 1,
       encode: encode

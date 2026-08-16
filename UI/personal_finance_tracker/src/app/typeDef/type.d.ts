@@ -219,5 +219,6 @@ type VizWidgetBaseConfig = {
   chartType:ChartTypes, 
   description?:string, 
   groupByKey?:string, 
-  valueByKey?:string
+  valueByKey?:string,
+  options: Object
 }

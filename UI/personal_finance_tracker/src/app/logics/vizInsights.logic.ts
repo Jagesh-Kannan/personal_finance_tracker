@@ -32,19 +32,20 @@ export class VizInsightsService {
 
 
     public generate_vizInsightWidget_baseConfig(configs:VizWidgetBaseConfig[] = []) :WidgetDetails[]{
-       return configs.map(d=>this.insightWidget_BaseConfig(d.title,d.chartType, d.description, d.groupByKey, d.valueByKey));
+       return configs.map(d=>this.insightWidget_BaseConfig(d));
     }
 
-    public insightWidget_BaseConfig(title:string, chartType:ChartTypes, description?:string, groupByKey?:string, valueByKey?:string ) : WidgetDetails{
+    public insightWidget_BaseConfig(config:VizWidgetBaseConfig) : WidgetDetails{
         return {
             widgetId: this.generateShortId(),
-            title,
-            description: description || '',
+            title: config.title,
+            description: config.description || '',
             chartConfig: {
                 rawData: [],
-                chartType,
-                groupByKey,
-                valueByKey
+                chartType: config.chartType,
+                groupByKey: config.groupByKey,
+                valueByKey: config.valueByKey,
+                customSeriesProps: config.options
             }
         };
     }
