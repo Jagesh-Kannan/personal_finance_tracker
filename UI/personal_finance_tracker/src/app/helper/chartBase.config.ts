@@ -3,14 +3,84 @@ import { EChartsOption } from 'echarts';
 export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
   PIE: {
     type: 'pie',
-    radius: ['35%', '60%'],
+    radius: '80%',
+    center: ['50%', '50%'],
+    avoidLabelOverlap: true,
+    // padAngle: 4,
+    tooltip: {
+        show:true,
+      trigger: 'item',
+      appendToBody: true,
+      extraCssText: "z-index: 9999;", 
+      triggerOn: 'mousemove|click',                                  
+      alwaysShowContent: false,                            
+      confine: true               
+    },
+    legend: {
+      type: 'scroll',
+      left: 'right',
+      orient: 'horizontal',
+      textStyle: { fontWeight: 500, color: '#8a8c8f' },
+    },
+    label: {
+      show: true,
+      position: 'outside',
+      fontSize: 6,
+      fontWeight: 600,
+      overflow: 'break',
+    },
+    labelLine: {
+      show: true,
+      // length: 3,
+      // length2: 3,
+      smooth: true,
+      lineStyle: { width: 1.5, color: '#cbd5e1' },
+    },
+    itemStyle: {
+      borderRadius: 5,
+      borderColor: '#fff',
+      borderWidth: 1,
+    },
+    media: [
+      {
+        query: { maxWidth: 640 },
+        option: {
+          legend: {
+            bottom: '-5',
+            itemWidth: 10,
+            itemHeight: 10,
+            textStyle: {
+              fontSize: 7,
+            },
+          },
+          itemStyle: {
+            borderRadius: 5,
+          },
+          series: [
+            {
+              radius: '55%',
+              label: {
+                fontSize: 8,
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+  DOUGHNUT: {
+    type: 'pie',
+    radius: ['45%', '70%'],
     center: ['50%', '50%'],
     avoidLabelOverlap: true,
     padAngle: 4,
     tooltip: {
       trigger: 'item',
       appendToBody: true,
-      extraCssText: 'z-index: 9999;',
+      extraCssText: "z-index: 9999;", 
+      triggerOn: 'click',                                  
+      alwaysShowContent: false,                            
+      confine: true               
     },
     legend: {
       type: 'scroll',
@@ -54,7 +124,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
           },
           series: [
             {
-              radius: ['30%', '50%'],
+              radius: ['40%', '70%'],
               label: {
                 fontSize: 8,
               },
@@ -88,6 +158,17 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
       orient: 'horizontal',
       textStyle: { fontWeight: 500, color: '#8a8c8f' },
     },
+    dataZoom: [
+        {
+            type: 'slider', 
+            yAxisIndex: 0,  
+            start: 0,      
+        },
+        {
+            type: 'inside',
+            yAxisIndex: 0,
+        }
+    ],
     media: [
       {
         query: { maxWidth: 640 },
@@ -111,7 +192,12 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
               fontSize: 7,
             },
           },
-
+         dataZoom:[
+            {
+              type: 'slider', 
+              show: false
+            }
+         ],
           series: [
             {
               label: {

@@ -137,6 +137,7 @@ export class Overview {
         this.statisticsDataBuilder.getMostSpentCategory(month, currentExpensesList),
       ],
       widgetDetails: [
+       this.statWidgetService.getExpense_WidgetDataByMonth(month, 'TOTALBYMODE', currentExpensesList), 
        this.statWidgetService.getExpense_WidgetDataByMonth(month, 'DEBITED', currentExpensesList),
        this.statWidgetService.getExpense_WidgetDataByMonth(month, 'CREDITED', currentExpensesList),
       ] 

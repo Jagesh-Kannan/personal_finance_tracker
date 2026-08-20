@@ -6,11 +6,11 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         groupByKey: 'transactionDate',
         valueByKey: 'amount',
         options:{
-            // splitBy:{
-            //     param: 'mode',
-            //     value: ['DEBITED', 'CREDITED'],
-            //     color: ['--error-color', '--success-color']
-            // },
+            splitBy:{
+                param: 'mode',
+                value: ['DEBITED', 'CREDITED'],
+                color: ['--error-color', '--success-color']
+            },
         }
     },
     {
@@ -31,18 +31,29 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         title: 'Test-3', 
         chartType: 'bar', 
         description: 'Description-3',
+         groupByKey: 'expenseCategory',
+        valueByKey: 'amount',
         options: {
-           
-            xAxis: ''
+                    splitBy:{
+                param: 'mode',
+                value: ['DEBITED', 'CREDITED'],
+                color: ['--error-color', '--success-color']
+            },
         }
     },
     {
         title: 'Test-4', 
-        chartType: 'pie', 
+        chartType: 'bar', 
         description: 'Description-4',
-        groupByKey: 'paymentMode',
+        groupByKey: 'senderOrReceiver',
         valueByKey: 'amount',
-        options:{}
+        options:{
+                    splitBy:{
+                param: 'mode',
+                value: ['DEBITED','CREDITED'],
+                color: ['--error-color', '--success-color']
+            },
+        }
     },
     {
         title: 'Test-5', 

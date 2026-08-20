@@ -47,7 +47,7 @@ export class statWidgetDataFilterService {
   }
    
 
-    public getExpense_WidgetDataByMonth(month: Months | null, mode: 'DEBITED' | 'CREDITED', expenses?: ExpenseSchema[]): Omit<WidgetDetails, 'widgetId'> {
+    public getExpense_WidgetDataByMonth(month: Months | null, mode: 'DEBITED' | 'CREDITED' | 'TOTALBYMODE', expenses?: ExpenseSchema[]): Omit<WidgetDetails, 'widgetId'> {
     if (month) {
       const utcMonth: number =  this.monthMap.get(month) || 0 ;
       const currentExpenseList = this.expenseSplitByMonth()[this.current_fullYear + '-' + utcMonth];
@@ -59,7 +59,7 @@ export class statWidgetDataFilterService {
     }
   }
 
-  private statisticWidgetDataListBuilder(mode: 'DEBITED' | 'CREDITED', currentExpenseList: MonthlyTransactionSplit ): Omit<WidgetDetails, 'widgetId'> {
+  private statisticWidgetDataListBuilder(mode: 'DEBITED' | 'CREDITED' | 'TOTALBYMODE', currentExpenseList: MonthlyTransactionSplit ): Omit<WidgetDetails, 'widgetId'> {
 
     switch (mode){
       case 'CREDITED' :
@@ -83,6 +83,21 @@ export class statWidgetDataFilterService {
           chartType: 'pie',
           groupByKey: 'paymentMode',
           valueByKey: 'amount'
+        }
+      }
+
+      case 'TOTALBYMODE' :
+         return {
+        title: 'Total',
+        description: 'Earned vs Spent',
+        chartConfig: {
+          rawData: currentExpenseList.debitedList.concat(currentExpenseList.creditedList),
+          chartType: 'doughnut',
+          groupByKey: 'mode',
+          valueByKey: 'amount',
+          customSeriesProps: {
+              color: ['--error-color', '--success-color']
+          }
         }
       }
     }

@@ -57,10 +57,13 @@ export class PieDataFormatterService {
     const completedSeries = {
        ...baseConfig,
       label: {...baseConfig.label, formatter: labelFormatter},
-      ...customSeriesProps,
       datasetIndex: 1,
       encode: encode
     };
+
+   if(customSeriesProps['color'] && Array.isArray(customSeriesProps['color'])){
+     baseConfig.color =  customSeriesProps['color'].map(d=>this.resolveColor(d) ) ;
+  }
 
     return {
       ...baseConfig,
@@ -70,8 +73,21 @@ export class PieDataFormatterService {
   }
 
   private getEncodeConfig(chartType: string, groupByKey: string | undefined, resultValueKey: string | undefined) {
-    return chartType === 'pie' 
-      ? { itemName: groupByKey, value: resultValueKey }
-      : { x: groupByKey, y: resultValueKey };
+    return  { itemName: groupByKey, value: resultValueKey }
+    // chartType === 'pie' 
+    //   ?
+      //  { itemName: groupByKey, value: resultValueKey }
+      // : { x: groupByKey, y: resultValueKey };
   }
+
+   private resolveColor(variableName: string): string {
+    const value = getComputedStyle(document.documentElement)
+      .getPropertyValue(variableName)
+      .trim();
+    if (!value) {
+      return variableName;
+    }
+    return value;
+  };
+
 }

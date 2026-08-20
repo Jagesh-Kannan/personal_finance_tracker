@@ -13,9 +13,11 @@ export class ChartOptionGeneratorService {
     constructor(private pieDataFormatterService: PieDataFormatterService, private barDataFormatterService: BarDataFormatterService ){}
 
     generateOptions(params: ChartConfigParams): EChartsOption {
-
+ console.log(params);
+ 
         switch (params.chartType) {
             case 'pie':
+            case 'doughnut':
                 return this.pieDataFormatterService.generateOptions(params);
             case 'bar':
             case 'line':

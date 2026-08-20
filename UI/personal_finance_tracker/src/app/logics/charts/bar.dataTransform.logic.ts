@@ -46,11 +46,13 @@ export class BarDataFormatterService {
       if (date.toString() !== 'Invalid Date') {
         return `${new Date(formatterParams.value).toISOString().substring(0, 10)}`;
       }
+      else if (typeof formatterParams.value === 'string'){
+        return formatterParams.value;
+      }
       return '';
     };
 
     const tooltipFormatter = (params: any) => {
-      debugger;
       let result = `${params[0].axisValueLabel}<br/>`;
       params.forEach((item: any) => {
         result += `${item.marker}  ${currencySymbol}${item.value[item.encode.y[0]]}<br/>`;
@@ -62,7 +64,11 @@ export class BarDataFormatterService {
       if (formatterParams) {
         let date = new Date(formatterParams);
         if (date.toString() !== 'Invalid Date') return formatterParams;
+        else if (typeof formatterParams === 'string'){
+            return formatterParams.length > 10 ? formatterParams.slice(0, 10) + '...' : formatterParams;
+        }
       }
+
       return formatterParams;
     };
 
@@ -70,7 +76,7 @@ export class BarDataFormatterService {
       if (formatterParams) {
         if (typeof formatterParams === 'number') {
           const kilos = formatterParams / 1000;
-          return `${currencySymbol}${kilos < 0 ? formatterParams : kilos + 'k'}`;
+          return `${currencySymbol}${kilos < 1 ? formatterParams : kilos + 'k'}`;
         }
       }
 

@@ -212,7 +212,7 @@ type GridWidgetDetails = WidgetDetails & {
   }
 };
 
-type ChartTypes = 'pie' | 'bar' | 'line';
+type ChartTypes = 'pie' | 'bar' | 'line' | 'doughnut';
 
 type VizWidgetBaseConfig = {
   title:string, 
