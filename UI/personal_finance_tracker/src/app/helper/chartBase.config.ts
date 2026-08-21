@@ -140,8 +140,8 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      appendToBody: true,
-      extraCssText: 'z-index: 9999;',
+    //   appendToBody: true,
+    //   extraCssText: 'z-index: 9999;',
     },
     grid: { left: '9%', right: '4%', top: '10%', bottom: '10%' },
     xAxis: {
