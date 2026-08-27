@@ -44,7 +44,7 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
     {
         title: 'Transaction by sender/receiver', 
         chartType: 'bar', 
-        description: 'Description-4',
+        description: '',
         groupByKey: 'senderOrReceiver',
         valueByKey: 'amount',
         options:{
@@ -55,6 +55,38 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
             },
         }
     },
+    {
+        title: 'Overal Spend', 
+        chartType: 'line', 
+        description: '',
+        groupByKey: 'transactionDate',
+        valueByKey: 'amount',
+        options:{
+           showForAllMonths: true,
+           splitBy:{
+                param: 'mode',
+                value: ['DEBITED','CREDITED'],
+                color: ['--error-color', '--success-color']
+            },
+        }
+    },
+    // {
+    //     title: 'Overal Income', 
+    //     chartType: 'line', 
+    //     description: '',
+    //     groupByKey: 'transactionDate',
+    //     valueByKey: 'amount',
+    //     options:{
+    //        showForAllMonths: true,
+    //        splitBy:{
+    //             param: 'mode',
+    //             value: ['CREDITED'],
+    //             color: ['--error-color']
+    //         },
+    //     }
+    // },
+
+
     // {
     //     title: 'Test-5', 
     //     chartType: 'bar', 

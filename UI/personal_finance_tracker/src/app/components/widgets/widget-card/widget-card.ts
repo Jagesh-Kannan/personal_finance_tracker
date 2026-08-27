@@ -21,7 +21,7 @@ export class WidgetCard extends BaseWidget {
     this.width.set(window.innerWidth);
   }
 
-  chartHeight = signal<number>(120);
+  chartHeight = signal<number>(90);
 
 
 
