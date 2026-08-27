@@ -1,8 +1,8 @@
 export const widgetCardsConfig:VizWidgetBaseConfig[] = [
     {
-        title: 'Test-1', 
+        title: 'Transactions', 
         chartType: 'bar', 
-        description: 'Description-1',
+        description: 'Amount C/D over Time',
         groupByKey: 'transactionDate',
         valueByKey: 'amount',
         options:{
@@ -14,9 +14,9 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         }
     },
     {
-        title: 'Test-2', 
+        title: 'Transactions', 
         chartType: 'line', 
-        description: 'Description-2',
+        description: 'Amount C/D over Time',
         groupByKey: 'transactionDate',
         valueByKey: 'amount',
         options:{
@@ -28,9 +28,9 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         }
     },
     {
-        title: 'Test-3', 
-        chartType: 'bar', 
-        description: 'Description-3',
+        title: 'Spend By Category', 
+        chartType: 'line', 
+        description: '',
          groupByKey: 'expenseCategory',
         valueByKey: 'amount',
         options: {
@@ -42,7 +42,7 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         }
     },
     {
-        title: 'Test-4', 
+        title: 'Transaction by sender/receiver', 
         chartType: 'bar', 
         description: 'Description-4',
         groupByKey: 'senderOrReceiver',
@@ -55,10 +55,24 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
             },
         }
     },
-    {
-        title: 'Test-5', 
-        chartType: 'bar', 
-        description: 'Description-5',
-        options:{}
-    },
+    // {
+    //     title: 'Test-5', 
+    //     chartType: 'bar', 
+    //     description: 'Description-5',
+    //     options:{}
+    // },
+    //  {
+    //     title: 'StackedBar', 
+    //     chartType: 'bar', 
+    //     description: 'Description-5',
+    //     groupByKey: 'transactionDate',
+    //     valueByKey: 'amount',
+    //     options:{
+    //         stackBy:{
+    //             param: 'expenseCategory',
+    //             // value: ['DEBITED','CREDITED'],
+    //             // color: ['--error-color', '--success-color']
+    //         },
+    //     }
+    // },
 ]

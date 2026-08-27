@@ -23,7 +23,7 @@ export class BarDataFormatterService {
     const autoDimensions =
       rawData && rawData.length > 0
         ? Object.keys(rawData[0])
-        : [groupByKey, valueByKey, customSeriesProps?.['splitBy']?.param].filter(Boolean);
+        : [groupByKey, valueByKey, customSeriesProps?.['splitBy']?.param, customSeriesProps?.['stackBy']?.param].filter(Boolean);
 
     const baseConfig = JSON.parse(
       JSON.stringify(CHART_BASE_CONFIGS[chartType.toUpperCase()] || {}),
@@ -52,11 +52,33 @@ export class BarDataFormatterService {
       return '';
     };
 
-    const tooltipFormatter = (params: any) => {
-      let result = `${params[0].axisValueLabel}<br/>`;
+     const tooltipFormatter = (params: any) => {
+
+      if (!params || params.length === 0) return '';
+      let result = `<div style="font-weight:700; margin-bottom:5px;">Date: ${params[0].axisValueLabel}</div>`;
+      let totalSum = 0;
+
       params.forEach((item: any) => {
-        result += `${item.marker}  ${currencySymbol}${item.value[item.encode.y[0]]}<br/>`;
+        if (!item.value) return;
+        
+        // Target index calculations safely against multi-dimensional array transformation outputs
+        let val = 0;
+        if (Array.isArray(item.value)) {
+          const valIndex = item.dimensionNames ? item.dimensionNames.indexOf(`${valueByKey}`) : -1;
+          val = parseFloat(item.value[valIndex !== -1 ? valIndex : 2]) || 0;
+        } else {
+          val = parseFloat(item.value[`${valueByKey}`]) || 0;
+        }
+        
+        if (val > 0) {
+          totalSum += val;
+          result += `${item.marker} ${item.seriesName}: <b>${currencySymbol}${val.toLocaleString('en-IN')}</b><br/>`;
+        }
       });
+
+      if ( params.length > 1) {
+        result += `<div style="border-top:1px solid #e2e8f0; margin-top:5px; padding-top:5px; font-weight:700;">Total: ${currencySymbol}${totalSum.toLocaleString('en-IN')}</div>`;
+      }
       return result;
     };
 
@@ -65,7 +87,7 @@ export class BarDataFormatterService {
         let date = new Date(formatterParams);
         if (date.toString() !== 'Invalid Date') return formatterParams;
         else if (typeof formatterParams === 'string'){
-            return formatterParams.length > 10 ? formatterParams.slice(0, 10) + '...' : formatterParams;
+            return formatterParams.length > 8 ? formatterParams.slice(0, 8) + '...' : formatterParams;
         }
       }
 
@@ -106,7 +128,7 @@ export class BarDataFormatterService {
         baseConfig,
         customSeriesProps,
         groupByKey,
-        `total_${valueByKey || 'Uncategorized'}`,
+        `${valueByKey || 'Uncategorized'}`,
         transformConfig,
       ),
     } as EChartsOption;
@@ -145,7 +167,7 @@ export class BarDataFormatterService {
                   {
                     from: valueByKey || 1,
                     method: 'sum',
-                    name: `total_${valueByKey || 'Uncategorized'}`,
+                    name: `${valueByKey || 'Uncategorized'}`,
                   },
                 ],
               },
@@ -157,6 +179,73 @@ export class BarDataFormatterService {
         transformConfig.push(t);
       });
     }
+    else if(customTransformProps?.stackBy && customTransformProps?.stackBy.param){
+
+    //   // return [];
+
+    // //       const stackParam = customTransformProps.stackBy.param;
+
+    // //        const groupByArray: (string | number)[] = [];
+
+    // //         groupByArray.push(groupByKey !== undefined ? groupByKey : 0);
+    // //          groupByArray.push(stackParam);
+
+    // //             const resultDimensions: any[] = [];
+
+    // //             resultDimensions.push({ 
+    // //             from: groupByKey !== undefined ? groupByKey : 0, 
+    // //             name: groupByKey !== undefined ? groupByKey : 0 
+    // //             });
+
+
+    // //             resultDimensions.push({ 
+    // //             from: stackParam, 
+    // //             name: stackParam 
+    // //             });
+
+    // //                 resultDimensions.push({ 
+    // //   from: valueByKey !== undefined ? valueByKey : 1, 
+    // //   method: 'sum', 
+    // //   name: `total_${valueByKey || 'Uncategorized'}` 
+    // // });
+
+
+
+    // //  const t = {
+    // //   transform: [
+    // //     {
+    // //       type: 'ecSimpleTransform:aggregate',
+    // //       config: {
+    // //         fromDatasetIndex: 0,
+    // //         // Passes the composite array template here cleanly
+    // //         groupBy: groupByKey, 
+    // //         resultDimensions: resultDimensions
+    // //       },
+    // //       print: true
+    // //     }
+    // //   ]
+    // // };
+
+        const t = {
+        transform: [
+          {
+            type: 'ecSimpleTransform:aggregate',
+            config: {
+              fromDatasetIndex: 0,
+              groupBy: 0,
+              resultDimensions: [
+                { from: customTransformProps?.stackBy.param, name: customTransformProps?.stackBy.param},
+                { from: groupByKey, name:  groupByKey },
+                { from:  valueByKey, method: 'sum', name: `${valueByKey || 'Uncategorized'}`}
+              ]
+            },
+            print: true
+          }
+        ]
+      }
+
+      transformConfig.push(t);
+    }
     else if(groupByKey && valueByKey){
        const t = {
         transform: [
@@ -167,9 +256,9 @@ export class BarDataFormatterService {
               groupBy: groupByKey || 0,
               resultDimensions: [
                 { from: groupByKey || 0, name: groupByKey || 0 },
-                { from: valueByKey || 1, method: 'sum', name: `total_${valueByKey || 'Uncategorized'}`}
+                { from: valueByKey || 1, method: 'sum', name: `${valueByKey || 'Uncategorized'}`}
               ]
-            }
+            },
           }
         ]
       }
@@ -187,6 +276,7 @@ export class BarDataFormatterService {
     resultValueKey: string | undefined,
     tConfig: DataTransformOption[],
   ): SeriesOption | SeriesOption[] {
+    if(tConfig.length > 0){
     return tConfig.map((config:any, index) => {
       return {
         name: config?.transform[0]?.config?.value || '',
@@ -196,6 +286,27 @@ export class BarDataFormatterService {
         encode: this.getEncodeConfig(groupByKey, resultValueKey),
       };
     });
+  }
+  else if(customSeriesProps?.stackBy?.param){
+     return tConfig.map((config:any, index) => {
+       return config?.resultDimension.map((d:any, index:any)=>{
+            return {
+              name: config?.transform[0]?.config?.value || '',
+              type: baseConfig.type,
+              // itemStyle:{color: this.resolveColor(customSeriesProps.splitBy?.color[index])},
+              datasetIndex:  1,
+              encode: this.getEncodeConfig(groupByKey, resultValueKey),
+            };
+       })
+    });
+  }
+  else{
+    return {
+        type: baseConfig.type,
+        datasetIndex: 0,
+        encode: this.getEncodeConfig(groupByKey, resultValueKey),
+      };
+  }
   }
 
 

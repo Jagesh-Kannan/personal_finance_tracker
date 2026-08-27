@@ -136,12 +136,12 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
   },
   BAR: {
     type: 'bar',
-    //  center: ['50%', '50%'],
+    //  center: ['50%', '50%'],   
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-    //   appendToBody: true,
-    //   extraCssText: 'z-index: 9999;',
+      appendToBody: true,
+      extraCssText: 'z-index: 9999;',
     },
     grid: { left: '9%', right: '4%', top: '10%', bottom: '10%' },
     xAxis: {
@@ -195,7 +195,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
          dataZoom:[
             {
               type: 'slider', 
-              show: false
+              // show: false
             }
          ],
           series: [
@@ -224,7 +224,11 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
       orient: 'horizontal',
       textStyle: { fontWeight: 500, color: '#8a8c8f' },
     },
-    xAxis: { type: 'category', boundaryGap: false },
+    xAxis: { type: 'category', 
+       axisLabel: {
+        rotate: 45,
+        fontWeight: 500,
+      },},
     yAxis: { type: 'value' },
      media: [
       {
