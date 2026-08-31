@@ -20,11 +20,15 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         groupByKey: 'transactionDate',
         valueByKey: 'amount',
         options:{
-                    splitBy:{
+            splitBy:{
                 param: 'mode',
                 value: ['DEBITED', 'CREDITED'],
                 color: ['--error-color', '--success-color']
             },
+             sortBy:{
+                param: 'transactionDate',
+                order: 'asc'
+            }
         }
     },
     {
@@ -34,11 +38,15 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
          groupByKey: 'expenseCategory',
         valueByKey: 'amount',
         options: {
-                    splitBy:{
+            splitBy:{
                 param: 'mode',
                 value: ['DEBITED', 'CREDITED'],
                 color: ['--error-color', '--success-color']
             },
+            // sortBy:{
+            //     param: 'transactionDate',
+            //     order: 'asc'
+            // }
         }
     },
     {
@@ -68,6 +76,10 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
                 value: ['DEBITED','CREDITED'],
                 color: ['--error-color', '--success-color']
             },
+             sortBy:{
+                param: 'transactionDate',
+                order: 'asc'
+            }
         }
     },
     // {

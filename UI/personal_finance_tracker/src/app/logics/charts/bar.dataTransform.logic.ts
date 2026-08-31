@@ -23,7 +23,7 @@ export class BarDataFormatterService {
     const autoDimensions =
       rawData && rawData.length > 0
         ? Object.keys(rawData[0])
-        : [groupByKey, valueByKey, customSeriesProps?.['splitBy']?.param, customSeriesProps?.['stackBy']?.param].filter(Boolean);
+        : [groupByKey, valueByKey, customSeriesProps?.['splitBy']?.param, customSeriesProps?.['stackBy']?.param, customSeriesProps?.['sortBy']?.param].filter(Boolean);
 
     const baseConfig = JSON.parse(
       JSON.stringify(CHART_BASE_CONFIGS[chartType.toUpperCase()] || {}),
@@ -174,116 +174,139 @@ export class BarDataFormatterService {
               },
               //   print: true,
             },
-            {
-              type: 'sort',
-              config: { dimension: 'transactionDate', order: 'desc' }
-            },
-            {
-              type: 'ecSimpleTransform:aggregate', // Uses the Manufac library hook
-              config: {
-                groupBy: groupByKey || 0,
-                resultDimensions: [
-                  { from: groupByKey || 0, name: groupByKey || 0 },
-                  {
-                    from: valueByKey || 1,
-                    method: 'sum',
-                    name: `${valueByKey || 'Uncategorized'}`,
-                  },
-                ],
-              },
-              //   print: true,
-            },
+           
+            // {
+            //   type: 'ecSimpleTransform:aggregate', // Uses the Manufac library hook
+            //   config: {
+            //     groupBy: groupByKey || 0,
+            //     resultDimensions: [
+            //       { from: groupByKey || 0, name: groupByKey || 0 },
+            //       {
+            //         from: valueByKey || 1,
+            //         method: 'sum',
+            //         name: `${valueByKey || 'Uncategorized'}`,
+            //       },
+            //     ],
+            //   },
+            //   //   print: true,
+            // },
           ],
         };
 
         transformConfig.push(t);
       });
     }
-    else if(customTransformProps?.stackBy && customTransformProps?.stackBy.param){
+    if (customTransformProps?.sortBy && customTransformProps?.sortBy.order){
 
-    //   // return [];
+     
+      const t = { type: 'sort',
+        config: { dimension: customTransformProps.sortBy.param , order:  customTransformProps.sortBy.order }
+      };
+    
 
-    // //       const stackParam = customTransformProps.stackBy.param;
-
-    // //        const groupByArray: (string | number)[] = [];
-
-    // //         groupByArray.push(groupByKey !== undefined ? groupByKey : 0);
-    // //          groupByArray.push(stackParam);
-
-    // //             const resultDimensions: any[] = [];
-
-    // //             resultDimensions.push({ 
-    // //             from: groupByKey !== undefined ? groupByKey : 0, 
-    // //             name: groupByKey !== undefined ? groupByKey : 0 
-    // //             });
-
-
-    // //             resultDimensions.push({ 
-    // //             from: stackParam, 
-    // //             name: stackParam 
-    // //             });
-
-    // //                 resultDimensions.push({ 
-    // //   from: valueByKey !== undefined ? valueByKey : 1, 
-    // //   method: 'sum', 
-    // //   name: `total_${valueByKey || 'Uncategorized'}` 
-    // // });
-
-
-
-    // //  const t = {
-    // //   transform: [
-    // //     {
-    // //       type: 'ecSimpleTransform:aggregate',
-    // //       config: {
-    // //         fromDatasetIndex: 0,
-    // //         // Passes the composite array template here cleanly
-    // //         groupBy: groupByKey, 
-    // //         resultDimensions: resultDimensions
-    // //       },
-    // //       print: true
-    // //     }
-    // //   ]
-    // // };
-
-        const t = {
-        transform: [
-          {
-            type: 'ecSimpleTransform:aggregate',
-            config: {
-              fromDatasetIndex: 0,
-              groupBy: 0,
-              resultDimensions: [
-                { from: customTransformProps?.stackBy.param, name: customTransformProps?.stackBy.param},
-                { from: groupByKey, name:  groupByKey },
-                { from:  valueByKey, method: 'sum', name: `${valueByKey || 'Uncategorized'}`}
-              ]
-            },
-            print: true
-          }
-        ]
+      if(transformConfig.length > 0){
+        transformConfig.forEach(d=> d.transform.unshift(t));
       }
-
-      transformConfig.push(t);
-    }
-    else if(groupByKey && valueByKey){
-       const t = {
-        transform: [
+      else{
+        transformConfig.push(
           {
+            fromDatasetIndex: 0,
+            transform: [t]
+          }
+        )
+      }
+    }
+    // if(customTransformProps?.stackBy && customTransformProps?.stackBy.param){
+
+    // //   // return [];
+
+    // // //       const stackParam = customTransformProps.stackBy.param;
+
+    // // //        const groupByArray: (string | number)[] = [];
+
+    // // //         groupByArray.push(groupByKey !== undefined ? groupByKey : 0);
+    // // //          groupByArray.push(stackParam);
+
+    // // //             const resultDimensions: any[] = [];
+
+    // // //             resultDimensions.push({ 
+    // // //             from: groupByKey !== undefined ? groupByKey : 0, 
+    // // //             name: groupByKey !== undefined ? groupByKey : 0 
+    // // //             });
+
+
+    // // //             resultDimensions.push({ 
+    // // //             from: stackParam, 
+    // // //             name: stackParam 
+    // // //             });
+
+    // // //                 resultDimensions.push({ 
+    // // //   from: valueByKey !== undefined ? valueByKey : 1, 
+    // // //   method: 'sum', 
+    // // //   name: `total_${valueByKey || 'Uncategorized'}` 
+    // // // });
+
+
+
+    // // //  const t = {
+    // // //   transform: [
+    // // //     {
+    // // //       type: 'ecSimpleTransform:aggregate',
+    // // //       config: {
+    // // //         fromDatasetIndex: 0,
+    // // //         // Passes the composite array template here cleanly
+    // // //         groupBy: groupByKey, 
+    // // //         resultDimensions: resultDimensions
+    // // //       },
+    // // //       print: true
+    // // //     }
+    // // //   ]
+    // // // };
+
+    //     const t = {
+    //     transform: [
+    //       {
+    //         type: 'ecSimpleTransform:aggregate',
+    //         config: {
+    //           fromDatasetIndex: 0,
+    //           groupBy: 0,
+    //           resultDimensions: [
+    //             { from: customTransformProps?.stackBy.param, name: customTransformProps?.stackBy.param},
+    //             { from: groupByKey, name:  groupByKey },
+    //             { from:  valueByKey, method: 'sum', name: `${valueByKey || 'Uncategorized'}`}
+    //           ]
+    //         },
+    //         print: true
+    //       }
+    //     ]
+    //   }
+
+    //   transformConfig.push(t);
+    // }
+     if(groupByKey && valueByKey){
+       const t = {
             type: 'ecSimpleTransform:aggregate',
             config: {
-              fromDatasetIndex: 0,
+              // fromDatasetIndex: 0,
               groupBy: groupByKey || 0,
               resultDimensions: [
                 { from: groupByKey || 0, name: groupByKey || 0 },
                 { from: valueByKey || 1, method: 'sum', name: `${valueByKey || 'Uncategorized'}`}
               ]
-            },
-          }
-        ]
-      }
+            }
+         }
 
-      transformConfig.push(t);
+      if(transformConfig.length > 0){
+        transformConfig.forEach(d=> d.transform.push(t));
+      }
+      else{
+        transformConfig.push(
+          {
+            fromDatasetIndex: 0,
+            transform: [t]
+          }
+        )
+      }
     }
 
     return transformConfig;
@@ -299,7 +322,7 @@ export class BarDataFormatterService {
     if(tConfig.length > 0){
     return tConfig.map((config:any, index) => {
       return {
-        name: config?.transform[0]?.config?.value || '',
+        name: config?.transform.filter((d:any)=>d.type==='filter').map((d:any)=>d.config.value)[0] || '',
         smooth: true,
         type: baseConfig.type,
         itemStyle:{color: this.resolveColor(customSeriesProps.splitBy?.color[index])},
