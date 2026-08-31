@@ -150,7 +150,9 @@ export class Overview {
       const currentExpensesList = expenses ?? this.expensesList();
       const requiredRawData = month ? this.vizInsightDataService.getMonthly_insightData(month, currentExpensesList) : currentExpensesList;
       return this.widgetCardDataConfig().map(widget => this.vizInsightDataService.generate_insightWidget_rawData(widget.widgetId,
-         widget.chartConfig.customSeriesProps && widget.chartConfig.customSeriesProps['showForAllMonths'] ? currentExpensesList : requiredRawData));
+         widget.chartConfig.customSeriesProps && widget.chartConfig.customSeriesProps['showForAllMonths'] ? 
+         currentExpensesList.map(d=>{return {...d, month: new Date(d.transactionDate).getMonth()+'-'+new Date(d.transactionDate).getFullYear()}}) 
+         : requiredRawData));
     });
 
          

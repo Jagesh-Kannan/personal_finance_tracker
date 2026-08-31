@@ -59,7 +59,7 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         title: 'Overal Spend', 
         chartType: 'line', 
         description: '',
-        groupByKey: 'transactionDate',
+        groupByKey: 'month',
         valueByKey: 'amount',
         options:{
            showForAllMonths: true,

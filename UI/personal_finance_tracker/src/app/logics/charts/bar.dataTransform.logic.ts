@@ -55,7 +55,10 @@ export class BarDataFormatterService {
      const tooltipFormatter = (params: any) => {
 
       if (!params || params.length === 0) return '';
-      let result = `<div style="font-weight:700; margin-bottom:5px;">Date: ${params[0].axisValueLabel}</div>`;
+  
+    let result='';
+     if ( params[0].axisType === "xAxis.time")  result= `<div style="font-weight:700; margin-bottom:5px;">Date: ${params[0].axisValueLabel}</div>`;
+     else result =  `<div style="font-weight:700; margin-bottom:5px;">${params[0].axisValueLabel}</div>`;
       let totalSum = 0;
 
       params.forEach((item: any) => {
@@ -71,8 +74,21 @@ export class BarDataFormatterService {
         }
         
         if (val > 0) {
-          totalSum += val;
-          result += `${item.marker} ${item.seriesName}: <b>${currencySymbol}${val.toLocaleString('en-IN')}</b><br/>`;
+         
+          let labelName='';
+          if(item.seriesName?.toLowerCase() === 'debited'){
+            labelName='-';
+            totalSum-=val
+          }
+          else if(item.seriesName?.toLowerCase() === 'credited'){
+            labelName='+';
+            totalSum+=val
+          }
+          else {
+            labelName=item.seriesName+':';
+             totalSum += val;
+          }
+          result += `<b style="color:${item.color}">${item.marker} ${labelName} <b>${currencySymbol}${val.toLocaleString('en-IN')}</b></b><br/>`;
         }
       });
 
@@ -157,6 +173,10 @@ export class BarDataFormatterService {
                 value: val,
               },
               //   print: true,
+            },
+            {
+              type: 'sort',
+              config: { dimension: 'transactionDate', order: 'desc' }
             },
             {
               type: 'ecSimpleTransform:aggregate', // Uses the Manufac library hook
@@ -280,6 +300,7 @@ export class BarDataFormatterService {
     return tConfig.map((config:any, index) => {
       return {
         name: config?.transform[0]?.config?.value || '',
+        smooth: true,
         type: baseConfig.type,
         itemStyle:{color: this.resolveColor(customSeriesProps.splitBy?.color[index])},
         datasetIndex: index + 1,
@@ -292,6 +313,7 @@ export class BarDataFormatterService {
        return config?.resultDimension.map((d:any, index:any)=>{
             return {
               name: config?.transform[0]?.config?.value || '',
+               smooth: true,
               type: baseConfig.type,
               // itemStyle:{color: this.resolveColor(customSeriesProps.splitBy?.color[index])},
               datasetIndex:  1,
@@ -303,6 +325,7 @@ export class BarDataFormatterService {
   else{
     return {
         type: baseConfig.type,
+         smooth: true,
         datasetIndex: 0,
         encode: this.getEncodeConfig(groupByKey, resultValueKey),
       };

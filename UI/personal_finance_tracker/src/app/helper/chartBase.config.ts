@@ -10,11 +10,11 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     tooltip: {
         show:true,
       trigger: 'item',
-      appendToBody: true,
-      extraCssText: "z-index: 9999;", 
-      triggerOn: 'mousemove|click',                                  
-      alwaysShowContent: false,                            
-      confine: true               
+      extraCssText: "z-index: 9999;",                                  
+      alwaysShowContent: false,
+      hideDelay: 100,
+      confine: true,
+      appendToBody: true,              
     },
     legend: {
       type: 'scroll',
@@ -31,8 +31,8 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     },
     labelLine: {
       show: true,
-      // length: 3,
-      // length2: 3,
+      length: 10,
+      length2: 30,
       smooth: true,
       lineStyle: { width: 1.5, color: '#cbd5e1' },
     },
@@ -46,7 +46,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
         query: { maxWidth: 640 },
         option: {
           legend: {
-            bottom: '-5',
+            bottom: '-9',
             itemWidth: 10,
             itemHeight: 10,
             textStyle: {
@@ -56,9 +56,16 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
           itemStyle: {
             borderRadius: 5,
           },
+          tooltip: {
+            appendToBody: false,
+            textStyle:{
+              fontSize: 12
+            }
+          },
           series: [
             {
-              radius: '55%',
+              radius: '60%',
+               center: ['50%', '45%'],
               label: {
                 fontSize: 8,
               },
@@ -76,11 +83,11 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     padAngle: 4,
     tooltip: {
       trigger: 'item',
-      appendToBody: true,
-      extraCssText: "z-index: 9999;", 
-      triggerOn: 'click',                                  
-      alwaysShowContent: false,                            
-      confine: true               
+      extraCssText: "z-index: 9999;",                                    
+      alwaysShowContent: false,
+      hideDelay: 100,
+      confine: true,
+      appendToBody: true,          
     },
     legend: {
       type: 'scroll',
@@ -97,8 +104,8 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     },
     labelLine: {
       show: true,
-      // length: 3,
-      // length2: 3,
+      length: 10,
+      length2: 25,
       smooth: true,
       lineStyle: { width: 1.5, color: '#cbd5e1' },
     },
@@ -112,7 +119,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
         query: { maxWidth: 640 },
         option: {
           legend: {
-            bottom: '-5',
+            bottom: '-9',
             itemWidth: 10,
             itemHeight: 10,
             textStyle: {
@@ -121,6 +128,12 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
           },
           itemStyle: {
             borderRadius: 5,
+          },
+          tooltip: {
+            appendToBody: false,
+            textStyle:{
+              fontSize: 12
+            }
           },
           series: [
             {
@@ -140,6 +153,9 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
+      alwaysShowContent: false,
+      hideDelay: 100,
+      confine: true,
       appendToBody: true,
       extraCssText: 'z-index: 9999;',
     },
@@ -192,6 +208,12 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
               fontSize: 7,
             },
           },
+          tooltip: {
+            appendToBody: false,
+            textStyle:{
+              fontSize: 12
+            }
+          },
          dataZoom:[
             {
               type: 'slider', 
@@ -214,6 +236,9 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
       tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
+      alwaysShowContent: false,
+      hideDelay: 100,
+      confine: true,
       appendToBody: true,
       extraCssText: 'z-index: 9999;',
     },
@@ -230,6 +255,17 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
         fontWeight: 500,
       },},
     yAxis: { type: 'value' },
+      dataZoom: [
+        {
+            type: 'slider', 
+            yAxisIndex: 0,  
+            start: 0,      
+        },
+        {
+            type: 'inside',
+            yAxisIndex: 0,
+        }
+    ],
      media: [
       {
         query: { maxWidth: 640 },
@@ -252,6 +288,12 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
             textStyle: {
               fontSize: 7,
             },
+          },
+          tooltip: {
+            appendToBody: false,
+            textStyle:{
+              fontSize: 12
+            }
           },
 
           series: [

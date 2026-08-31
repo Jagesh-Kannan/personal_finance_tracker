@@ -25,26 +25,26 @@ export class WidgetCard extends BaseWidget {
 
 
 
-  public get widgetOptions(): WidgetOptions {
-    const chartDetails = this.widgetDetails;
-
+ public widgetOptions = computed<WidgetOptions>(() => {
+    const chartDetails = this.widgetDetails();
     if (!chartDetails || !chartDetails.chartConfig) {
       return { widgetId: '', option: null };
     }
 
     const chartOptions = this.chartOptionGeneratorService.generateOptions(chartDetails.chartConfig);
+    // console.log('ddddddddd', chartOptions);
 
-    // console.log('dddddddddddddd', chartOptions);
-    
+
     return {
       widgetId: chartDetails.widgetId,
       option: chartOptions
     };
-  }
+  });
 
-  @Input() public widgetDetails!: WidgetDetails;
-  @Input() public widgetCardLoader: boolean = false;
+   public widgetDetails = input.required<WidgetDetails>();
+  public widgetCardLoader = input<boolean>(false);
 
+  
   constructor(private chartOptionGeneratorService: ChartOptionGeneratorService) {
     super();
   }
