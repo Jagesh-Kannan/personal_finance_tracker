@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EChartsOption, SeriesOption } from 'echarts';
+import { cloneDeep } from 'lodash'
 import { CHART_BASE_CONFIGS } from '../../helper/chartBase.config';
 import { DataTransformOption } from '@manufac/echarts-simple-transform/dist/types';
 
@@ -14,8 +15,10 @@ export class BarDataFormatterService {
     const {
       chartType,
       rawData,
-      groupByKey = this.defaultGroupingKey,
-      valueByKey = this.defaultValueKey,
+      xAxis,
+      yAxis,
+      groupByKey ,
+      valueByKey ,
       currencySymbol = '₹',
       customSeriesProps = {},
     } = params;
@@ -23,11 +26,10 @@ export class BarDataFormatterService {
     const autoDimensions =
       rawData && rawData.length > 0
         ? Object.keys(rawData[0])
-        : [groupByKey, valueByKey, customSeriesProps?.['splitBy']?.param, customSeriesProps?.['stackBy']?.param, customSeriesProps?.['sortBy']?.param].filter(Boolean);
+        : [xAxis, yAxis, groupByKey, valueByKey, customSeriesProps?.['splitBy']?.param, customSeriesProps?.['stackBy']?.param, customSeriesProps?.['sortBy']?.param].filter(Boolean);
 
-    const baseConfig = JSON.parse(
-      JSON.stringify(CHART_BASE_CONFIGS[chartType.toUpperCase()] || {}),
-    );
+
+      const baseConfig:any = cloneDeep( CHART_BASE_CONFIGS[chartType.toUpperCase()] || {} );
 
     const transformConfig = this.generateTransfromConfig(groupByKey, valueByKey, customSeriesProps);
 
@@ -70,7 +72,7 @@ export class BarDataFormatterService {
           const valIndex = item.dimensionNames ? item.dimensionNames.indexOf(`${valueByKey}`) : -1;
           val = parseFloat(item.value[valIndex !== -1 ? valIndex : 2]) || 0;
         } else {
-          val = parseFloat(item.value[`${valueByKey}`]) || 0;
+          val = parseFloat( valueByKey ? item.value[`${valueByKey}`] : item.value[`${yAxis}`] ) || 0;
         }
         
         if (val > 0) {
@@ -88,7 +90,7 @@ export class BarDataFormatterService {
             labelName=item.seriesName+':';
              totalSum += val;
           }
-          result += `<b style="color:${item.color}">${item.marker} ${labelName} <b>${currencySymbol}${val.toLocaleString('en-IN')}</b></b><br/>`;
+          result += `<b style="color:${item.color}">${item.marker} ${customSeriesProps?.['infoKey'] ? item.value[`${customSeriesProps['infoKey']}`] : ''} ${labelName} <b>${currencySymbol}${val.toLocaleString('en-IN')}</b></b><br/>`;
         }
       });
 
@@ -121,7 +123,7 @@ export class BarDataFormatterService {
       return formatterParams;
     };
 
-    const xAxisType = !isNaN(Date.parse(rawData[0]?.[groupByKey])) ? 'time' : 'category';
+    const xAxisType = !isNaN(Date.parse(xAxis?rawData[0]?.[xAxis] : groupByKey ? rawData[0]?.[groupByKey] : '')) ? 'time' : 'category';
 
     return {
       ...baseConfig,
@@ -138,20 +140,22 @@ export class BarDataFormatterService {
         axisLabel: { ...baseConfig.yAxis?.axisLabel, formatter: yAxisLabelFormatter },
       },
       label: { ...baseConfig.label, formatter: labelFormatter },
-      tooltip: { ...baseConfig.tooltip, formatter: tooltipFormatter },
+      tooltip: { 
+        ...baseConfig.tooltip, 
+       formatter: tooltipFormatter },
       dataset,
       series: this.generateSeries(
         baseConfig,
         customSeriesProps,
-        groupByKey,
-        `${valueByKey || 'Uncategorized'}`,
+        groupByKey || xAxis,
+        valueByKey || yAxis,
         transformConfig,
       ),
     } as EChartsOption;
   }
 
-  private getEncodeConfig(groupByKey: string | undefined, resultValueKey: string | undefined) {
-    return { x: groupByKey, y: resultValueKey };
+  private getEncodeConfig(xAxis: string | undefined, yAxis: string | undefined) {
+    return { x: xAxis, y: yAxis };
   }
 
   private generateTransfromConfig(
@@ -283,7 +287,7 @@ export class BarDataFormatterService {
 
     //   transformConfig.push(t);
     // }
-     if(groupByKey && valueByKey){
+     if(groupByKey || valueByKey ){
        const t = {
             type: 'ecSimpleTransform:aggregate',
             config: {

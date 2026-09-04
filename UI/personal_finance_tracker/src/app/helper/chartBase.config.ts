@@ -209,16 +209,34 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
             },
           },
           tooltip: {
-            appendToBody: false,
+            appendToBody: true,
+             position: function (point:any, params:any, dom:any, rect:any, size:any) {
+              const offset = 50;
+              let x = point[0] + offset;
+              let y = point[1];
+              const tooltipWidth = size.contentSize[0];
+              const viewWidth = size.viewSize[0];
+              // If tooltip would overflow right edge, show it on the left
+              if (x + tooltipWidth > viewWidth) {
+                x = point[0] - tooltipWidth - offset;
+              }
+              return [x, y];
+            },
             textStyle:{
-              fontSize: 12
+              fontSize: 10
             }
           },
          dataZoom:[
             {
               type: 'slider', 
+              width: 25,
               // show: false
-            }
+            },
+            {
+              type: 'inside',
+              zoomOnMouseWheel: true,
+              moveOnMouseMove: false
+            },
          ],
           series: [
             {
@@ -290,12 +308,35 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
             },
           },
           tooltip: {
-            appendToBody: false,
+            appendToBody: true,
+             position: function (point:any, params:any, dom:any, rect:any, size:any) {
+              const offset = 50;
+              let x = point[0] + offset;
+              let y = point[1];
+              const tooltipWidth = size.contentSize[0];
+              const viewWidth = size.viewSize[0];
+              // If tooltip would overflow right edge, show it on the left
+              if (x + tooltipWidth > viewWidth) {
+                x = point[0] - tooltipWidth - offset;
+              }
+              return [x, y];
+            },
             textStyle:{
-              fontSize: 12
+              fontSize: 10
             }
           },
-
+          dataZoom:[
+            {
+              type: 'slider', 
+              width: 25,
+              // show: false
+            },
+            {
+              type: 'inside',
+              zoomOnMouseWheel: true,
+              moveOnMouseMove: false
+            },
+          ],
           series: [
             {
               label: {

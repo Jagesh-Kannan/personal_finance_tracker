@@ -43,6 +43,8 @@ export class VizInsightsService {
             chartConfig: {
                 rawData: [],
                 chartType: config.chartType,
+                xAxis: config.xAxis,
+                yAxis: config.yAxis,
                 groupByKey: config.groupByKey,
                 valueByKey: config.valueByKey,
                 customSeriesProps: config.options

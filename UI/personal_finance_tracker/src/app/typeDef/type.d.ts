@@ -197,6 +197,8 @@ type WidgetOptions = {
 type ChartConfigParams = {
   chartType: ChartTypes,
   rawData: any[];
+  xAxis?: string;
+  yAxis?: string;
   groupByKey?: string;
   valueByKey?: string;
   currencySymbol?: string;
@@ -217,6 +219,8 @@ type ChartTypes = 'pie' | 'bar' | 'line' | 'doughnut';
 type VizWidgetBaseConfig = {
   title:string, 
   chartType:ChartTypes, 
+  xAxis?:string,
+  yAxis?:string,
   description?:string, 
   groupByKey?:string, 
   valueByKey?:string,

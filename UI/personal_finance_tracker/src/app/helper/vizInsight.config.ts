@@ -3,9 +3,12 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         title: 'Transactions', 
         chartType: 'bar', 
         description: 'Amount C/D over Time',
-        groupByKey: 'transactionDate',
-        valueByKey: 'amount',
+        // groupByKey: 'transactionDate',
+        // valueByKey: 'amount',
+        xAxis: 'transactionDate',
+        yAxis: 'amount',
         options:{
+            infoKey: 'expenseCategory',
             splitBy:{
                 param: 'mode',
                 value: ['DEBITED', 'CREDITED'],
@@ -35,7 +38,7 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
         title: 'Spend By Category', 
         chartType: 'line', 
         description: '',
-         groupByKey: 'expenseCategory',
+        groupByKey: 'expenseCategory',
         valueByKey: 'amount',
         options: {
             splitBy:{
