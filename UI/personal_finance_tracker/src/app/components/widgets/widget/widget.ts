@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, SimpleChanges, ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { aggregate } from '@manufac/echarts-simple-transform';
 
@@ -18,6 +18,17 @@ export class Widget {
 
   private chartInstance: echarts.ECharts | null = null;
   private resizeObserver: ResizeObserver | null = null;
+
+  @HostListener('window:scroll')
+  @HostListener('window:touchmove')
+  hideTooltipOnScroll() {
+    if (this.chartInstance) {
+      // Programmatically trigger ECharts to hide the active tooltip
+      this.chartInstance.dispatchAction({
+        type: 'hideTip'
+      });
+    }
+  }
 
   ngOnInit(): void {
     this.initChart();

@@ -156,7 +156,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
       alwaysShowContent: false,
       hideDelay: 100,
       confine: true,
-      appendToBody: true,
+      // appendToBody: true,
       extraCssText: 'z-index: 9999;',
     },
     grid: { left: '9%', right: '4%', top: '10%', bottom: '10%' },
@@ -209,7 +209,8 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
             },
           },
           tooltip: {
-            appendToBody: true,
+            // appendToBody: true,
+            appendTo: 'gridstack-item',
              position: function (point:any, params:any, dom:any, rect:any, size:any) {
               const offset = 50;
               let x = point[0] + offset;
@@ -257,7 +258,7 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
       alwaysShowContent: false,
       hideDelay: 100,
       confine: true,
-      appendToBody: true,
+      // appendToBody: true,
       extraCssText: 'z-index: 9999;',
     },
      grid: { left: '9%', right: '4%', top: '10%', bottom: '10%' },
@@ -308,7 +309,8 @@ export const CHART_BASE_CONFIGS: Record<string, Partial<EChartsOption>> = {
             },
           },
           tooltip: {
-            appendToBody: true,
+            // appendToBody: true,
+             appendTo: 'gridstack-item',
              position: function (point:any, params:any, dom:any, rect:any, size:any) {
               const offset = 50;
               let x = point[0] + offset;

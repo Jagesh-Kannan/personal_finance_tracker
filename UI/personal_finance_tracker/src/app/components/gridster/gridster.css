@@ -57,3 +57,7 @@
   border-color:  color-mix(in srgb, var(--primary-orange) 55%, transparent) !important;
   border-radius: 8px !important;                          /* Matches card roundness */
 }
+
+:host ::ng-deep .grid-stack-item-content{
+  overflow: visible !important;
+}
