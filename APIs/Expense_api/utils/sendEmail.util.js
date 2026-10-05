@@ -15,7 +15,7 @@ export const sendEmail = async (to, subject, text, html = null) => {
         try {
 
             if(email_protocol === 'API'){
-                return this.sendEmail_API(to, subject, text, html);
+                return sendEmail_API(to, subject, text, html);
             }
 
             const decryptedEmailPass = decrypt(process.env.EMAIL_PASS);
@@ -74,8 +74,9 @@ export const sendEmail_API = async (to, subject, text, html = null) => {
                 email: to
                 }
             ],
-            subject: 'Hello from Node.js!',
-            htmlContent: '<html><body><h1>Success!</h1><p>Sent via Node.js without saving contacts.</p></body></html>'
+            subject: subject,
+             text: text,
+                ...(html && { html: html })  // Include HTML if provided
             });
     
             console.log("Preview URL: %s", result);
