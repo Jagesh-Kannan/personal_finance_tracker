@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Jagesh-Kannan/personal_finance_tracker#readme",
   "dependencies": {
+    "@getbrevo/brevo": "^6.0.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -28,6 +29,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.20.0",
     "nodemailer": "^8.0.4",
+    "resend": "^6.28.0",
     "xlsx": "^0.18.5"
   }
 }
