@@ -3,19 +3,15 @@ import { decrypt } from './crypto.util.js';
 import { BrevoClient } from '@getbrevo/brevo';
 
 
-const brevo = new BrevoClient({
-  apiKey: process.env.BREVO_API_KEY 
-});
-
-const email_protocol = process.env.EMAIL_VIA_SMTP === 'true' ? 'SMTP' : 'API';
 
 
 export const sendEmail = async (to, subject, text, html = null) => {
 
         try {
+            const email_protocol = process.env.EMAIL_VIA_SMTP === 'true' ? 'SMTP' : 'API';
 
             if(email_protocol === 'API'){
-                return sendEmail_API(to, subject, text, html);
+                return await sendEmail_API(to, subject, text, html);
             }
 
             const decryptedEmailPass = decrypt(process.env.EMAIL_PASS);
@@ -61,6 +57,10 @@ export const sendEmail_API = async (to, subject, text, html = null) => {
 
         try {
 
+            const brevo = new BrevoClient({
+                            apiKey: process.env.BREVO_API_KEY
+                            });
+
             const result = await brevo.transactionalEmails.sendTransacEmail({
             // The "sender" can be the individual mailbox you authenticated in Brevo
             sender: { 
@@ -75,8 +75,8 @@ export const sendEmail_API = async (to, subject, text, html = null) => {
                 }
             ],
             subject: subject,
-             text: text,
-                ...(html && { html: html })  // Include HTML if provided
+             textContent: text,
+                ...(html && { htmlContent: html })  // Include HTML if provided
             });
     
             console.log("Preview URL: %s", result);
