@@ -66,6 +66,11 @@ export class SlideUpForm {
    */
   @Input() buttonText: string = 'Update Transaction';
 
+    /**
+   * Button for clear filter action
+   */
+  @Input() showClearFilter: boolean = false;
+
   /**
    * Loading state for button
    */
@@ -75,6 +80,11 @@ export class SlideUpForm {
    * Emitted when form is submitted
    */
   @Output() onSubmit = new EventEmitter<any>();
+
+    /**
+   * Emitted when form is cleared
+   */
+  @Output() onClear = new EventEmitter<any>();
 
   /**
    * Emitted when form is closed
@@ -95,16 +105,18 @@ export class SlideUpForm {
   private storeRemovedExpense = signal<FilterableExpenseSchema[]>([]);
   private touchStartY: number = 0;
   private touchStartX: number = 0;
+  private tempInitialFormVaue = signal<any>(null);
 
   constructor(private expenseService:ExpenseService) {
     this.updateExpenseLoader = computed(() => this.expenseService.updateExpenseLoader());
   }
 
 
-
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes['formGroup'] && this.formGroup) {
+   
+      this.tempInitialFormVaue.set(this.formGroup.value);
+
       if (this.formSub) {
         this.formSub.unsubscribe();
       }
@@ -308,6 +320,17 @@ private filterExpenseByFormData(): void {
       this.handleClose();
     }, 300); // Match animation duration from CSS
   }
-}
 
+  public handleClearFilter(){
+    if(this.tempInitialFormVaue()){
+      this.expenseListActionReset();
+      this.formGroup.patchValue(this.tempInitialFormVaue(), { emitEvent: false } );
+      this.onClear.emit(true);
+    }
+  }
+
+  private expenseListActionReset(){
+    this.storeRemovedExpense.set([]);
+  }
+}
 

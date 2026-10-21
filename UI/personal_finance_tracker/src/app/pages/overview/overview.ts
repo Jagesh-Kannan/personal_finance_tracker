@@ -236,6 +236,9 @@ private updateOverviewMonthFilter(month: Months){
           to: lastDate.toISOString().substring(0, 10)
         }
       });
+
+      // create a new FormGroup wrapper so the Input reference changes
+      this.overviewFilterForm = new FormGroup(this.overviewFilterForm.controls);
       
 }
 
@@ -269,7 +272,13 @@ public get_insights(event:any ){
   this.openFilterForm.set(false);
 }
 
-
+ // trigger when ever the form clears
+public overviewFilterOnClear(event:any){
+    this.activeFilter.set({
+      month: this.monthControl.value as Months,
+      expenses: null
+    })
+}
 
 
 

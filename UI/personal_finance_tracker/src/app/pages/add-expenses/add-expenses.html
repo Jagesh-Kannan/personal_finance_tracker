@@ -209,6 +209,7 @@
   [description]="'Fill in the details to add your expense manually.'"
   [buttonText]="'Update Transaction'"
   (onSubmit)="initiate_update_expense()"
+  (onClear)="initiate_update_expense()"
   (onClose)="openExpenseForm.set(false)"
 ></app-slide-up-form>
 
@@ -223,5 +224,6 @@
   [description]="'Fill in the details to add your expense quickly.'"
   [buttonText]="'Add Expense'"
   (onSubmit)="addQuickExpenseSubmit()"
+  (onClear)="addQuickExpenseSubmit()"
   (onClose)="openQuickAddForm.set(false)"
 ></app-slide-up-form>

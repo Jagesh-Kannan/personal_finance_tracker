@@ -382,13 +382,15 @@
 .adaptive-footer {
   margin-top: 2rem;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .action-btn-self-entry {
   background: var(--btn-primary-bg);
   color: white;
-  width: 100%;
+  /* width: 100%; */
   padding: 14px;
   border-radius: 14px;
   font-weight: 700;
@@ -397,6 +399,47 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 15px;
+}
+
+/* Layout tweaks to keep clear-filter left and action button right */
+.adaptive-footer .clear-filter {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* On larger screens make buttons auto-width and keep spacing */
+@media (min-width: 768px) {
+  .adaptive-footer .action-btn-self-entry {
+    width: auto;
+    padding: 12px 40px;
+  }
+
+  .adaptive-footer {
+    justify-content: space-between;
+  }
+}
+
+/* On mobile keep clear-filter visible on left and primary action to right */
+@media (max-width: 767px) {
+  .adaptive-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .adaptive-footer .clear-filter {
+    flex: 0 0 auto;
+  }
+
+  .adaptive-footer .action-btn-self-entry {
+    /* flex: 0 0 auto; */
+    padding: 10px;
+    border-radius: 11px;
+  }
 }
 
 .action-btn-self-entry:hover:not(:disabled) {

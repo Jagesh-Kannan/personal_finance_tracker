@@ -138,6 +138,7 @@
   [description]="'Modify/View the details to update your expense manually.'"
   [buttonText]="'Update Transaction'"
   (onSubmit)="initiate_update_expense()"
+  (onClear)="initiate_update_expense()"
   (onClose)="openExpenseForm.set(false)"
 ></app-slide-up-form>
 
@@ -150,6 +151,8 @@
   [titleName]="'Expense'"
   [description]="'Filter your transactions based on the selected criteria.'"
   [buttonText]="'Apply'"
+  [showClearFilter]="true"
   (onSubmit)="filterExpenseList()"
+  (onClear)="filterExpenseList()"
   (onClose)="openFilterForm.set(false)"
 ></app-slide-up-form>

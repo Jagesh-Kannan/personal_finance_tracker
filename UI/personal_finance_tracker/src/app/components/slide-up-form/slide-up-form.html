@@ -667,6 +667,16 @@
 
       @if (!readOnlyForm()) {
         <div class="adaptive-footer">
+          
+          @if (showClearFilter) {
+            <button 
+              class="clear-filter"
+              (click)="handleClearFilter()"
+            >
+              Clear Filter
+            </button>
+          }
+
           <button
             class="action-btn-self-entry"
             (click)="handleSubmit()"
