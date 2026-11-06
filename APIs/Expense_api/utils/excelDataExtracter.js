@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 
 // Helper to handle the parsing logic
-export const extractExcelData = (fileBuffer) => {
+export const extractExcelData = (fileBuffer, bank) => {
     const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];

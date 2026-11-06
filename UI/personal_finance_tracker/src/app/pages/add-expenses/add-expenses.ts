@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { SlideUpForm } from '../../components/slide-up-form/slide-up-form';
 import { ExpenseListContainer } from '../../components/expense-list/expense-list-container/expense-list-container';
 import { ExpenseListCard } from '../../components/expense-list/expense-list-card/expense-list-card';
+import { BANK_LIST} from '../../typeDef/bank-list';
 
 @Component({
   selector: 'app-add-expenses',
@@ -44,6 +45,8 @@ export class AddExpenses {
   public quickAddForm!:FormGroup;
 
   public extractedData = signal<ExtractedExpenseData[]>([]);
+  public bankList = signal<BankOption[]>(BANK_LIST);
+  private selectedBank = signal<string | null>(null);
 
 
   constructor(private expenseService: ExpenseService, private _fb:FormBuilder,
@@ -98,6 +101,11 @@ export class AddExpenses {
       'text/csv'
     ];
 
+    if(this.selectedBank() === null){
+      alert('Please select a bank before uploading a file.');
+      return;
+    }
+
     if (allowedTypes.includes(file.type) || file.name.endsWith('.xls')) {
       this.selectedFile.set(file);
       this.uploadFile();
@@ -117,10 +125,12 @@ clearFile() {
 
   uploadFile() {
     const file = this.selectedFile();
-    if (!file) return;
+    const bank = this.selectedBank();
+    if (!file || !bank) return;
 
+    this.selectedBank.set(null); 
     // Logic for API call would go here
-    this.expenseService.uploadExpenseFile(file).subscribe({
+    this.expenseService.uploadExpenseFile(file, bank).subscribe({
       next: (event: HttpEvent<any>) => {
           if (event.type === HttpEventType.UploadProgress) {
             const progress = Math.round((100 * event.loaded) / (event.total || 1));
@@ -307,6 +317,9 @@ clearFile() {
     });
   }
 
+  public onBankSelected(event: Event) {  
+      this.selectedBank.set((event.target as HTMLSelectElement).value);
+  }
 
   async getExpenseList(){
      return await lastValueFrom(this.expenseService.getAllExpense());

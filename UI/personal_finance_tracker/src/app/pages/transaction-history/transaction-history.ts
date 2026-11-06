@@ -45,6 +45,7 @@ export class TransactionHistory implements OnDestroy {
   public storeRemovedExpense = signal<FilterableExpenseSchema[]>([]);
   public isDeletePopoverOpen = signal<boolean>(false);
   public enableSelectionMode = signal<boolean>(false);
+  public expenseFormInstants = signal<{type: 'manual-entry' | 'view-transaction', title: string}>({type: 'manual-entry', title: 'modify'});
 
   constructor(
     private expenseService: ExpenseService,
@@ -108,12 +109,16 @@ export class TransactionHistory implements OnDestroy {
     });
   }
 
-  openEditExpenseForm(expense: ExpenseSchema) {
+  openEditExpenseForm(expense: ExpenseSchema, mode: 'view' | 'edit') {
     this.expenseForm.patchValue({
       ...expense,
       transactionDate: new Date(expense.transactionDate).toISOString().substring(0, 16),
     });
     this.openExpenseForm.set(true);
+    this.expenseFormInstants.set({
+      type: mode === 'view' ? 'view-transaction' : 'manual-entry',
+      title: mode === 'view' ? 'View' : 'Modify'
+    });
   }
 
   public openExpenseFilter() {

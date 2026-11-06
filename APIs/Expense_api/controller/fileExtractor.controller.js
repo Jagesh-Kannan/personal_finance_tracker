@@ -1,5 +1,6 @@
 import { catchAsync } from '../utils/catchAsync.js';
 import { extractExcelData } from '../utils/excelDataExtracter.js';
+import { extract_ICICI_ExcelData } from '../utils/excelDataExtractor/icici_excelExtractor.js';
 import { extractPdfData } from '../utils/pdfDataExtractor.js';
 
 export const extract_file_data = catchAsync(async (req, res, next) => {
@@ -17,6 +18,7 @@ export const extract_file_data = catchAsync(async (req, res, next) => {
     ];
 
     const uploadedFile = req.files.statementFile;
+    const bank = req.body.bank; 
     const mimeType = uploadedFile.mimetype;
     let extractedData = [];
 
@@ -28,8 +30,11 @@ export const extract_file_data = catchAsync(async (req, res, next) => {
             
         } else if (excelAndCsvTypes.includes(mimeType)) {
             // Excel extraction
-            extractedData = extractExcelData(uploadedFile.data);
-            
+            if (bank === 'icici') {
+                extractedData = extract_ICICI_ExcelData(uploadedFile.data, bank);
+            } else {
+                extractedData = extractExcelData(uploadedFile.data, bank);
+            }
         } else {
             return res.status(400).json({ error: "Unsupported file type. Please upload a PDF or Excel file." });
         }

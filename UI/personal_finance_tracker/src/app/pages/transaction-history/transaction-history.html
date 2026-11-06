@@ -34,18 +34,18 @@
             <app-expense-list-card 
               [expense]="expense"
               [avatarText]="expense.senderOrReceiver"
-              (cardClick)="enableSelectionMode() ? addOrRemoveExpense(expense) : null"
+              (cardClick)="enableSelectionMode() ? addOrRemoveExpense(expense) : openEditExpenseForm(expense, 'view'); $event.stopPropagation();"
             >
   
               <svg avatar-fallback lucideCheck class="check-icon"></svg>
 
               <ng-container actions>
                 @if (enableSelectionMode()) {
-                  <button class="edit-btn" (click)="openEditExpenseForm(expense); $event.stopPropagation();">
+                  <button class="edit-btn" (click)="openEditExpenseForm(expense, 'view'); $event.stopPropagation();">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" lucideEye></svg>
                   </button>
                 } @else {
-                  <button class="edit-btn" (click)="openEditExpenseForm(expense); $event.stopPropagation();">
+                  <button class="edit-btn" (click)="openEditExpenseForm(expense, 'edit'); $event.stopPropagation();">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                     </svg>
@@ -131,9 +131,9 @@
 <!-- Slide-Up Form Component for Manual Entry -->
 <app-slide-up-form
   [isOpen]="openExpenseForm"
-  [formType]="enableSelectionMode() ? 'view-transaction' : 'manual-entry'"
+  [formType]="expenseFormInstants().type"
   [formGroup]="expenseForm"
-  [titleWord]="enableSelectionMode() ? 'view' : 'modify'"
+  [titleWord]="expenseFormInstants().title"
   [titleName]="'Expense'"
   [description]="'Modify/View the details to update your expense manually.'"
   [buttonText]="'Update Transaction'"

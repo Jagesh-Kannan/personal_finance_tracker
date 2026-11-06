@@ -119,11 +119,12 @@ export class ExpenseService {
     );
   }
 
-  public uploadExpenseFile(file: File) {
+  public uploadExpenseFile(file: File, bank: string) {
     this.fileExtractionSuccess.set(null);
 
     const formData = new FormData();
     formData.append('statementFile', file);
+    formData.append('bank', bank);
 
     return this.http
       .post(`${this.baseApiUrl}${this.importExpenseEndpoint}`, formData, {

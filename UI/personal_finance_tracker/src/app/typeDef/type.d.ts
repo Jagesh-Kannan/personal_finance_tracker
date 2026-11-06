@@ -176,6 +176,11 @@ type MonthlyExpenseLists = Record<string, MonthlyTransactionSplit>;
 
 type FormContentType = 'overview-filter' | 'manual-entry' | 'transaction-filter' | 'view-transaction' | 'quick-entry';
 
+type BankOption = {
+  name: string;
+  value: string;
+  icon: string;
+};
 
 
 // widget types
@@ -226,3 +231,4 @@ type VizWidgetBaseConfig = {
   valueByKey?:string,
   options: Object
 }
+

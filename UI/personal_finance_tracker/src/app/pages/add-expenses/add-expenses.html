@@ -17,7 +17,7 @@
           <div class="add-expense-sections">
             <section class="section-container darg-drop-section">
               <div class="drag-drop-wrapper">
-                <div class="file-upload-zone">
+                <div class="file-upload-zone">  
                   @if (!selectedFile()) {
                     <!-- STAGE 1: EMPTY STATE -->
                     <div
@@ -26,8 +26,28 @@
                       (dragover)="onDragOver($event)"
                       (dragleave)="onDragLeave()"
                       (drop)="onFileDropped($event)"
-                    >
-                      <div class="drop-zone-content">
+                    >    
+                      <div class="bank-selection">
+                             <div class="dropdown-wrapper">
+                        <label class="custom-label" for="bankSelect">Bank</label>
+                       <div class="select-container">
+                          <select id="bankSelect" class="custom-select"  name="bankSelect" (change)="onBankSelected($event)">
+                           <option selected disabled>--Choose your bank--</option>
+                           @for (bank of bankList(); track bank.value) {
+                             <option [value]="bank.value">
+                                <div class="bank-option">
+                                  <img class="bank-icon" [src]="bank.icon" alt="{{ bank.name }} Logo" />
+                                  <span class="bank-name">{{ bank.name }}</span>
+                                </div>
+                             </option>
+                           }
+                          </select>
+                          <div class="select-arrow"></div>
+                        </div>
+                        </div>
+                      </div>
+                      <div class="file-drop-zone">
+                         <div class="drop-zone-content">
                         <svg
                           class="upload-icon"
                           viewBox="0 0 24 24"
@@ -50,6 +70,7 @@
                         <button class="action-btn-primary" (click)="fileInput.click()">
                           Select File
                         </button>
+                      </div>
                       </div>
                     </div>
                   } @else {
