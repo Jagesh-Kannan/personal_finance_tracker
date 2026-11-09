@@ -33,7 +33,8 @@ export class WidgetGrid {
       return {
         // x: 0, 
         // y: 0, 
-        // w: 2, 
+        autoPosition: true,
+        w: 3,
         type: 'widget-card',     
         input: { 
           widgetDetails: {...widget, chartConfig: {...widget.chartConfig, rawData: this.widgetRawDataList().find(d => d.widgetId === widget.widgetId)?.rawData || [] }}, 

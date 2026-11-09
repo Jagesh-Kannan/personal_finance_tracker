@@ -4,3 +4,8 @@
   height: 100% !important; /* Overrides the fixed pixel inline constraints */
   min-height: 100px;       /* Safety floor boundary prevent collapses */
 }
+
+:host /deep/ .tooltip-clickable:hover, .tooltip-clickable:active, .tooltip-clickable:focus {
+  color:#3b82f6 !important;
+  text-decoration: underline !important;
+}

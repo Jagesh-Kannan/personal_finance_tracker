@@ -14,6 +14,10 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
                 value: ['DEBITED', 'CREDITED'],
                 color: ['--error-color', '--success-color']
             },
+            expandTransactions: {
+                show: true,
+                action: 'details_popup',
+            }
         }
     },
     {
@@ -50,6 +54,10 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
             //     param: 'transactionDate',
             //     order: 'asc'
             // }
+            expandTransactions: {
+                show: true,
+                action: 'details_popup',
+            }
         }
     },
     {
@@ -64,6 +72,10 @@ export const widgetCardsConfig:VizWidgetBaseConfig[] = [
                 value: ['DEBITED','CREDITED'],
                 color: ['--error-color', '--success-color']
             },
+             expandTransactions: {
+                show: true,
+                action: 'details_popup',
+            }
         }
     },
     {
