@@ -18,7 +18,11 @@
         <!-- Section 2: Text Info -->
         <div class="definition-section">
           <div class="category-section">{{ expense.expenseCategory }}</div>
-          <div class="mode-section">{{ expense.paymentMode }}</div>
+          <div class="mode-section">
+            <ng-content select="[categoryNote]">
+              <div>{{ expense.paymentMode }}</div>
+            </ng-content>
+          </div>
         </div>
 
         <!-- Section 3: Numerics -->
@@ -27,7 +31,11 @@
             <span class="amount-sign">{{ expense.mode === 'DEBITED' ? '-' : '+' }}</span>
             {{ expense.amount | abs | CurrencyFormatter: expense.currency }}
           </div>
-          <div class="date-section">{{ expense.transactionDate | date: 'yyyy-MM-dd' }}</div>
+          <div class="date-section">
+            <ng-content select="[amountNote]">
+              <div>{{ expense.transactionDate | date: 'yyyy-MM-dd' }}</div>
+            </ng-content>
+          </div>
         </div>
 
         <!-- Section 4: Action Buttons Slot -->

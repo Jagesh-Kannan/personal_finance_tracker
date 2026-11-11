@@ -4,7 +4,12 @@
     
     @if (config().title) {
       <div class="dialog-header">
-        <h2 class="dialog-title">{{ config().title }}</h2>
+        <div class="header-content">
+          <h2 class="dialog-title">{{ config().title }}</h2>
+        </div>
+        <div class="dialog-close" (click)="close()">
+          <svg lucideX></svg>
+        </div>
       </div>
     }
 
@@ -12,8 +17,14 @@
       @if (config().message) {
         <p>{{ config().message }}</p>
       }
-      @if (config().template) {
-        <ng-container *ngTemplateOutlet="config().template"></ng-container>
+
+      @let templateValue = config().template;
+      @if (typeof templateValue === 'string') {
+        <div [innerHTML]="templateValue"></div>
+      } @else if (templateValue) {
+        <ng-container
+          *ngTemplateOutlet="templateValue; context: config().templateContext ?? {}"
+        ></ng-container>
       }
     </div>
 

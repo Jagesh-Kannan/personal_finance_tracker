@@ -11,53 +11,90 @@
 }
 
 .dialog-box {
-  width: 100%;
-  max-width: 480px;
-  /* Matching Login Page Glass */
+  width: min(100%, 480px);
+  max-height: min(86vh, 760px);
+  min-height: 180px;
   background: var(--dialog-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  
-  /* Signature Login Page Border & Radius */
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  
   display: flex;
   flex-direction: column;
   overflow: hidden;
-   transform: translateY(-30%); 
+  box-sizing: border-box;
   animation: popIn 0.4s ease forwards;
 }
 
 /* Header with subtle separation */
 .dialog-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   padding: 1rem 2rem 1rem;
-  text-align: center; /* Matching login's centered style */
   background: var(--dialog-header-bg);
+}
+
+.header-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
 }
 
 .dialog-title {
   margin: 0;
   font-size: 1.4rem;
-  font-weight: 600; /* Light weight like your logo section */
+  font-weight: 600;
   letter-spacing: 1px;
   color: var(--dialog-title-color);
+  text-align: center;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--dialog-title-color);
+  opacity: 0.8;
+}
+
+.dialog-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
 }
 
 /* Body with padding */
 .dialog-body {
-  padding: 1rem 2rem 2rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1rem 0.4rem 2rem;
   text-align: center;
   color: var(--text-color);
-  opacity: 0.8; /* Subtle text like your sub-header p tag */
+  opacity: 0.8;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 /* Footer mimicking the button/link layout */
 .dialog-footer {
+  flex: 0 0 auto;
   padding: 0 2rem 2rem;
   display: flex;
-  flex-direction: row; /* Buttons stack nicely on mobile, row on desktop */
+  flex-direction: row;
   gap: 12px;
   justify-content: space-between;
 }
@@ -99,6 +136,19 @@
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: translateY(0%) scale(0.95); }
-  to { opacity: 1; transform: translateY(-30%) scale(1); }
+  from { opacity: 0; transform: translateY(10%) scale(0.95); }
+  to { opacity: 1; transform: translateY(0%) scale(1); }
+}
+
+@media (max-width: 767px) {
+  .dialog-overlay {
+    padding: 16px;
+    align-items: center;
+  }
+
+  .dialog-box {
+    /* width: calc(100% - 12px);
+    max-height: calc(100vh - 32px); */
+    margin: 16px 0;
+  }
 }

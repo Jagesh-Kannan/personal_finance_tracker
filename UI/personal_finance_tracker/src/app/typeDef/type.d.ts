@@ -46,7 +46,8 @@ type DialogAction = {
 type DialogConfig = {
   title?: string;
   message?: string;
-  template?: any; // To accept HTML/TemplateRef
+  template?: TemplateRef<any> | string;
+  templateContext?: Record<string, any>;
   actions?: DialogAction[];
   onClose?: () => void;
 };

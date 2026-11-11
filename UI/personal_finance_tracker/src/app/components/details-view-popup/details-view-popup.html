@@ -1,0 +1,50 @@
+<ng-template #detailsPopup let-data>
+  <div class="detailed-view-container">
+    @if (title) {
+      <div class="popup-title">{{ title }}</div>
+    }
+    @if (true) {
+      <div class="popup-subtitle">
+        <div class="summation-container">
+            <div class="debited-block form-row">
+                <label class="form-lable"> Total Debit : </label>
+                <label class="form-value negative-value-color">{{ total.debit | abs | CurrencyFormatter: total.currency }}</label>
+            </div>
+            <div class="credited-block form-row">
+                <label class="form-lable"> Total Credit : </label>
+                <label class="form-value positive-value-color">{{ total.credit | abs | CurrencyFormatter: total.currency }}</label>
+            </div>
+        </div>
+      </div>
+    }
+    <div class="popup-container">
+    @switch (type) {
+      @case ('ExpenseList') {
+        <div class="expense-list">
+          <app-expense-list-container [expenses]="data">
+            <ng-template let-expense>
+              <app-expense-list-card
+                [expense]="expense"
+                [avatarText]="expense.customGrouping">
+                    <div categoryNote> 
+                        <div style="font-weight: bold; color: var(--text-color)"> 
+                            - {{ expense.paymentMode }} ( {{ expense.transactionDate | date: 'MMM-dd EEE' }} )
+                        </div> 
+                    </div>
+                    <div amountNote> 
+                        <div style="font-weight: bold; color: var(--text-color)"> 
+                            - {{ expense.senderOrReceiver }}
+                        </div> 
+                    </div>
+              </app-expense-list-card>
+            </ng-template>
+          </app-expense-list-container>
+        </div>
+      }
+      @default {
+        <div>Unsupported type: {{ type }}</div>
+      }
+    }
+  </div>
+  </div>
+</ng-template>

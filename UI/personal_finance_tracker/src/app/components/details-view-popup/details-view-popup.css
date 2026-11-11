@@ -1,0 +1,39 @@
+.detailed-view-container {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.popup-title {
+  flex: 0 0 auto;
+  padding: 16px;
+}
+
+.popup-container {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.expense-list {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.popup-subtitle > .summation-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 0px 16px;
+    margin-bottom: 8px;
+}

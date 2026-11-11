@@ -105,6 +105,29 @@ body {
     color 0.3s ease;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 154, 68, 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 154, 68, 0.3);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 154, 68, 0.5);
+}
+
 .loader-spin {
   animation: spin 1s linear infinite;
   display: inline-block;
@@ -126,6 +149,42 @@ label.required::after {
   color: #ff4d4f; /* Modern Red */
   font-weight: bold;
   margin-left: 2px;
+}
+
+.note-title {
+  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.note-description {
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.form-row label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  /* letter-spacing: 1px; */
+  color: var(--text-color);
+  /* opacity: 0.6; */
+}
+
+.negative-value-color {
+  color: var(--error-color) !important;
+}
+
+.welcome-description{
+    margin-top: 0px;
+    color: #a1a1a1;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.positive-value-color {
+  color: var(--success-color) !important;
 }
 /* //============================================= 
         Skeleton Loader Styles
@@ -183,8 +242,19 @@ label.required::after {
         font-size: 32px;
     letter-spacing: -0.8px;
   }
+
+  .welcome-description{
+   font-size: 9px;
+  }
   .page-container-wrapper .title-wrapper{
     margin-left: 15px;
+  }
+  .note-title {
+    font-size: 0.9rem;
+    margin: 0 0 6px 0;
+  }
+  .note-description {
+    font-size: 9px;
   }
 }
 
@@ -200,8 +270,16 @@ label.required::after {
     letter-spacing: -0.8px;
   }
 
+  .welcome-description{
+   font-size: 14px;
+}
+
   .page-container-wrapper .title-wrapper{
     margin-left: 30px;
+  }
+
+   .note-title {
+    font-size: 0.9rem;
   }
 }
 
@@ -216,10 +294,17 @@ label.required::after {
         font-size: 38px;
   }
 
+  .welcome-description{
+   font-size: 14px;
+}
+
   .page-container-wrapper .title-wrapper{
     margin-left: 50px;
   }
 
+  .note-title {
+    font-size: 1.1rem;
+  }
 }
 
 

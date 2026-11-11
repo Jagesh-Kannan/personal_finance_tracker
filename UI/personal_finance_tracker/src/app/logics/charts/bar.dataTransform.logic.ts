@@ -64,7 +64,7 @@ export class BarDataFormatterService {
       if (!params || params.length === 0) return '';
 
       // Safely encode the payload to avoid issues with special characters in JSON
-      const safePayload = encodeURIComponent(JSON.stringify(params));
+      const safePayload = encodeURIComponent(JSON.stringify({params, rawData, filteredBy: customSeriesProps?.['splitBy'] || null}));
       const expandTranz_actions = encodeURIComponent(
         customSeriesProps?.['expandTransactions']?.action || 'details_popup',
       );
@@ -358,6 +358,7 @@ export class BarDataFormatterService {
           itemStyle: { color: this.resolveColor(customSeriesProps.splitBy?.color[index]) },
           datasetIndex: index + 1,
           encode: this.getEncodeConfig(groupByKey, resultValueKey),
+          mane: config?.transform
         };
       });
     } else if (customSeriesProps?.stackBy?.param) {
@@ -389,5 +390,34 @@ export class BarDataFormatterService {
       return variableName;
     }
     return value;
+  }
+
+  public barSeriesDetailsExtractor(data: {params: any, rawData: any, filteredBy: any}) :any[]{
+
+    const {params, rawData, filteredBy} = data;
+    let seriesDetails: any[] = [];
+
+    if( Array.isArray(params) && params.length > 0){
+       params.forEach( (item: any) => {
+          if(item.seriesType === 'bar' || item.seriesType === 'line') {
+             if(Array.isArray(item.value) && item.value.length > 0){
+                 const xAxisIndex = item.encode?.x[0];
+                 const yAxisIndex = item.encode?.y[0];
+                 const xAxisValue = item.value[xAxisIndex];
+                 const searchKey = item.dimensionNames[xAxisIndex];
+                 const searchValue = item.value[xAxisIndex];
+
+                 const extractedList = rawData.filter( (d: any) => d[searchKey] === searchValue && (filteredBy ? d[filteredBy.param] === filteredBy.value[item.seriesIndex] : true) );
+                 seriesDetails.push(...extractedList);
+
+             }
+             else if(typeof item.value === 'object' && item.value !== null){
+                seriesDetails.push(item.value);
+             }
+          }
+       })
+    }
+
+    return seriesDetails;
   }
 }
